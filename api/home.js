@@ -10,3 +10,5 @@ export const u_bannerlist20 = (data) => http.get('/deskapi/bannerlist20', data)
 export const u_getQrcodeImg = (data) => http.get('/deskapi/getQrcodeImg', data)
 export const u_getHomeArea = (data) => http.get('/deskapi/homeArea', data)
 export const u_booklist = (data) => http.get('/deskapi/booklist', data)
+export const u_mylist = (data) => http.get('/deskapi/mylist', data)
+  
