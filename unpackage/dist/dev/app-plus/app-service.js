@@ -2247,7 +2247,6 @@ if (uni.restoreGlobal) {
       handleLoggerapi(evt) {
         var _a, _b;
         const MAX_LOGS_BEFORE_UPLOAD = 10;
-        const UPLOAD_LOG_URL = "https://k1sw.wiselink.net.cn/" + u_uploadLog.URL;
         const {
           deviceInfo,
           deviceIDC,
@@ -2265,31 +2264,23 @@ if (uni.restoreGlobal) {
         };
         const updatedLogs = [...currentLogs, newLogEntry];
         if (updatedLogs.length >= MAX_LOGS_BEFORE_UPLOAD) {
-          byPostJson(
-            UPLOAD_LOG_URL,
-            updatedLogs,
-            (response) => {
-              var _a2;
-              if (((_a2 = response == null ? void 0 : response.data) == null ? void 0 : _a2.code) === 1e3) {
-                this.logs = [];
-              } else {
-                this.logs = updatedLogs;
-              }
-            },
-            (err) => {
-              formatAppLog("warn", "at pages/index/index.vue:1179", "日志上传失败，保留本地日志:", err);
-              this.logs = updatedLogs;
-            }
-          );
+          const response = u_uploadLog(updatedLogs);
+          formatAppLog("log", "at pages/index/index.vue:1164", "1111", response);
+          if ((response == null ? void 0 : response.code) === 1e3) {
+            this.logs = [];
+          } else {
+            this.logs = updatedLogs;
+          }
+          return;
         } else {
           this.logs = updatedLogs;
         }
       },
       //  数据解析按钮处理
       parseData: function(hexData) {
-        formatAppLog("log", "at pages/index/index.vue:1193", "hexData", hexData);
+        formatAppLog("log", "at pages/index/index.vue:1197", "hexData", hexData);
         const parsedResult = dist.getParseHexDataObject(hexData);
-        formatAppLog("log", "at pages/index/index.vue:1195", "parsedResult", parsedResult);
+        formatAppLog("log", "at pages/index/index.vue:1199", "parsedResult", parsedResult);
         if (parsedResult) {
           this.parsedData = parsedResult;
           this.updateMyPositionStyles();
@@ -2422,7 +2413,7 @@ if (uni.restoreGlobal) {
               }
             });
             const result = Array.from(uniqueMap.values());
-            formatAppLog("log", "at pages/index/index.vue:1346", "合并并优先保留 enabled=false 的结果：", result);
+            formatAppLog("log", "at pages/index/index.vue:1350", "合并并优先保留 enabled=false 的结果：", result);
             this.controlItems = result;
             setTimeout(() => {
               this.controlItemspanel = this.splitArray(result, 4);
@@ -2498,7 +2489,7 @@ if (uni.restoreGlobal) {
         }
         const touchX = touch.clientX;
         const relativeX = touchX - trackInfo.left;
-        formatAppLog("log", "at pages/index/index.vue:1440", `${trackId} - 判断滑动值`);
+        formatAppLog("log", "at pages/index/index.vue:1444", `${trackId} - 判断滑动值`);
         const trackConfig = {
           lockTrack: {
             maxProgress: 200,
@@ -2576,7 +2567,7 @@ if (uni.restoreGlobal) {
                 duration: 1500
               });
             } else {
-              formatAppLog("warn", "at pages/index/index.vue:1522", "[提示]", tipText);
+              formatAppLog("warn", "at pages/index/index.vue:1526", "[提示]", tipText);
             }
           }
         };
@@ -2601,7 +2592,7 @@ if (uni.restoreGlobal) {
               trackType
             );
           }
-          formatAppLog("log", "at pages/index/index.vue:1547", trackId, trackType);
+          formatAppLog("log", "at pages/index/index.vue:1551", trackId, trackType);
           if (trackType == "lock") {
             this.lockThumbStyle = `left: ${validProgress / 2}%;`;
             this.lockRange = validProgress / 2;
@@ -2691,7 +2682,7 @@ if (uni.restoreGlobal) {
         };
         const instructionMap = dist.getInstructionMap(sendCommand);
         const idActions = instructionMap[id];
-        formatAppLog("log", "at pages/index/index.vue:1656", idActions);
+        formatAppLog("log", "at pages/index/index.vue:1660", idActions);
         if (!idActions) {
           return;
         }
@@ -2756,7 +2747,7 @@ if (uni.restoreGlobal) {
         });
       },
       handleOnExistingAccountTap() {
-        formatAppLog("log", "at pages/index/index.vue:1729", "占位：函数 handleOnExistingAccountTap 未声明");
+        formatAppLog("log", "at pages/index/index.vue:1733", "占位：函数 handleOnExistingAccountTap 未声明");
       }
     }
   };

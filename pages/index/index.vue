@@ -1160,27 +1160,14 @@
 				const updatedLogs = [...currentLogs, newLogEntry];
 				// 判断是否达到上传阈值
 				if (updatedLogs.length >= MAX_LOGS_BEFORE_UPLOAD) {
-					byPostJson(
-						UPLOAD_LOG_URL,
-						updatedLogs,
-						(response) => {
-							// 上传成功，清空日志
-							if (response?.data?.code === 1000) {
-								this.logs = []
-
-							} else {
-								// 上传失败，保留日志（后续可重试）
-								this.logs = updatedLogs
-
-							}
-						},
-						(err) => {
-							// 网络错误等异常情况，保留日志
-							console.warn('日志上传失败，保留本地日志:', err);
-							this.logs = updatedLogs
-
-						}
-					);
+					const response = u_uploadLog(updatedLogs)
+					if (response?.code === 1000) {
+						this.logs = []
+					} else {
+						// 上传失败，保留日志（后续可重试）
+						this.logs = updatedLogs
+					}
+					return
 				} else {
 					// 未达到阈值，仅本地保存
 					this.logs = updatedLogs
