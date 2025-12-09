@@ -2,6 +2,8 @@
 node_modules/
 miniprogram_npm/
 bower_components/
+unpackage/
+unpackage/dist
 
 # 打包输出目录
 dist/

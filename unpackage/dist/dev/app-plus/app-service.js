@@ -165,7 +165,6 @@ if (uni.restoreGlobal) {
   };
   const getParseHexDataObject = (hexString) => {
     if (!hexString || hexString.length !== 30) {
-      formatAppLog("error", "at node_modules/z-utility/dist/index.js:134", "数据长度不正确，需为24（仅数据体）或32（完整帧）字符");
       return null;
     }
     let dataBodyHex = hexString;
@@ -240,7 +239,6 @@ if (uni.restoreGlobal) {
       result.reservedBit3 = 0;
     }
     result.supply = bytes[3];
-    formatAppLog("log", "at node_modules/z-utility/dist/index.js:245", "解析结果:", result);
     return result;
   };
   const getInstructionMap = (sendCommand) => {
@@ -902,7 +900,7 @@ if (uni.restoreGlobal) {
                 param(true, result);
               },
               fail: function(result) {
-                logger.e("查询已连接设备,未成功建立连接!!!");
+                logger.e("查询已连接设备,未成功建立连接!!!", result);
                 param(false, result);
               }
             });
@@ -1311,14 +1309,10 @@ if (uni.restoreGlobal) {
       var resultArrayBufferData = characteristic.value;
       var receiverHexData = utils.buf2hex(resultArrayBufferData);
       var arrayData = utils.hexStringToArray(receiverHexData);
-      const formatted = getBLEDataTime();
+      getBLEDataTime();
       if (characteristic.characteristicId.indexOf(READRANDOM_CHARACTERISTIC_SHORTHAND) != -1) {
-        formatAppLog("log", "at utils/BleKeyFun-utils-single.js:684", "随机指令接收:" + formatted + "  数据:" + receiverHexData);
-        logger.e("随机指令数据:" + receiverHexData, false, false, true);
         gOnReceiveValue(0, arrayData, utils.hexCharCodeToStr(receiverHexData), receiverHexData);
       } else {
-        formatAppLog("log", "at utils/BleKeyFun-utils-single.js:688", "通知指令接收:" + formatted + "  数据:" + receiverHexData);
-        logger.e("通知指令接收:" + receiverHexData, false, false, true);
         gOnReceiveValue(1, arrayData, utils.hexCharCodeToStr(receiverHexData), receiverHexData);
       }
     });
@@ -1328,14 +1322,10 @@ if (uni.restoreGlobal) {
       var resultArrayBufferData = characteristic.value;
       var receiverHexData = utils.buf2hex(resultArrayBufferData);
       var arrayData = utils.hexStringToArray(receiverHexData);
-      const formatted = getBLEDataTime();
+      getBLEDataTime();
       if (characteristic.characteristicId == ReadRandomCharacteristicFixed) {
-        formatAppLog("log", "at utils/BleKeyFun-utils-single.js:703", "随机指令接收:" + formatted + "  数据:" + receiverHexData);
-        logger.e("随机指令数据:" + receiverHexData, false, false, true);
         gOnReceiveValue(0, arrayData, utils.hexCharCodeToStr(receiverHexData), receiverHexData);
       } else {
-        formatAppLog("log", "at utils/BleKeyFun-utils-single.js:707", "通知指令接收:" + formatted + "  数据:" + receiverHexData);
-        logger.e("通知指令接收:" + receiverHexData, false, false, true);
         gOnReceiveValue(1, arrayData, utils.hexCharCodeToStr(receiverHexData), receiverHexData);
       }
     });
@@ -1591,12 +1581,8 @@ if (uni.restoreGlobal) {
         orgKey: [51, 71, 1, 130, 52, 51],
         // 设备所有者标识（true：是所有者，false：非所有者，影响操作权限）
         isOwner: false,
-        // 蓝牙连接状态（文本描述：未连接/连接中/已连接/连接失败）
-        connectionState: "未连接",
         // 蓝牙连接ID（系统分配的连接句柄，用于管理连接）
         connectionID: "",
-        // 蓝牙连接状态-界面展示文本（格式化后的连接状态描述）
-        connectionDisplay: "未连接",
         // ===================== 数据解析相关 =====================
         // 页面滚动目标锚点（指定滚动到的DOM元素ID，如'hiddenview'）
         scrollTo: "hiddenview",
@@ -1686,7 +1672,9 @@ if (uni.restoreGlobal) {
           // 按钮名称
         },
         // 控制按钮当前选中索引（用于标识当前操作的按钮位置）
-        controlIndex: 0
+        controlIndex: 0,
+        // 点击滑动模块最后的时间
+        lastPairTime: Date.now()
       };
     },
     onLoad: function(options) {
@@ -1704,9 +1692,7 @@ if (uni.restoreGlobal) {
     onHide: function() {
       const that = this;
       setTimeout(() => bleKeyManager.releaseBle(), 1500);
-      this.connectionState = "未连接";
       this.connectionID = "";
-      this.connectionDisplay = "未连接";
       this.parsedData = {};
       clearInterval(that.pageInterval);
       uni.setKeepScreenOn({
@@ -1785,7 +1771,7 @@ if (uni.restoreGlobal) {
           return;
         }
         const targetPurePath = targetUrl.split("?")[0];
-        formatAppLog("log", "at pages/index/index.vue:596", currentPath, targetPurePath);
+        formatAppLog("log", "at pages/index/index.vue:590", currentPath, targetPurePath);
         if (currentPath !== targetPurePath) {
           uni.redirectTo({
             url: `/${targetUrl}`
@@ -1801,10 +1787,11 @@ if (uni.restoreGlobal) {
       },
       // 配对按钮点击处理
       btnPair() {
+        var _a, _b;
         uni.getSystemInfoSync().platform;
         const that = this;
         const deviceInfo = uni.getDeviceInfo();
-        if (that.connectionState == "已连接") {
+        if (Number((_a = that.parsedData) == null ? void 0 : _a.electric) > 10 && ((_b = that.parsedData) == null ? void 0 : _b.pairStatus) != "已配对") {
           if (deviceInfo.system.toLowerCase().includes("android")) {
             that.btnCmdSend(34, [1, 0, 0, 0, 0, 0, 0, 0]);
             uni.showModal({
@@ -1899,24 +1886,22 @@ if (uni.restoreGlobal) {
               pixelRatio,
               statusBarHeight
             };
-            formatAppLog("log", "at pages/index/index.vue:715", "设备信息:", this.deviceInfo);
+            formatAppLog("log", "at pages/index/index.vue:709", "设备信息:", this.deviceInfo);
           },
           fail: console.error
         });
       },
       // 启动连接状态轮询
       startConnectionStatusPolling() {
+        formatAppLog("log", "at pages/index/index.vue:717", this.pageInterval);
         if (this.pageInterval) {
           return;
         }
         this.pageInterval = setInterval(() => {
           const isConnected = bleKeyManager.getBLEConnectionState();
           const connectionID = isConnected ? bleKeyManager.getBLEConnectionID() : "";
-          const displayText = isConnected ? connectionID : "未连接";
           const firmware = isConnected ? this.firmware : "";
-          this.connectionState = isConnected ? "已连接" : "未连接";
           this.connectionID = connectionID;
-          this.connectionDisplay = displayText;
           this.firmware = firmware;
         }, 200);
       },
@@ -1938,14 +1923,14 @@ if (uni.restoreGlobal) {
             this.account = ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username);
           },
           fail(err) {
-            formatAppLog("error", "at pages/index/index.vue:758", "获取失败", err);
+            formatAppLog("error", "at pages/index/index.vue:750", "获取失败", err);
           }
         });
       },
       // 初始化钥匙按钮内容
       initContro() {
         this.controlItemspanel = this.splitArray(dist.getControlItems(), 4);
-        formatAppLog("log", "at pages/index/index.vue:766", this.splitArray(dist.getControlItems(), 4));
+        formatAppLog("log", "at pages/index/index.vue:758", this.splitArray(dist.getControlItems(), 4));
       },
       initCheckTimer() {
         if (this.checkTimer) {
@@ -1970,7 +1955,7 @@ if (uni.restoreGlobal) {
           that.orgKey = that.handleTransformation(data == null ? void 0 : data.bluetoothKey);
           that.orgKeyOld = data == null ? void 0 : data.bluetoothKey;
           that.bluetoothData = data;
-          formatAppLog("log", "at pages/index/index.vue:796", that);
+          formatAppLog("log", "at pages/index/index.vue:788", that);
           setTimeout(() => {
             that.handleBule();
           }, 500);
@@ -1987,11 +1972,11 @@ if (uni.restoreGlobal) {
             that.code = code;
             handleData(response.data.content);
           }).catch((err) => {
-            formatAppLog("error", "at pages/index/index.vue:816", "获取蓝牙数据失败:", err);
+            formatAppLog("error", "at pages/index/index.vue:808", "获取蓝牙数据失败:", err);
           });
         };
         if (options == null ? void 0 : options.scene) {
-          formatAppLog("log", "at pages/index/index.vue:823", "处理URL参数:", options.scene);
+          formatAppLog("log", "at pages/index/index.vue:815", "处理URL参数:", options.scene);
           fetchBluetoothData(options.scene);
           uni.setStorage({
             key: "scene",
@@ -2084,7 +2069,9 @@ if (uni.restoreGlobal) {
       },
       // 处理蓝牙连接状态：检查设备是否已连接，决定执行连接或重连逻辑
       handleBule() {
+        formatAppLog("log", "at pages/index/index.vue:919", "idc", this.deviceIDC);
         bleKeyManager.isDeviceConnected(this.deviceIDC, (status, param) => {
+          formatAppLog("log", "at pages/index/index.vue:921", "222222222--2-2-2-22-2-", status);
           if (status) {
             this.btnStartConnectConnected();
           } else {
@@ -2215,10 +2202,13 @@ if (uni.restoreGlobal) {
       },
       // 打包并发送数据（支持动态数据体长度）
       PackAndSend3a(type, dataLength, data, sign) {
-        formatAppLog("log", "at pages/index/index.vue:1088", type, dataLength, data, sign);
+        formatAppLog("log", "at pages/index/index.vue:1082", type, dataLength, data, sign);
         const header = [36];
         const end = [36];
-        const paddedData = [...data].concat(new Array(dataLength - data.length).fill(0)).slice(0, dataLength);
+        const paddedData = [...data].concat(new Array(dataLength - data.length).fill(0)).slice(
+          0,
+          dataLength
+        );
         const packet = dataLength == 8 ? [...header, type, dataLength, ...data, ...end] : [
           ...header,
           type,
@@ -2231,7 +2221,7 @@ if (uni.restoreGlobal) {
       PackAndSend07: function(type, len, data) {
         const defaultData = [0, 0, 0, 0, 0, 0, 0];
         var packet = [36, type, len, data, ...defaultData, 36];
-        formatAppLog("log", "at pages/index/index.vue:1103", packet);
+        formatAppLog("log", "at pages/index/index.vue:1099", packet);
         bleKeyManager.dispatcherSend2(this.arrayToArrayBuffer(packet));
       },
       // 数组转ArrayBuffer
@@ -2287,7 +2277,7 @@ if (uni.restoreGlobal) {
               }
             },
             (err) => {
-              formatAppLog("warn", "at pages/index/index.vue:1183", "日志上传失败，保留本地日志:", err);
+              formatAppLog("warn", "at pages/index/index.vue:1179", "日志上传失败，保留本地日志:", err);
               this.logs = updatedLogs;
             }
           );
@@ -2297,7 +2287,9 @@ if (uni.restoreGlobal) {
       },
       //  数据解析按钮处理
       parseData: function(hexData) {
+        formatAppLog("log", "at pages/index/index.vue:1193", "hexData", hexData);
         const parsedResult = dist.getParseHexDataObject(hexData);
+        formatAppLog("log", "at pages/index/index.vue:1195", "parsedResult", parsedResult);
         if (parsedResult) {
           this.parsedData = parsedResult;
           this.updateMyPositionStyles();
@@ -2329,34 +2321,9 @@ if (uni.restoreGlobal) {
       btnEndConnect() {
         bleKeyManager.releaseBle();
       },
-      // 快捷控制命令方法
-      handleUnlock: function() {
-        this.sendVehicleCommandFun(3, "");
-      },
-      // 开锁命令
-      handleLock: function() {
-        this.sendVehicleCommandFun(4, "");
-      },
-      // 锁车命令
-      handleOpenTrunk: function() {
-        this.sendVehicleCommandFun(5, "");
-      },
-      // 尾箱命令
-      handleFindCar: function() {
-        this.sendVehicleCommandFun(6, "");
-      },
-      // 寻车命令
-      handlRaiseTheWindow: function() {
-        this.sendVehicleCommandFun(7, 3);
-      },
-      // 升窗命令
-      handleLowerTheWindow: function() {
-        this.sendVehicleCommandFun(7, 4);
-      },
-      // 降窗命令
       // 指令公共方法
       sendVehicleCommandFun: function(commandCode, code) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         if (!((_a = this == null ? void 0 : this.bluetoothData) == null ? void 0 : _a.platenumber)) {
           uni.showModal({
             title: "提示",
@@ -2372,7 +2339,7 @@ if (uni.restoreGlobal) {
           });
           return;
         }
-        if (((_b = this == null ? void 0 : this.bluetoothData) == null ? void 0 : _b.platenumber) && this.connectionState == "已连接") {
+        if (((_b = this == null ? void 0 : this.bluetoothData) == null ? void 0 : _b.platenumber) && ((_c = this.parsedData) == null ? void 0 : _c.electric) > 10) {
           uni.showModal({
             title: "提示",
             content: commandCode == 3 || commandCode == 4 ? "确认下发指令" : "如原车钥匙不支持此功能请自行点击【更多钥匙功能】关闭",
@@ -2393,7 +2360,7 @@ if (uni.restoreGlobal) {
           });
           return;
         }
-        if (this.connectionState == "未连接") {
+        if (((_d = this.parsedData) == null ? void 0 : _d.electric) < 10) {
           uni.showToast({
             title: "请等待蓝牙连接后重试",
             icon: "none"
@@ -2409,8 +2376,7 @@ if (uni.restoreGlobal) {
           controltype: `${commandCode}${code}`,
           electricity: ((_a = this == null ? void 0 : this.parsedData) == null ? void 0 : _a.electric) || 0
         };
-        byPost("https://k1sw.wiselink.net.cn/" + u_sendInfo.URL, temp, function() {
-        });
+        u_sendInfo(temp);
       },
       handleToConfigure: function() {
         if (!isLogin()) {
@@ -2456,7 +2422,7 @@ if (uni.restoreGlobal) {
               }
             });
             const result = Array.from(uniqueMap.values());
-            formatAppLog("log", "at pages/index/index.vue:1379", "合并并优先保留 enabled=false 的结果：", result);
+            formatAppLog("log", "at pages/index/index.vue:1346", "合并并优先保留 enabled=false 的结果：", result);
             this.controlItems = result;
             setTimeout(() => {
               this.controlItemspanel = this.splitArray(result, 4);
@@ -2504,7 +2470,15 @@ if (uni.restoreGlobal) {
       },
       // 滑块拖动事件
       async onlockSlide(e2) {
-        var _a;
+        var _a, _b;
+        if (((_a = this.parsedData) == null ? void 0 : _a.pairStatus) == "未配对") {
+          const now = Date.now();
+          if (now - this.lastPairTime < 3e3)
+            return;
+          this.btnPair();
+          this.lastPairTime = now;
+          return;
+        }
         const {
           currentTarget: target,
           touches = []
@@ -2513,7 +2487,7 @@ if (uni.restoreGlobal) {
         if (!target || !touch) {
           return;
         }
-        const trackId = (_a = target.dataset) == null ? void 0 : _a.id;
+        const trackId = (_b = target.dataset) == null ? void 0 : _b.id;
         const validTrackIds = /* @__PURE__ */ new Set(["lockTrack", "unlockTrack"]);
         if (!validTrackIds.has(trackId)) {
           return;
@@ -2524,7 +2498,7 @@ if (uni.restoreGlobal) {
         }
         const touchX = touch.clientX;
         const relativeX = touchX - trackInfo.left;
-        formatAppLog("log", "at pages/index/index.vue:1467", `${trackId} - 判断滑动值`);
+        formatAppLog("log", "at pages/index/index.vue:1440", `${trackId} - 判断滑动值`);
         const trackConfig = {
           lockTrack: {
             maxProgress: 200,
@@ -2602,7 +2576,7 @@ if (uni.restoreGlobal) {
                 duration: 1500
               });
             } else {
-              formatAppLog("warn", "at pages/index/index.vue:1547", "[提示]", tipText);
+              formatAppLog("warn", "at pages/index/index.vue:1522", "[提示]", tipText);
             }
           }
         };
@@ -2627,7 +2601,7 @@ if (uni.restoreGlobal) {
               trackType
             );
           }
-          formatAppLog("log", "at pages/index/index.vue:1572", trackId, trackType);
+          formatAppLog("log", "at pages/index/index.vue:1547", trackId, trackType);
           if (trackType == "lock") {
             this.lockThumbStyle = `left: ${validProgress / 2}%;`;
             this.lockRange = validProgress / 2;
@@ -2659,12 +2633,9 @@ if (uni.restoreGlobal) {
       },
       // 关闭弹出窗
       handleMaskTap() {
-        const resetSettings = {
-          modalisShow: false,
-          key_settings: false,
-          all_settings: false
-        };
-        this.resetSettings = resetSettings;
+        this.modalisShow = false;
+        this.key_settings = false;
+        this.all_settings = false;
       },
       // 设置 蓝牙断开自动断开锁车
       handleToBreakOff(e2) {
@@ -2720,7 +2691,7 @@ if (uni.restoreGlobal) {
         };
         const instructionMap = dist.getInstructionMap(sendCommand);
         const idActions = instructionMap[id];
-        formatAppLog("log", "at pages/index/index.vue:1684", idActions);
+        formatAppLog("log", "at pages/index/index.vue:1656", idActions);
         if (!idActions) {
           return;
         }
@@ -2785,7 +2756,7 @@ if (uni.restoreGlobal) {
         });
       },
       handleOnExistingAccountTap() {
-        formatAppLog("log", "at pages/index/index.vue:1757", "占位：函数 handleOnExistingAccountTap 未声明");
+        formatAppLog("log", "at pages/index/index.vue:1729", "占位：函数 handleOnExistingAccountTap 未声明");
       }
     }
   };
@@ -2897,7 +2868,7 @@ if (uni.restoreGlobal) {
                     vue.createElementVNode(
                       "text",
                       { class: "top-fixed-signal-text" },
-                      vue.toDisplayString($data.connectionState == "已连接" ? "蓝牙已连接" : "蓝牙已断开"),
+                      vue.toDisplayString($data.parsedData.electric ? "蓝牙已连接" : "蓝牙未连接"),
                       1
                       /* TEXT */
                     )

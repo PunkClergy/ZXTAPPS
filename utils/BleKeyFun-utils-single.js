@@ -160,7 +160,7 @@ function isDeviceConnected(deviceIDC, param) {
 							param(true, result);
 						},
 						fail: function(result) {
-							logger.e('查询已连接设备,未成功建立连接!!!');
+							logger.e('查询已连接设备,未成功建立连接!!!',result);
 							param(false, result);
 						}
 					});
@@ -681,12 +681,12 @@ function onBLECharacteristicValueChange() {
 		const formatted = getBLEDataTime();
 
 		if (characteristic.characteristicId.indexOf(READRANDOM_CHARACTERISTIC_SHORTHAND) != -1) {
-			console.log('随机指令接收:' + formatted + '  数据:' + receiverHexData);
-			logger.e('随机指令数据:' + receiverHexData, false, false, true);
+			// console.log('随机指令接收:' + formatted + '  数据:' + receiverHexData);
+			// logger.e('随机指令数据:' + receiverHexData, false, false, true);
 			gOnReceiveValue(0, arrayData, utils.hexCharCodeToStr(receiverHexData), receiverHexData);
 		} else {
-			console.log('通知指令接收:' + formatted + '  数据:' + receiverHexData);
-			logger.e('通知指令接收:' + receiverHexData, false, false, true);
+			// console.log('通知指令接收:' + formatted + '  数据:' + receiverHexData);
+			// logger.e('通知指令接收:' + receiverHexData, false, false, true);
 			gOnReceiveValue(1, arrayData, utils.hexCharCodeToStr(receiverHexData), receiverHexData);
 		}
 	});
@@ -700,12 +700,12 @@ function onBLECharacteristicValueChangeConnected() {
 		const formatted = getBLEDataTime();
 
 		if (characteristic.characteristicId == ReadRandomCharacteristicFixed) {
-			console.log('随机指令接收:' + formatted + '  数据:' + receiverHexData);
-			logger.e('随机指令数据:' + receiverHexData, false, false, true);
+			// console.log('随机指令接收:' + formatted + '  数据:' + receiverHexData);
+			// logger.e('随机指令数据:' + receiverHexData, false, false, true);
 			gOnReceiveValue(0, arrayData, utils.hexCharCodeToStr(receiverHexData), receiverHexData);
 		} else {
-			console.log('通知指令接收:' + formatted + '  数据:' + receiverHexData);
-			logger.e('通知指令接收:' + receiverHexData, false, false, true);
+			// console.log('通知指令接收:' + formatted + '  数据:' + receiverHexData);
+			// logger.e('通知指令接收:' + receiverHexData, false, false, true);
 			gOnReceiveValue(1, arrayData, utils.hexCharCodeToStr(receiverHexData), receiverHexData);
 		}
 	});

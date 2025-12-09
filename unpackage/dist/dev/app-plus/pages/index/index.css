@@ -162,12 +162,12 @@ body {
 		flex-direction: row;
 }
 .top-fixed-signal-layar-title {
-		font-size: 0.6875rem;
+		font-size: 0.625rem;
 		color: #333333;
 }
 .top-fixed-signal-text {
 		font-weight: bold;
-		font-size: 0.6875rem;
+		font-size: 0.625rem;
 		color: #222222;
 }
 

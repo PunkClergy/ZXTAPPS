@@ -51,8 +51,7 @@
 								style="width: 30rpx; height: 33rpx" />
 							<view class="top-fixed-signal-layar-info">
 								<text class="top-fixed-signal-layar-title">蓝牙状态：</text>
-								<text
-									class="top-fixed-signal-text">{{ connectionState == '已连接' ? '蓝牙已连接' : '蓝牙已断开' }}</text>
+								<text class="top-fixed-signal-text">{{ parsedData.electric?'蓝牙已连接':'蓝牙未连接' }}</text>
 							</view>
 						</view>
 						<view class="top-fixed-signal-layar">
@@ -173,8 +172,9 @@
 						:key="index">
 						<!-- 内层循环遍历每个子数组的控制项 -->
 
-						<view class="bottom-fixed-swiper-item-control" @tap="handleParseEventDynamicCode($event, control.evt)"
-							:data-id="control.id" v-for="(control, controlIndex) in item" :key="controlIndex">
+						<view class="bottom-fixed-swiper-item-control"
+							@tap="handleParseEventDynamicCode($event, control.evt)" :data-id="control.id"
+							v-for="(control, controlIndex) in item" :key="controlIndex">
 							<block v-if="control.enabled">
 								<image :src="
 								        control.id === 1 || control.id === 2 ? ((control.id === 1 ? parsedData.lock : !parsedData.lock) ? control.ative : control.icon) : control.icon
@@ -313,175 +313,173 @@
 
 		},
 		data() {
-		    return {
-		        // 屏幕总高度（动态计算赋值）
-		        g_screenTotalHeight: '',
-		
-		        // 底部tabbar固定高度（单位：px）
-		        g_tabBarHeight: 80,
-		
-		        // 手机状态栏高度（单位：px）
-		        g_height_from_head: 44,
-		
-		        // 自定义导航栏固定高度（单位：px）
-		        g_head_height: 84,
-		
-		        // 胶囊按钮到右侧的距离（动态计算赋值，单位：px/百分比）
-		        g_capsule_distance_to_the_right: '',
-		
-		        // 核心内容区域上部固定高度（可根据业务需求自定义，单位：px）
-		        bottomHeight: 90,
-		
-		        // 核心内容区域下部固定高度（可根据业务需求自定义，单位：px）
-		
-		        // 开锁判定阈值 - 感应信号范围（0-100），信号值在此范围内触发开锁逻辑
-		        unlockRange: 50,
-		
-		        // 关锁判定阈值 - 感应信号范围（0-100），信号值在此范围内触发关锁逻辑
-		        lockRange: 60,
-		
-		        // 人物位置标识（界面展示用，百分比/像素值）
-		        myPosition: 60,
-		
-		        // 开锁范围滑块样式 - 左侧偏移量（界面展示定位）
-		        unlockThumbStyle: 'left: 44%',
-		
-		        // 关锁范围滑块样式 - 左侧偏移量（界面展示定位）
-		        lockThumbStyle: 'left: 54%',
-		
-		        // 人物位置展示样式 - 左侧偏移量（界面展示定位）
-		        myPositionStyle: 'left: 30%',
-		
-		        // ===================== 蓝牙通信相关 =====================
-		        // 蓝牙设备标识（连接成功后赋值，唯一标识设备）
-		        dc: '',
-		
-		        // 蓝牙通信-待发送/接收的原始数据（二进制/字符串格式）
-		        data: '',
-		
-		        // 蓝牙通信-消息日志（存储交互过程中的提示/错误信息）
-		        msg: '',
-		
-		        // 默认蓝牙设备ID（出厂预设/常用设备ID，用于快速连接）
-		        deviceIDC: '932505100228',
-		
-		        // 蓝牙通信-原始加密密钥（数组格式，用于数据加解密）
-		        orgKey: [51, 71, 1, 130, 52, 51],
-		
-		        // 设备所有者标识（true：是所有者，false：非所有者，影响操作权限）
-		        isOwner: false,
-		
-		        // 蓝牙连接状态（文本描述：未连接/连接中/已连接/连接失败）
-		        connectionState: '未连接',
-		
-		        // 蓝牙连接ID（系统分配的连接句柄，用于管理连接）
-		        connectionID: '',
-		
-		        // 蓝牙连接状态-界面展示文本（格式化后的连接状态描述）
-		        connectionDisplay: '未连接',
-		
-		        // ===================== 数据解析相关 =====================
-		        // 页面滚动目标锚点（指定滚动到的DOM元素ID，如'hiddenview'）
-		        scrollTo: 'hiddenview',
-		
-		        // 解析蓝牙数据的长度（记录已解析的字节数，用于数据分片处理）
-		        parseLen: 0,
-		
-		        // 蓝牙数据解析后的数据对象（存储解析后的设备状态信息）
-		        parsedData: {
-		            electric: '', // 设备电量（百分比/数值）
-		            pairStatus: '', // 配对状态（已配对/未配对）
-		            inductionMode: '', // 感应模式（开启/关闭）
-		            inductionUnlockSignal: '', // 感应开锁信号（原始值）
-		            signalValue: '', // 实时感应信号值（0-100）
-		            inductionLockSignal: '', // 感应关锁信号（原始值）
-		            lock: '', // 锁体状态（上锁/解锁）
-		            bleDisconnectLock: '', // 蓝牙断开自动锁状态（开启/关闭）
-		            lockWindowUp: '' // 车窗锁状态（升起/降下）
-		        },
-		
-		        // ===================== 定时器相关 =====================
-		        // 设备状态检查定时器ID（循环检查蓝牙/设备状态，用于清除定时器）
-		        pageInterval: 0,
-		
-		        // 网络状态标识（true：已联网，false：断网）
-		        netWork: false,
-		
-		        // ===================== 界面控制相关 =====================
-		        // 控制按钮配置项（通过getControlItems()获取，包含按钮ID/名称/图标等）
-		        controlItems: getControlItems(),
-		
-		        // 控制按钮面板配置（存储面板展示的按钮列表）
-		        controlItemspanel: [],
-		
-		        // 蓝牙通信报文日志（存储所有交互的原始报文，用于调试/展示）
-		        logs: [],
-		
-		        // 设备信息对象（存储蓝牙设备的型号/固件版本/名称等信息）
-		        deviceInfo: {},
-		
-		        // 底部tabbar高度（冗余字段，与g_tabBarHeight一致，界面适配兼容用）
-		        tabBarHeight: 80,
-		
-		        // 底部tabbar列表（存储tab项的名称/路径/图标等配置）
-		        tabList: [],
-		
-		        // 底部tabbar当前选中索引（默认选中第2个tab，索引从0开始）
-		        currentTab: 1,
-		
-		        // 系统原始链接（基础接口地址/跳转链接）
-		        c_link: 'https://k1sw.wiselink.net.cn/',
-		
-		        // 设置弹窗显示状态（true：显示，false：隐藏）
-		        modalisShow: false,
-		
-		        // 更多钥匙功能展示标志（true：展开，false：收起）
-		        key_settings: false,
-		
-		        // 更多功能展示标志（true：展开，false：收起）
-		        all_settings: false,
-		
-		        // 钥匙指令集合（通过getInstructions()获取，包含指令ID/名称/功能描述）
-		        keyInstructions: getInstructions(),
-		
-		        // 输出方式配置集合（通过getOutputConfig()获取，包含输出类型/参数等）
-		        key_out_put: getOutputConfig(),
-		
-		        // 状态检查定时器ID（页面卸载时清除，防止内存泄漏）
-		        checkTimer: null,
-		
-		        // 临时存储-配置选项（通用临时变量，存储各类配置参数）
-		        options: '',
-		
-		        // 设备固件版本（存储蓝牙设备的固件版本号）
-		        firmware: '',
-		
-		        // 账号信息（当前登录账号标识/信息）
-		        account: '',
-		
-		        // 原始密钥备份（存储修改前的加密密钥，用于回滚/对比）
-		        orgKeyOld: '',
-		
-		        // 蓝牙设备扩展数据（存储车牌号等设备关联信息）
-		        bluetoothData: {
-		            platenumber: '' // 车牌号（设备绑定的车辆号牌）
-		        },
-		
-		        // 临时存储-验证码/授权码（通用临时变量）
-		        code: '',
-		
-		        // 控制按钮临时对象（存储当前操作的按钮信息）
-		        control: {
-		            id: '', // 按钮ID
-		            enabled: '', // 启用状态（true/false）
-		            ative: '', // 激活状态（true/false，拼写可能为active笔误）
-		            icon: '', // 按钮图标
-		            name: '' // 按钮名称
-		        },
-		
-		        // 控制按钮当前选中索引（用于标识当前操作的按钮位置）
-		        controlIndex: 0
-		    };
+			return {
+				// 屏幕总高度（动态计算赋值）
+				g_screenTotalHeight: '',
+
+				// 底部tabbar固定高度（单位：px）
+				g_tabBarHeight: 80,
+
+				// 手机状态栏高度（单位：px）
+				g_height_from_head: 44,
+
+				// 自定义导航栏固定高度（单位：px）
+				g_head_height: 84,
+
+				// 胶囊按钮到右侧的距离（动态计算赋值，单位：px/百分比）
+				g_capsule_distance_to_the_right: '',
+
+				// 核心内容区域上部固定高度（可根据业务需求自定义，单位：px）
+				bottomHeight: 90,
+
+				// 核心内容区域下部固定高度（可根据业务需求自定义，单位：px）
+
+				// 开锁判定阈值 - 感应信号范围（0-100），信号值在此范围内触发开锁逻辑
+				unlockRange: 50,
+
+				// 关锁判定阈值 - 感应信号范围（0-100），信号值在此范围内触发关锁逻辑
+				lockRange: 60,
+
+				// 人物位置标识（界面展示用，百分比/像素值）
+				myPosition: 60,
+
+				// 开锁范围滑块样式 - 左侧偏移量（界面展示定位）
+				unlockThumbStyle: 'left: 44%',
+
+				// 关锁范围滑块样式 - 左侧偏移量（界面展示定位）
+				lockThumbStyle: 'left: 54%',
+
+				// 人物位置展示样式 - 左侧偏移量（界面展示定位）
+				myPositionStyle: 'left: 30%',
+
+				// ===================== 蓝牙通信相关 =====================
+				// 蓝牙设备标识（连接成功后赋值，唯一标识设备）
+				dc: '',
+
+				// 蓝牙通信-待发送/接收的原始数据（二进制/字符串格式）
+				data: '',
+
+				// 蓝牙通信-消息日志（存储交互过程中的提示/错误信息）
+				msg: '',
+
+				// 默认蓝牙设备ID（出厂预设/常用设备ID，用于快速连接）
+				deviceIDC: '932505100228',
+
+				// 蓝牙通信-原始加密密钥（数组格式，用于数据加解密）
+				orgKey: [51, 71, 1, 130, 52, 51],
+
+				// 设备所有者标识（true：是所有者，false：非所有者，影响操作权限）
+				isOwner: false,
+
+
+				// 蓝牙连接ID（系统分配的连接句柄，用于管理连接）
+				connectionID: '',
+
+
+				// ===================== 数据解析相关 =====================
+				// 页面滚动目标锚点（指定滚动到的DOM元素ID，如'hiddenview'）
+				scrollTo: 'hiddenview',
+
+				// 解析蓝牙数据的长度（记录已解析的字节数，用于数据分片处理）
+				parseLen: 0,
+
+				// 蓝牙数据解析后的数据对象（存储解析后的设备状态信息）
+				parsedData: {
+					electric: '', // 设备电量（百分比/数值）
+					pairStatus: '', // 配对状态（已配对/未配对）
+					inductionMode: '', // 感应模式（开启/关闭）
+					inductionUnlockSignal: '', // 感应开锁信号（原始值）
+					signalValue: '', // 实时感应信号值（0-100）
+					inductionLockSignal: '', // 感应关锁信号（原始值）
+					lock: '', // 锁体状态（上锁/解锁）
+					bleDisconnectLock: '', // 蓝牙断开自动锁状态（开启/关闭）
+					lockWindowUp: '' // 车窗锁状态（升起/降下）
+				},
+
+				// ===================== 定时器相关 =====================
+				// 设备状态检查定时器ID（循环检查蓝牙/设备状态，用于清除定时器）
+				pageInterval: 0,
+
+				// 网络状态标识（true：已联网，false：断网）
+				netWork: false,
+
+				// ===================== 界面控制相关 =====================
+				// 控制按钮配置项（通过getControlItems()获取，包含按钮ID/名称/图标等）
+				controlItems: getControlItems(),
+
+				// 控制按钮面板配置（存储面板展示的按钮列表）
+				controlItemspanel: [],
+
+				// 蓝牙通信报文日志（存储所有交互的原始报文，用于调试/展示）
+				logs: [],
+
+				// 设备信息对象（存储蓝牙设备的型号/固件版本/名称等信息）
+				deviceInfo: {},
+
+				// 底部tabbar高度（冗余字段，与g_tabBarHeight一致，界面适配兼容用）
+				tabBarHeight: 80,
+
+				// 底部tabbar列表（存储tab项的名称/路径/图标等配置）
+				tabList: [],
+
+				// 底部tabbar当前选中索引（默认选中第2个tab，索引从0开始）
+				currentTab: 1,
+
+				// 系统原始链接（基础接口地址/跳转链接）
+				c_link: 'https://k1sw.wiselink.net.cn/',
+
+				// 设置弹窗显示状态（true：显示，false：隐藏）
+				modalisShow: false,
+
+				// 更多钥匙功能展示标志（true：展开，false：收起）
+				key_settings: false,
+
+				// 更多功能展示标志（true：展开，false：收起）
+				all_settings: false,
+
+				// 钥匙指令集合（通过getInstructions()获取，包含指令ID/名称/功能描述）
+				keyInstructions: getInstructions(),
+
+				// 输出方式配置集合（通过getOutputConfig()获取，包含输出类型/参数等）
+				key_out_put: getOutputConfig(),
+
+				// 状态检查定时器ID（页面卸载时清除，防止内存泄漏）
+				checkTimer: null,
+
+				// 临时存储-配置选项（通用临时变量，存储各类配置参数）
+				options: '',
+
+				// 设备固件版本（存储蓝牙设备的固件版本号）
+				firmware: '',
+
+				// 账号信息（当前登录账号标识/信息）
+				account: '',
+
+				// 原始密钥备份（存储修改前的加密密钥，用于回滚/对比）
+				orgKeyOld: '',
+
+				// 蓝牙设备扩展数据（存储车牌号等设备关联信息）
+				bluetoothData: {
+					platenumber: '' // 车牌号（设备绑定的车辆号牌）
+				},
+
+				// 临时存储-验证码/授权码（通用临时变量）
+				code: '',
+
+				// 控制按钮临时对象（存储当前操作的按钮信息）
+				control: {
+					id: '', // 按钮ID
+					enabled: '', // 启用状态（true/false）
+					ative: '', // 激活状态（true/false，拼写可能为active笔误）
+					icon: '', // 按钮图标
+					name: '' // 按钮名称
+				},
+
+				// 控制按钮当前选中索引（用于标识当前操作的按钮位置）
+				controlIndex: 0,
+				// 点击滑动模块最后的时间
+				lastPairTime: Date.now()
+			};
 		},
 		onLoad: function(options) {
 			// 获取屏幕数据
@@ -505,12 +503,8 @@
 		onHide: function() {
 			const that = this;
 			setTimeout(() => bleKeyManager.releaseBle(), 1500);
-			this.connectionState = '未连接'
 			// 连接状态
 			this.connectionID = ''
-			// 连接ID
-			this.connectionDisplay = '未连接'
-			// 连接显示文本
 			this.parsedData = {}
 			clearInterval(that.pageInterval);
 			uni.setKeepScreenOn({
@@ -614,7 +608,7 @@
 				const platform = uni.getSystemInfoSync().platform;
 				const that = this;
 				const deviceInfo = uni.getDeviceInfo(); // 获取设备信息
-				if (that.connectionState == '已连接') {
+				if (Number(that.parsedData?.electric) > 10 && (that.parsedData?.pairStatus != '已配对')) {
 					// 判断Android系统
 					if (deviceInfo.system.toLowerCase().includes('android')) {
 						// 发送配对命令
@@ -720,17 +714,15 @@
 
 			// 启动连接状态轮询
 			startConnectionStatusPolling() {
+				console.log(this.pageInterval)
 				if (this.pageInterval) {
 					return;
 				}
 				this.pageInterval = setInterval(() => {
 					const isConnected = bleKeyManager.getBLEConnectionState();
 					const connectionID = isConnected ? bleKeyManager.getBLEConnectionID() : '';
-					const displayText = isConnected ? connectionID : '未连接';
 					const firmware = isConnected ? this.firmware : '';
-					this.connectionState = isConnected ? '已连接' : '未连接'
 					this.connectionID = connectionID
-					this.connectionDisplay = displayText
 					this.firmware = firmware
 				}, 200);
 			},
@@ -924,7 +916,9 @@
 
 			// 处理蓝牙连接状态：检查设备是否已连接，决定执行连接或重连逻辑
 			handleBule() {
+				console.log('idc', this.deviceIDC)
 				bleKeyManager.isDeviceConnected(this.deviceIDC, (status, param) => {
+					console.log('222222222--2-2-2-22-2-', status)
 					if (status) {
 						//设备已连接，执行已连接逻辑
 						this.btnStartConnectConnected();
@@ -1089,8 +1083,10 @@
 				const header = [36]; // 数据头
 				const end = [36]; // 数据尾
 				// 根据要求的数据长度填充数据，不足补0
-				const paddedData = [...data].concat(new Array(dataLength - data.length).fill(0)).slice(0, dataLength);
-				const packet = dataLength == 8 ? [...header, type, dataLength, ...data, ...end] : [...header, type, ...
+				const paddedData = [...data].concat(new Array(dataLength - data.length).fill(0)).slice(0,
+					dataLength);
+				const packet = dataLength == 8 ? [...header, type, dataLength, ...data, ...end] : [...header,
+					type, ...
 					paddedData, ...end
 				]; // 组合数据包
 				bleKeyManager.dispatcherSend2(this.arrayToArrayBuffer(packet)); // 发送数据
@@ -1194,7 +1190,9 @@
 
 			//  数据解析按钮处理
 			parseData: function(hexData) {
+				console.log('hexData', hexData)
 				const parsedResult = getParseHexDataObject(hexData);
+				console.log('parsedResult', parsedResult)
 				if (parsedResult) {
 
 					this.parsedData = parsedResult
@@ -1238,37 +1236,6 @@
 				bleKeyManager.releaseBle();
 			},
 
-			// 快捷控制命令方法
-			handleUnlock: function() {
-				this.sendVehicleCommandFun(3, '');
-			},
-
-			// 开锁命令
-			handleLock: function() {
-				this.sendVehicleCommandFun(4, '');
-			},
-
-			// 锁车命令
-			handleOpenTrunk: function() {
-				this.sendVehicleCommandFun(5, '');
-			},
-
-			// 尾箱命令
-			handleFindCar: function() {
-				this.sendVehicleCommandFun(6, '');
-			},
-
-			// 寻车命令
-			handlRaiseTheWindow: function() {
-				this.sendVehicleCommandFun(7, 3);
-			},
-
-			// 升窗命令
-			handleLowerTheWindow: function() {
-				this.sendVehicleCommandFun(7, 4);
-			},
-
-			// 降窗命令
 
 			// 指令公共方法
 			sendVehicleCommandFun: function(commandCode, code) {
@@ -1287,7 +1254,7 @@
 					});
 					return;
 				}
-				if (this?.bluetoothData?.platenumber && this.connectionState == '已连接') {
+				if (this?.bluetoothData?.platenumber && this.parsedData?.electric > 10) {
 					uni.showModal({
 						title: '提示',
 						content: commandCode == 3 || commandCode == 4 ? '确认下发指令' :
@@ -1309,7 +1276,7 @@
 					});
 					return;
 				}
-				if (this.connectionState == '未连接') {
+				if (this.parsedData?.electric < 10) {
 					uni.showToast({
 						title: '请等待蓝牙连接后重试',
 						icon: 'none'
@@ -1325,7 +1292,7 @@
 					controltype: `${commandCode}${code}`,
 					electricity: this?.parsedData?.electric || 0
 				};
-				byPost('https://k1sw.wiselink.net.cn/' + u_sendInfo.URL, temp, function() {});
+				u_sendInfo(temp)
 			},
 
 			handleToConfigure: function() {
@@ -1434,17 +1401,23 @@
 
 			// 滑块拖动事件
 			async onlockSlide(e) {
-				// const {
-				// 	data: {
-				// 		parsedData = {
-				// 			pairStatus: '未配对'
-				// 		}
-				// 	} = {}
-				// } = this;
-				// if (parsedData.pairStatus === '未配对') {
-				// 	this.btnPair();
-				// 	return;
-				// }
+				const {
+					data: {
+						parsedData = {
+							pairStatus: '未配对'
+						}
+					} = {}
+				} = this;
+				if (this.parsedData?.pairStatus == '未配对') {
+					const now = Date.now();
+					if (now - this.lastPairTime < 3000) return;
+					// 执行配对逻辑
+					this.btnPair();
+					// 更新最后执行时间
+					this.lastPairTime = now;
+					return;
+
+				}
 				const {
 					currentTarget: target,
 					touches = []
@@ -1479,7 +1452,8 @@
 					maxProgress,
 					cmdParam
 				} = trackConfig[trackId];
-				const progress = Math.max(0, Math.min(maxProgress, Math.round((relativeX / trackInfo.width) *
+				const progress = Math.max(0, Math.min(maxProgress, Math.round((relativeX / trackInfo
+						.width) *
 					maxProgress)));
 				const THRESHOLD_CONFIG = {
 					unlock: {
@@ -1503,7 +1477,8 @@
 						parsedData = {}
 					} = data;
 					const config = THRESHOLD_CONFIG[trackType];
-					const signalKey = trackType === 'unlock' ? 'inductionLockSignal' : 'inductionUnlockSignal';
+					const signalKey = trackType === 'unlock' ? 'inductionLockSignal' :
+						'inductionUnlockSignal';
 					return Number(parsedData[signalKey]) || config.defaultSignal;
 				};
 				const calculateValidProgress = (progress, trackType) => {
@@ -1610,12 +1585,9 @@
 
 			// 关闭弹出窗
 			handleMaskTap() {
-				const resetSettings = {
-					modalisShow: false,
-					key_settings: false,
-					all_settings: false
-				};
-				this.resetSettings = resetSettings
+				this.modalisShow = false
+				this.key_settings = false
+				this.all_settings = false
 			},
 
 			// 设置 蓝牙断开自动断开锁车
@@ -1936,13 +1908,13 @@
 	}
 
 	.top-fixed-signal-layar-title {
-		font-size: 22rpx;
+		font-size: 20rpx;
 		color: #333333;
 	}
 
 	.top-fixed-signal-text {
 		font-weight: bold;
-		font-size: 22rpx;
+		font-size: 20rpx;
 		color: #222222;
 	}
 

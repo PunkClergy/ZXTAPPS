@@ -3,9 +3,9 @@ var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
 
-// ../../../../../Documents/GitHub/ZXTSJC/node_modules/z-utility/dist/index.js
+// ../../../../../Documents/wslink/ZXTAPPS/node_modules/z-utility/dist/index.js
 var require_dist = __commonJS({
-  "../../../../../Documents/GitHub/ZXTSJC/node_modules/z-utility/dist/index.js"(exports, module) {
+  "../../../../../Documents/wslink/ZXTAPPS/node_modules/z-utility/dist/index.js"(exports, module) {
     var getInstructions = () => {
       return [
         { id: 1, name: "开锁功能指令配置", useType: "短按开锁键", useTypeId: "" },
@@ -133,7 +133,6 @@ var require_dist = __commonJS({
     };
     var getParseHexDataObject = (hexString) => {
       if (!hexString || hexString.length !== 30) {
-        console.error("数据长度不正确，需为24（仅数据体）或32（完整帧）字符");
         return null;
       }
       let dataBodyHex = hexString;
@@ -208,7 +207,6 @@ var require_dist = __commonJS({
         result.reservedBit3 = 0;
       }
       result.supply = bytes[3];
-      console.log("解析结果:", result);
       return result;
     };
     var getInstructionMap = (sendCommand) => {
