@@ -59,8 +59,8 @@
 			handleHome() {
 				this.$emit('home');
 				console.log((uni))
-				uni.switchTab({
-					url: '/pages/desk/desk'
+				uni.redirectTo({
+					url: '/pages/index/index'
 				});
 			}
 		},

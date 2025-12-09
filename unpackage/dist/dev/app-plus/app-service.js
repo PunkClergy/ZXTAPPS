@@ -502,9 +502,25 @@ if (uni.restoreGlobal) {
     }
   });
   const u_navlist20 = (data) => http.get("/deskapi/navlist20", data);
-  const u_carList = (data) => http.get("/carapi/getCarList", data);
+  const u_carList$1 = (data) => http.get("/carapi/getCarList", data);
   const u_sendInfo = (data) => http.postFormData("/renterApi/uploadControlRecord", data);
   const u_uploadLog = (data) => http.post("/loggerapi/uploadLog", data);
+  const u_bannerlist20 = (data) => http.get("/deskapi/bannerlist20", data);
+  const u_getQrcodeImg = (data) => http.get("/deskapi/getQrcodeImg", data);
+  const u_getHomeArea = (data) => http.get("/deskapi/homeArea", data);
+  const u_booklist = (data) => http.get("/deskapi/booklist", data);
+  const u_mylist = (data) => http.get("/deskapi/mylist", data);
+  const u_paivatecarList = (data) => http.get("/carapi/getCarList", data);
+  const u_paivateAddOrUpdateCar = (data) => http.postFormData("/carapi/addOrUpdateCar", data);
+  const u_paivateCarapiDeleteCar = (data) => http.postFormData("/carapi/deleteCar", data);
+  const u_paivateUpdateRentKey = (data) => http.postFormData("/rentKeyApi/updateRentKey", data);
+  const u_paivateCarList = (data) => http.get("/carapi/getCarList", data);
+  const u_paivateRentRecord = (data) => http.get("/rentKeyApi/rentRecord", data);
+  const u_paivateSendRentKey = (data) => http.get("/rentKeyApi/sendRentKey", data);
+  const u_paivateCancelRentKey = (data) => http.get("/rentKeyApi/cancelRentKey", data);
+  const u_promotionalApi = (data) => http.get("/promotionalApi/list", data);
+  const u_promotionalApiWxBooklist = (data) => http.get("/promotionalApi/wxFilelist", data);
+  const u_industryList = (data) => http.get("/promotionalApi/industryList", data);
   const getSystemInfoComplete = (systemInfo, complete) => {
     uni.getSystemInfo({
       success: systemInfo,
@@ -1517,9 +1533,9 @@ if (uni.restoreGlobal) {
     connectBLEConnected,
     isDeviceConnected
   };
-  const _imports_0 = "/static/assets/images/home/right_1.png";
-  const _imports_1 = "/static/assets/images/home/car_icon.png";
-  const _imports_2 = "/static/assets/images/close.png";
+  const _imports_0$3 = "/static/assets/images/home/right_1.png";
+  const _imports_1$4 = "/static/assets/images/home/car_icon.png";
+  const _imports_2$1 = "/static/assets/images/close.png";
   const _export_sfc = (sfc, props) => {
     const target = sfc.__vccOpts || sfc;
     for (const [key, val] of props) {
@@ -1539,7 +1555,7 @@ if (uni.restoreGlobal) {
     CONTROL_WINDOW: 7
     //操作车窗
   };
-  const _sfc_main$1 = {
+  const _sfc_main$8 = {
     components: {},
     data() {
       return {
@@ -1773,9 +1789,15 @@ if (uni.restoreGlobal) {
         const targetPurePath = targetUrl.split("?")[0];
         formatAppLog("log", "at pages/index/index.vue:590", currentPath, targetPurePath);
         if (currentPath !== targetPurePath) {
-          uni.redirectTo({
-            url: `/${targetUrl}`
-          });
+          if (targetPurePath == "pages/privateCar/index") {
+            uni.redirectTo({
+              url: "/pages/index/index"
+            });
+          } else {
+            uni.redirectTo({
+              url: `/${targetUrl}`
+            });
+          }
         }
       },
       // 获取底部导航数据
@@ -1886,14 +1908,14 @@ if (uni.restoreGlobal) {
               pixelRatio,
               statusBarHeight
             };
-            formatAppLog("log", "at pages/index/index.vue:709", "设备信息:", this.deviceInfo);
+            formatAppLog("log", "at pages/index/index.vue:716", "设备信息:", this.deviceInfo);
           },
           fail: console.error
         });
       },
       // 启动连接状态轮询
       startConnectionStatusPolling() {
-        formatAppLog("log", "at pages/index/index.vue:717", this.pageInterval);
+        formatAppLog("log", "at pages/index/index.vue:724", this.pageInterval);
         if (this.pageInterval) {
           return;
         }
@@ -1923,14 +1945,14 @@ if (uni.restoreGlobal) {
             this.account = ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username);
           },
           fail(err) {
-            formatAppLog("error", "at pages/index/index.vue:750", "获取失败", err);
+            formatAppLog("error", "at pages/index/index.vue:757", "获取失败", err);
           }
         });
       },
       // 初始化钥匙按钮内容
       initContro() {
         this.controlItemspanel = this.splitArray(dist.getControlItems(), 4);
-        formatAppLog("log", "at pages/index/index.vue:758", this.splitArray(dist.getControlItems(), 4));
+        formatAppLog("log", "at pages/index/index.vue:765", this.splitArray(dist.getControlItems(), 4));
       },
       initCheckTimer() {
         if (this.checkTimer) {
@@ -1955,7 +1977,7 @@ if (uni.restoreGlobal) {
           that.orgKey = that.handleTransformation(data == null ? void 0 : data.bluetoothKey);
           that.orgKeyOld = data == null ? void 0 : data.bluetoothKey;
           that.bluetoothData = data;
-          formatAppLog("log", "at pages/index/index.vue:788", that);
+          formatAppLog("log", "at pages/index/index.vue:795", that);
           setTimeout(() => {
             that.handleBule();
           }, 500);
@@ -1972,11 +1994,11 @@ if (uni.restoreGlobal) {
             that.code = code;
             handleData(response.data.content);
           }).catch((err) => {
-            formatAppLog("error", "at pages/index/index.vue:808", "获取蓝牙数据失败:", err);
+            formatAppLog("error", "at pages/index/index.vue:815", "获取蓝牙数据失败:", err);
           });
         };
         if (options == null ? void 0 : options.scene) {
-          formatAppLog("log", "at pages/index/index.vue:815", "处理URL参数:", options.scene);
+          formatAppLog("log", "at pages/index/index.vue:822", "处理URL参数:", options.scene);
           fetchBluetoothData(options.scene);
           uni.setStorage({
             key: "scene",
@@ -1996,7 +2018,7 @@ if (uni.restoreGlobal) {
                 },
                 // 3. 缓存也不存在时处理车辆列表数据
                 fail: async () => {
-                  const response = await u_carList();
+                  const response = await u_carList$1();
                   if ((response == null ? void 0 : response.code) == 1e3) {
                     const firstCar = response.content[0];
                     uni.setStorageSync("bluetoothData", firstCar);
@@ -2069,9 +2091,9 @@ if (uni.restoreGlobal) {
       },
       // 处理蓝牙连接状态：检查设备是否已连接，决定执行连接或重连逻辑
       handleBule() {
-        formatAppLog("log", "at pages/index/index.vue:919", "idc", this.deviceIDC);
+        formatAppLog("log", "at pages/index/index.vue:926", "idc", this.deviceIDC);
         bleKeyManager.isDeviceConnected(this.deviceIDC, (status, param) => {
-          formatAppLog("log", "at pages/index/index.vue:921", "222222222--2-2-2-22-2-", status);
+          formatAppLog("log", "at pages/index/index.vue:928", "222222222--2-2-2-22-2-", status);
           if (status) {
             this.btnStartConnectConnected();
           } else {
@@ -2202,7 +2224,7 @@ if (uni.restoreGlobal) {
       },
       // 打包并发送数据（支持动态数据体长度）
       PackAndSend3a(type, dataLength, data, sign) {
-        formatAppLog("log", "at pages/index/index.vue:1082", type, dataLength, data, sign);
+        formatAppLog("log", "at pages/index/index.vue:1089", type, dataLength, data, sign);
         const header = [36];
         const end = [36];
         const paddedData = [...data].concat(new Array(dataLength - data.length).fill(0)).slice(
@@ -2221,7 +2243,7 @@ if (uni.restoreGlobal) {
       PackAndSend07: function(type, len, data) {
         const defaultData = [0, 0, 0, 0, 0, 0, 0];
         var packet = [36, type, len, data, ...defaultData, 36];
-        formatAppLog("log", "at pages/index/index.vue:1099", packet);
+        formatAppLog("log", "at pages/index/index.vue:1106", packet);
         bleKeyManager.dispatcherSend2(this.arrayToArrayBuffer(packet));
       },
       // 数组转ArrayBuffer
@@ -2277,9 +2299,9 @@ if (uni.restoreGlobal) {
       },
       //  数据解析按钮处理
       parseData: function(hexData) {
-        formatAppLog("log", "at pages/index/index.vue:1180", "hexData", hexData);
+        formatAppLog("log", "at pages/index/index.vue:1187", "hexData", hexData);
         const parsedResult = dist.getParseHexDataObject(hexData);
-        formatAppLog("log", "at pages/index/index.vue:1182", "parsedResult", parsedResult);
+        formatAppLog("log", "at pages/index/index.vue:1189", "parsedResult", parsedResult);
         if (parsedResult) {
           this.parsedData = parsedResult;
           this.updateMyPositionStyles();
@@ -2412,7 +2434,7 @@ if (uni.restoreGlobal) {
               }
             });
             const result = Array.from(uniqueMap.values());
-            formatAppLog("log", "at pages/index/index.vue:1333", "合并并优先保留 enabled=false 的结果：", result);
+            formatAppLog("log", "at pages/index/index.vue:1340", "合并并优先保留 enabled=false 的结果：", result);
             this.controlItems = result;
             setTimeout(() => {
               this.controlItemspanel = this.splitArray(result, 4);
@@ -2488,7 +2510,7 @@ if (uni.restoreGlobal) {
         }
         const touchX = touch.clientX;
         const relativeX = touchX - trackInfo.left;
-        formatAppLog("log", "at pages/index/index.vue:1427", `${trackId} - 判断滑动值`);
+        formatAppLog("log", "at pages/index/index.vue:1434", `${trackId} - 判断滑动值`);
         const trackConfig = {
           lockTrack: {
             maxProgress: 200,
@@ -2566,7 +2588,7 @@ if (uni.restoreGlobal) {
                 duration: 1500
               });
             } else {
-              formatAppLog("warn", "at pages/index/index.vue:1509", "[提示]", tipText);
+              formatAppLog("warn", "at pages/index/index.vue:1516", "[提示]", tipText);
             }
           }
         };
@@ -2591,7 +2613,7 @@ if (uni.restoreGlobal) {
               trackType
             );
           }
-          formatAppLog("log", "at pages/index/index.vue:1534", trackId, trackType);
+          formatAppLog("log", "at pages/index/index.vue:1541", trackId, trackType);
           if (trackType == "lock") {
             this.lockThumbStyle = `left: ${validProgress / 2}%;`;
             this.lockRange = validProgress / 2;
@@ -2681,7 +2703,7 @@ if (uni.restoreGlobal) {
         };
         const instructionMap = dist.getInstructionMap(sendCommand);
         const idActions = instructionMap[id];
-        formatAppLog("log", "at pages/index/index.vue:1643", idActions);
+        formatAppLog("log", "at pages/index/index.vue:1650", idActions);
         if (!idActions) {
           return;
         }
@@ -2746,11 +2768,11 @@ if (uni.restoreGlobal) {
         });
       },
       handleOnExistingAccountTap() {
-        formatAppLog("log", "at pages/index/index.vue:1716", "占位：函数 handleOnExistingAccountTap 未声明");
+        formatAppLog("log", "at pages/index/index.vue:1723", "占位：函数 handleOnExistingAccountTap 未声明");
       }
     }
   };
-  function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", null, [
       vue.createCommentVNode(" 自定义头部区域：使用custom-header样式 "),
       vue.createElementVNode(
@@ -2778,7 +2800,7 @@ if (uni.restoreGlobal) {
                   }, "请登录"),
                   vue.createElementVNode("image", {
                     onClick: _cache[1] || (_cache[1] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args)),
-                    src: _imports_0
+                    src: _imports_0$3
                   })
                 ],
                 64
@@ -2914,7 +2936,7 @@ if (uni.restoreGlobal) {
                     vue.createElementVNode("view", { class: "middle-concrete-content-debugging-info" }, [
                       vue.createElementVNode("image", {
                         class: "middle-concrete-content-debugging-info-image",
-                        src: _imports_1
+                        src: _imports_1$4
                       }),
                       vue.createElementVNode(
                         "text",
@@ -2985,7 +3007,7 @@ if (uni.restoreGlobal) {
                   vue.createElementVNode("view", { class: "middle-concrete-content-debugging-car-icon" }, [
                     vue.createElementVNode("view", { class: "middle-concrete-content-debugging-info" }, [
                       vue.createElementVNode("image", {
-                        src: _imports_1,
+                        src: _imports_1$4,
                         class: "middle-concrete-content-debugging-info-image"
                       }),
                       vue.createElementVNode(
@@ -3057,7 +3079,7 @@ if (uni.restoreGlobal) {
                   vue.createElementVNode("view", { class: "middle-concrete-content-debugging-car-icon" }, [
                     vue.createElementVNode("view", { class: "middle-concrete-content-debugging-info" }, [
                       vue.createElementVNode("image", {
-                        src: _imports_1,
+                        src: _imports_1$4,
                         class: "middle-concrete-content-debugging-info-image"
                       }),
                       vue.createElementVNode(
@@ -3254,7 +3276,7 @@ if (uni.restoreGlobal) {
             },
             [
               vue.createElementVNode("image", {
-                src: _imports_2,
+                src: _imports_2$1,
                 style: { "width": "50rpx", "height": "50rpx" }
               })
             ],
@@ -3339,7 +3361,7 @@ if (uni.restoreGlobal) {
                                     1
                                     /* TEXT */
                                   ),
-                                  vue.createElementVNode("image", { src: _imports_0 })
+                                  vue.createElementVNode("image", { src: _imports_0$3 })
                                 ])
                               ], 40, ["data-item", "data-index", "range"])
                             ])
@@ -3401,8 +3423,3458 @@ if (uni.restoreGlobal) {
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesIndexIndex = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/index/index.vue"]]);
+  const PagesIndexIndex = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$7], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/index/index.vue"]]);
+  const _imports_1$3 = "/static/assets/images/index/useGuideIcon.png";
+  const _sfc_main$7 = {
+    data() {
+      return {
+        // 底部tabbar高度
+        tabBarHeight: 80,
+        // 当前选中的底部tabbar索引
+        currentTab: 0,
+        // 原始链接
+        c_link: "https://k1sw.wiselink.net.cn/",
+        // 头部轮播图数据
+        g_banner_image: [],
+        // 头部轮播图动态高度
+        s_banner_height: "",
+        // 咨询入群弹窗状态
+        join_the_group_modal: false,
+        // 使用指南数据
+        fullBannerList: [],
+        // 头部标题
+        title_name: "",
+        // 主题颜色
+        bgcolor: "#fff",
+        // 距离头部
+        height_from_head: 44,
+        // 专区入口数据（网络图片）
+        zoneList: [{
+          id: 1,
+          name: "钥匙分享",
+          bgcolor: "#EFF1FC",
+          icon: "privateCar.png"
+        }],
+        // 底部tab数据（网络图片）
+        tabList: [],
+        head_height: "",
+        capsule_distance_to_the_right: "",
+        account: "",
+        personal_qr_code: "",
+        s_use_height: "",
+        text: "",
+        coupon_modal: ""
+      };
+    },
+    onLoad(options) {
+      this.initialGetBanner();
+      this.initBottomDirectory();
+      this.initZoneInfo();
+      this.initBookList();
+      if (options == null ? void 0 : options.name) {
+        this.title_name = options == null ? void 0 : options.name;
+      }
+      if (options == null ? void 0 : options.bgcolor) {
+        this.bgcolor = options == null ? void 0 : options.bgcolor;
+      }
+    },
+    onShow() {
+    },
+    onReady() {
+      this.initLoginStatus();
+      this.initQrCode();
+    },
+    methods: {
+      // 获取系统头部各区域高度
+      initSystemInfo() {
+        const {
+          statusBarHeight: s
+        } = uni.getWindowInfo();
+        const m = uni.getMenuButtonBoundingClientRect();
+        if (!m) {
+          return;
+        }
+        const n = m.height + (m.top - s) * 2;
+        formatAppLog("log", "at pages/ZoneHome/index.vue:214", s);
+        const c = uni.getWindowInfo().screenWidth - m.right;
+        this.height_from_head = s;
+        this.head_height = s + n;
+        this.capsule_distance_to_the_right = c;
+      },
+      // 获取头部banner资源
+      async initialGetBanner() {
+        const res2 = await u_bannerlist20();
+        if ((res2 == null ? void 0 : res2.code) == 1e3) {
+          this.g_banner_image = res2.content;
+        }
+      },
+      // 获取当前登录状态
+      initLoginStatus() {
+        uni.getStorage({
+          key: "userKey",
+          // 替换为你的缓存键值
+          success: (res2) => {
+            var _a, _b;
+            this.account = ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username);
+          },
+          fail(err) {
+            formatAppLog("error", "at pages/ZoneHome/index.vue:241", "获取失败", err);
+          }
+        });
+      },
+      // 请求入群码
+      async initQrCode() {
+        var _a;
+        const response = await u_getQrcodeImg();
+        if ((response == null ? void 0 : response.code) == 1e3) {
+          this.personal_qr_code = (_a = response == null ? void 0 : response.content) == null ? void 0 : _a.img;
+        }
+      },
+      // 获取底部导航数据
+      async initBottomDirectory() {
+        const response = await u_navlist20();
+        if ((response == null ? void 0 : response.code) == 1e3) {
+          this.tabList = response == null ? void 0 : response.content;
+        }
+      },
+      // 获取专区目录
+      async initZoneInfo() {
+        const response = await u_getHomeArea();
+        if ((response == null ? void 0 : response.code) == 1e3) {
+          this.zoneList = response == null ? void 0 : response.content;
+        }
+      },
+      // 获取使用指南
+      async initBookList() {
+        const response = await u_booklist();
+        if (response == null ? void 0 : response.code) {
+          this.fullBannerList = response.content;
+        }
+      },
+      // 动态改变轮播图高度
+      LoadOnUseGuideImageLoad(e2) {
+        const [self, {
+          currentTarget: {
+            dataset: {
+              flag: mark
+            } = {}
+          } = {}
+        }] = [this, e2 ?? {}];
+        (async () => {
+          try {
+            const {
+              detail: {
+                width: w,
+                height: h
+              } = {}
+            } = e2 ?? {};
+            if (!w || !h || typeof w !== "number" || typeof h !== "number") {
+              throw Symbol();
+            }
+            const {
+              windowWidth: winW
+            } = await uni.getSystemInfo({});
+            if (!winW || typeof winW !== "number") {
+              throw Symbol();
+            }
+            const ratioH = h / w * winW;
+            const validH = isFinite(ratioH) ? ratioH : 0;
+            if (mark === "use") {
+              self.s_use_height = validH;
+            }
+            if (mark === "banner") {
+              self.s_banner_height = validH;
+            }
+          } catch (err) {
+            formatAppLog("log", "at pages/ZoneHome/index.vue:313", "CatchClause", err);
+            formatAppLog("log", "at pages/ZoneHome/index.vue:314", "CatchClause", err);
+            err.description || formatAppLog("error", "at pages/ZoneHome/index.vue:315", "imgLoadErr:", err);
+          }
+        })();
+      },
+      // 点击“咨询” 显示入群二维码
+      handleShowContact() {
+        this.join_the_group_modal = true;
+      },
+      // 点击关闭咨询&群二维码
+      handleQRClose() {
+        this.join_the_group_modal = false;
+      },
+      // 预览图片使其放大
+      handleQRShowImageMask() {
+        uni.previewMedia({
+          sources: [{
+            url: this.personal_qr_code,
+            // 图片路径
+            type: "image"
+          }]
+        });
+      },
+      // 切换底部导航
+      handleSwitchTabNavigation(evt) {
+        const {
+          currentTarget: {
+            dataset: {
+              index: idx = null
+            } = {}
+          } = {}
+        } = evt ?? {};
+        if (idx === null) {
+          return;
+        }
+        const {
+          tabList = []
+        } = this;
+        const {
+          pagePath: targetUrl
+        } = tabList[idx] ?? {};
+        if (!targetUrl) {
+          return;
+        }
+        const [currentPage] = getCurrentPages().slice(-1);
+        const {
+          route: currentPath
+        } = currentPage ?? {};
+        if (!currentPath) {
+          return;
+        }
+        const targetPurePath = targetUrl.split("?")[0];
+        formatAppLog("log", "at pages/ZoneHome/index.vue:372", currentPath, targetPurePath);
+        if (currentPath !== targetPurePath) {
+          if (targetPurePath == "pages/privateCar/index") {
+            uni.redirectTo({
+              url: "/pages/index/index"
+            });
+          } else {
+            uni.redirectTo({
+              url: `/${targetUrl}`
+            });
+          }
+        }
+      },
+      // 返回上一页面
+      handleBackHome() {
+        uni.redirectTo({
+          url: "/pages/index/index"
+        });
+      },
+      //  跳转功能页面
+      handleGetMenuList(evt) {
+        var _a, _b, _c;
+        const path = (evt == null ? void 0 : evt.path) ?? ((_c = (_b = (_a = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _a.dataset) == null ? void 0 : _b.info) == null ? void 0 : _c.path);
+        const hasDesk = path.includes("desk") || path.includes("/desk");
+        if (hasDesk) {
+          uni.switchTab({
+            url: path
+          });
+        } else {
+          uni.navigateTo({
+            url: `/${path}`
+          });
+        }
+      },
+      handleOnExistingAccountTap() {
+        formatAppLog("log", "at pages/ZoneHome/index.vue:410", "占位：函数 handleOnExistingAccountTap 未声明");
+      },
+      onReachBottom() {
+        formatAppLog("log", "at pages/ZoneHome/index.vue:414", "占位：函数 onReachBottom 未声明");
+      },
+      handleUseJump() {
+        formatAppLog("log", "at pages/ZoneHome/index.vue:418", "占位：函数 handleUseJump 未声明");
+      },
+      handleOnGetPhoneNumber() {
+        formatAppLog("log", "at pages/ZoneHome/index.vue:422", "占位：函数 handleOnGetPhoneNumber 未声明");
+      }
+    }
+  };
+  function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+    var _a;
+    return vue.openBlock(), vue.createElementBlock("view", null, [
+      vue.createCommentVNode(" 页面根容器：设置整体背景图，使用container样式控制布局 "),
+      vue.createElementVNode(
+        "view",
+        {
+          class: "container",
+          style: vue.normalizeStyle("background: linear-gradient(" + $data.bgcolor + ", #fff)")
+        },
+        [
+          vue.createCommentVNode(" 自定义头部区域：包含系统状态栏高度适配，使用custom-header样式 "),
+          vue.createElementVNode(
+            "view",
+            {
+              class: "custom-header",
+              style: vue.normalizeStyle("padding-top: " + $data.height_from_head + "px;height: " + $data.head_height + "px;")
+            },
+            [
+              vue.createElementVNode("view", { class: "custom-header-outer-layer" }, [
+                vue.createElementVNode(
+                  "view",
+                  { class: "custom-header-outer-layer-title" },
+                  vue.toDisplayString((_a = $data.tabList[0]) == null ? void 0 : _a.text) + "服务",
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode("view", { class: "custom-header-outer-layer-user_name" }, [
+                  $data.account ? (vue.openBlock(), vue.createElementBlock(
+                    "text",
+                    { key: 0 },
+                    vue.toDisplayString($data.account),
+                    1
+                    /* TEXT */
+                  )) : (vue.openBlock(), vue.createElementBlock(
+                    vue.Fragment,
+                    { key: 1 },
+                    [
+                      vue.createElementVNode("text", {
+                        onClick: _cache[0] || (_cache[0] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args))
+                      }, "请登录"),
+                      vue.createElementVNode("image", {
+                        onClick: _cache[1] || (_cache[1] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args)),
+                        src: _imports_0$3
+                      })
+                    ],
+                    64
+                    /* STABLE_FRAGMENT */
+                  ))
+                ])
+              ])
+            ],
+            4
+            /* STYLE */
+          ),
+          vue.createCommentVNode(" 中间滚动内容区：使用scroll-view实现垂直滚动，设置顶部和底部偏移量 "),
+          vue.createElementVNode(
+            "scroll-view",
+            {
+              class: "content",
+              "scroll-y": true,
+              style: vue.normalizeStyle("top: 90px; bottom: " + $data.tabBarHeight + "px;"),
+              onScrolltolower: _cache[6] || (_cache[6] = (...args) => $options.onReachBottom && $options.onReachBottom(...args))
+            },
+            [
+              vue.createCommentVNode(" 第一块：轮播图区域 "),
+              vue.createElementVNode("view", { class: "swiper-container" }, [
+                vue.createElementVNode(
+                  "swiper",
+                  {
+                    "indicator-dots": false,
+                    autoplay: true,
+                    interval: "3000",
+                    duration: "500",
+                    style: vue.normalizeStyle("height: " + $data.s_banner_height + "px;")
+                  },
+                  [
+                    (vue.openBlock(true), vue.createElementBlock(
+                      vue.Fragment,
+                      null,
+                      vue.renderList($data.g_banner_image, (item, index) => {
+                        return vue.openBlock(), vue.createElementBlock("swiper-item", { key: index }, [
+                          vue.createElementVNode("image", {
+                            src: $data.c_link + "/img/" + item.img,
+                            class: "banner-img",
+                            mode: "widthFix",
+                            "data-flag": "banner",
+                            onLoad: _cache[2] || (_cache[2] = (...args) => $options.LoadOnUseGuideImageLoad && $options.LoadOnUseGuideImageLoad(...args))
+                          }, null, 40, ["src"])
+                        ]);
+                      }),
+                      128
+                      /* KEYED_FRAGMENT */
+                    ))
+                  ],
+                  4
+                  /* STYLE */
+                )
+              ]),
+              vue.createCommentVNode(" 第三块：专区入口区域（一行三列布局） "),
+              vue.createElementVNode("view", { class: "special-zone" }, [
+                (vue.openBlock(true), vue.createElementBlock(
+                  vue.Fragment,
+                  null,
+                  vue.renderList($data.zoneList, (item, index) => {
+                    return vue.openBlock(), vue.createElementBlock(
+                      "view",
+                      {
+                        class: "zone-item",
+                        style: vue.normalizeStyle("margin-right: " + (index == 2 || index == 5 || index == 8 || index == 11 ? "0rpx" : "5%") + ";"),
+                        key: index
+                      },
+                      [
+                        vue.createElementVNode("view", {
+                          class: "zone-out",
+                          style: vue.normalizeStyle("background-color: " + item.bgcolor + ";"),
+                          "data-info": item,
+                          onClick: _cache[3] || (_cache[3] = (...args) => $options.handleGetMenuList && $options.handleGetMenuList(...args))
+                        }, [
+                          vue.createElementVNode("image", {
+                            class: "zone-img",
+                            src: "https://k1sw.wiselink.net.cn/img/" + item.icon
+                          }, null, 8, ["src"]),
+                          vue.createElementVNode("view", { class: "zone-text-area" }, [
+                            vue.createElementVNode(
+                              "view",
+                              { class: "zone-name" },
+                              vue.toDisplayString(item.name),
+                              1
+                              /* TEXT */
+                            ),
+                            vue.createElementVNode(
+                              "view",
+                              { class: "zone-desc" },
+                              vue.toDisplayString(item.bak),
+                              1
+                              /* TEXT */
+                            )
+                          ])
+                        ], 12, ["data-info"])
+                      ],
+                      4
+                      /* STYLE */
+                    );
+                  }),
+                  128
+                  /* KEYED_FRAGMENT */
+                ))
+              ]),
+              vue.createCommentVNode(" 第四块：全宽图片轮播区域 "),
+              $data.fullBannerList.length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+                key: 0,
+                class: "full-width-swiper"
+              }, [
+                vue.createElementVNode("view", { class: "full-width-use" }, [
+                  vue.createElementVNode("image", { src: _imports_1$3 }),
+                  vue.createElementVNode("text", null, "使用指南")
+                ]),
+                vue.createElementVNode(
+                  "swiper",
+                  {
+                    "indicator-dots": false,
+                    autoplay: true,
+                    interval: "4000",
+                    duration: "500",
+                    style: vue.normalizeStyle("height: " + $data.s_use_height + "px;")
+                  },
+                  [
+                    (vue.openBlock(true), vue.createElementBlock(
+                      vue.Fragment,
+                      null,
+                      vue.renderList($data.fullBannerList, (item, index) => {
+                        return vue.openBlock(), vue.createElementBlock("swiper-item", {
+                          "data-info": item,
+                          onClick: _cache[5] || (_cache[5] = (...args) => $options.handleUseJump && $options.handleUseJump(...args)),
+                          key: index
+                        }, [
+                          vue.createElementVNode("image", {
+                            src: "https://k1sw.wiselink.net.cn/img/" + item.imgpath,
+                            class: "full-banner-img",
+                            "data-flag": "use",
+                            onLoad: _cache[4] || (_cache[4] = (...args) => $options.LoadOnUseGuideImageLoad && $options.LoadOnUseGuideImageLoad(...args)),
+                            mode: "widthFix"
+                          }, null, 40, ["src"])
+                        ], 8, ["data-info"]);
+                      }),
+                      128
+                      /* KEYED_FRAGMENT */
+                    ))
+                  ],
+                  4
+                  /* STYLE */
+                )
+              ])) : vue.createCommentVNode("v-if", true)
+            ],
+            36
+            /* STYLE, NEED_HYDRATION */
+          ),
+          vue.createCommentVNode(" 固定底部导航栏区域：使用tabbar样式，高度自适应 "),
+          vue.createElementVNode(
+            "view",
+            {
+              class: "tabbar",
+              style: vue.normalizeStyle("height: " + $data.tabBarHeight + "px;")
+            },
+            [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($data.tabList, (item, index) => {
+                  return vue.openBlock(), vue.createElementBlock("view", {
+                    class: vue.normalizeClass("tab-item " + ($data.currentTab === index ? "active" : "")),
+                    onClick: _cache[7] || (_cache[7] = (...args) => $options.handleSwitchTabNavigation && $options.handleSwitchTabNavigation(...args)),
+                    "data-index": index,
+                    key: index
+                  }, [
+                    $data.currentTab === index ? (vue.openBlock(), vue.createElementBlock("image", {
+                      key: 0,
+                      src: "https://k1sw.wiselink.net.cn/img/" + item.selectedIconPath,
+                      class: "tab-icon",
+                      mode: "widthFix"
+                    }, null, 8, ["src"])) : (vue.openBlock(), vue.createElementBlock("image", {
+                      key: 1,
+                      src: "https://k1sw.wiselink.net.cn/img/" + item.iconPath,
+                      class: "tab-icon",
+                      mode: "widthFix"
+                    }, null, 8, ["src"])),
+                    vue.createElementVNode(
+                      "text",
+                      null,
+                      vue.toDisplayString(item.text),
+                      1
+                      /* TEXT */
+                    )
+                  ], 10, ["data-index"]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ],
+            4
+            /* STYLE */
+          )
+        ],
+        4
+        /* STYLE */
+      ),
+      vue.createCommentVNode(" 弹窗代码 "),
+      vue.createCommentVNode(" 优惠券图片容器（点击图片触发授权） "),
+      $data.coupon_modal ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 0,
+        class: "mask-container"
+      }, [
+        vue.createElementVNode("view", { class: "coupon-wrapper" }, [
+          vue.createElementVNode(
+            "button",
+            {
+              class: "image-auth-btn",
+              "open-type": "getPhoneNumber",
+              "hover-class": "btn_tapcolor",
+              onGetphonenumber: _cache[8] || (_cache[8] = (...args) => $options.handleOnGetPhoneNumber && $options.handleOnGetPhoneNumber(...args))
+            },
+            [
+              vue.createElementVNode("image", {
+                src: "https://k3a.wiselink.net.cn/img/app/coupon50.png",
+                mode: "widthFix",
+                class: "coupon-image"
+              })
+            ],
+            32
+            /* NEED_HYDRATION */
+          ),
+          vue.createElementVNode("button", {
+            class: "existing-account-btn",
+            onClick: _cache[9] || (_cache[9] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args))
+          }, "已有账号？点击登录")
+        ])
+      ])) : vue.createCommentVNode("v-if", true),
+      vue.createCommentVNode(" 点击咨询入群 "),
+      vue.createElementVNode("view", {
+        class: "float-button",
+        onClick: _cache[10] || (_cache[10] = (...args) => $options.handleShowContact && $options.handleShowContact(...args))
+      }, [
+        vue.createElementVNode("image", { src: "https://k1sw.wiselink.net.cn/img/app2.0/desk/consulting.png" })
+      ]),
+      $data.join_the_group_modal ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 1,
+        class: "qr-group-container"
+      }, [
+        vue.createElementVNode("view", {
+          class: "qr-group-mask",
+          onClick: _cache[13] || (_cache[13] = (...args) => $options.handleQRClose && $options.handleQRClose(...args))
+        }, [
+          vue.createCommentVNode(" 关闭按钮 "),
+          vue.createElementVNode("view", {
+            class: "qr-group-close",
+            onClick: _cache[11] || (_cache[11] = (...args) => $options.handleQRClose && $options.handleQRClose(...args))
+          }, "×"),
+          vue.createElementVNode("view", { class: "qr-group-preview-content" }, [
+            vue.createElementVNode("image", {
+              onClick: _cache[12] || (_cache[12] = vue.withModifiers((...args) => $options.handleQRShowImageMask && $options.handleQRShowImageMask(...args), ["stop", "prevent"])),
+              class: "qr-group-preview-img",
+              src: $data.personal_qr_code,
+              mode: "widthFix"
+            }, null, 8, ["src"]),
+            vue.createElementVNode("text", { class: "qr-group-preview-desc" }, "请点击、长按官方群二维码加入交流群，获取体验权限！")
+          ])
+        ])
+      ])) : vue.createCommentVNode("v-if", true)
+    ]);
+  }
+  const PagesZoneHomeIndex = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$6], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/ZoneHome/index.vue"]]);
+  const info_screen = () => {
+    return new Promise((resolve, reject) => {
+      uni.getSystemInfo({
+        success: function(res2) {
+          formatAppLog("log", "at utils/scheme/screen.js:10", "屏幕可用高度:", res2.windowHeight);
+          resolve(res2);
+        },
+        fail: function(err) {
+          formatAppLog("error", "at utils/scheme/screen.js:14", "获取系统信息失败", err);
+          reject(err);
+        }
+      });
+    });
+  };
+  const _imports_0$2 = "/static/public/nav_left.png";
+  const _imports_1$2 = "/static/public/home.png";
+  const _sfc_main$6 = {
+    name: "CustomHeader",
+    props: {
+      title: {
+        // 更明确的属性名
+        type: String,
+        default: "首页"
+      }
+    },
+    data() {
+      return {
+        screenInfo: {},
+        // 屏幕信息对象
+        baseLink: "https://k1sw.wiselink.net.cn"
+        // 基础域名
+      };
+    },
+    methods: {
+      // 初始化屏幕信息
+      async initialScreenInfo() {
+        try {
+          this.screenInfo = await info_screen();
+        } catch (error) {
+          formatAppLog("error", "at components/custom-header/index.vue:45", "[ScreenInfo] 获取屏幕信息失败:", error);
+          uni.showToast({
+            title: "设备信息获取失败",
+            icon: "none"
+          });
+        }
+      },
+      // 返回按钮事件
+      handleBack() {
+        this.$emit("back");
+        uni.navigateBack();
+      },
+      // 首页按钮事件
+      handleHome() {
+        this.$emit("home");
+        formatAppLog("log", "at components/custom-header/index.vue:61", uni);
+        uni.redirectTo({
+          url: "/pages/index/index"
+        });
+      }
+    },
+    computed: {
+      // 当前用户信息
+      userInfo() {
+        return uni.getStorageSync("user_info") || null;
+      },
+      // 状态栏高度
+      statusBarHeight() {
+        return this.screenInfo.statusBarHeight || 0;
+      },
+      // 导航栏主体高度
+      navBarHeight() {
+        return this.screenInfo.platform === "ios" ? 49 : 44;
+      },
+      // 导航栏总高度
+      navbarTotalHeight() {
+        return this.statusBarHeight + this.navBarHeight;
+      },
+      // 安全的屏幕高度
+      safeScreenHeight() {
+        return this.screenInfo.screenHeight || 667;
+      }
+    },
+    mounted() {
+      this.initialScreenInfo();
+    }
+  };
+  function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+    return vue.openBlock(), vue.createElementBlock(
+      "view",
+      {
+        class: "custom-navbar",
+        style: vue.normalizeStyle({ height: $options.navbarTotalHeight + "px" })
+      },
+      [
+        vue.createCommentVNode(" 状态栏占位视图 "),
+        vue.createElementVNode(
+          "view",
+          {
+            class: "status-bar",
+            style: vue.normalizeStyle({ height: $options.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createCommentVNode(" 导航栏主体 "),
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-bar",
+            style: vue.normalizeStyle([{ height: $options.navBarHeight + "px" }, { "display": "flex", "gap": "100rpx", "justify-content": "flex-start" }])
+          },
+          [
+            vue.createElementVNode("view", { style: { "display": "flex", "align-items": "center", "gap": "30rpx" } }, [
+              vue.createElementVNode("image", {
+                src: _imports_0$2,
+                class: "action-icon back-icon",
+                onClick: _cache[0] || (_cache[0] = (...args) => $options.handleBack && $options.handleBack(...args))
+              }),
+              vue.createElementVNode("image", {
+                src: _imports_1$2,
+                class: "action-icon home-icon",
+                onClick: _cache[1] || (_cache[1] = (...args) => $options.handleHome && $options.handleHome(...args))
+              })
+            ]),
+            vue.createElementVNode(
+              "view",
+              { style: { "font-size": "34rpx", "font-weight": "600" } },
+              vue.toDisplayString($props.title),
+              1
+              /* TEXT */
+            )
+          ],
+          4
+          /* STYLE */
+        )
+      ],
+      4
+      /* STYLE */
+    );
+  }
+  const CustomNavBar = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$5], ["__scopeId", "data-v-3f55fa2f"], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/components/custom-header/index.vue"]]);
+  const _sfc_main$5 = {
+    data() {
+      return {};
+    },
+    props: {
+      events: {
+        type: Array,
+        default: () => []
+      }
+    },
+    methods: {},
+    created: function() {
+    }
+  };
+  function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+    return vue.openBlock(), vue.createElementBlock("view", { class: "timeline-container" }, [
+      (vue.openBlock(true), vue.createElementBlock(
+        vue.Fragment,
+        null,
+        vue.renderList($props.events, (item, index) => {
+          return vue.openBlock(), vue.createElementBlock("view", {
+            key: index,
+            class: "timeline-item"
+          }, [
+            $props.events.length - 1 != index ? (vue.openBlock(), vue.createElementBlock("view", {
+              key: 0,
+              class: "timeline-dot"
+            })) : vue.createCommentVNode("v-if", true),
+            vue.createElementVNode("view", {
+              class: "timeline-content",
+              style: { "border-color": "#bdbdbd" }
+            }),
+            vue.createElementVNode("view", { class: "timeline-content-evevt" }, [
+              vue.createElementVNode(
+                "text",
+                { class: "timeline-title" },
+                vue.toDisplayString(item.content),
+                1
+                /* TEXT */
+              ),
+              vue.createElementVNode(
+                "text",
+                { class: "timeline-date" },
+                vue.toDisplayString(item.createdate),
+                1
+                /* TEXT */
+              )
+            ])
+          ]);
+        }),
+        128
+        /* KEYED_FRAGMENT */
+      ))
+    ]);
+  }
+  const timeLine = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$4], ["__scopeId", "data-v-3085ce19"], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/components/timeline/timeline.vue"]]);
+  const _imports_0$1 = "/static/public/car_01.png";
+  const _imports_1$1 = "/static/privateCar/right_1.png";
+  const _sfc_main$4 = {
+    components: {
+      CustomNavBar,
+      timeLine
+    },
+    data() {
+      return {
+        screenInfo: {},
+        // 标签页背景图片（未激活状态）
+        s_background_tabs_1: "/static/privateCar/1-1.png",
+        s_background_tabs_2: "/static/privateCar/1-2.png",
+        // 标签页背景图片（激活状态）
+        s_background_tabs_active_1: "/static/privateCar/2-1.png",
+        s_background_tabs_active_2: "/static/privateCar/2-2",
+        //tabs背景
+        searchBarHeight: 80,
+        // 总导航高度 = 状态栏高度 + 导航栏高度
+        g_page: 1,
+        //列表页码
+        g_items: [],
+        //列表数据
+        y_items: [],
+        y_page: 1,
+        y_triggered: false,
+        c_tabs: [
+          {
+            name: "",
+            value: "1"
+          },
+          {
+            name: "",
+            value: "2"
+          }
+        ],
+        //tabs切换签
+        c_activeTab: 1,
+        params: {},
+        file: null,
+        g_triggered: false,
+        //下拉刷新状态
+        c_send_key_show_momal: false,
+        startDate: "2025-03-20",
+        //历史轨迹查询时间
+        startTime: "19:00",
+        //历史轨迹查询时间
+        endDate: "2025-03-20",
+        //历史轨迹查询时间
+        endTime: "19:00",
+        //历史轨迹查询时间
+        copied: false,
+        controlcode: "",
+        c_edit_key_show_momal: false,
+        g_edit_info: {
+          platenumber: "",
+          personname: "",
+          mobile: "",
+          bak: ""
+        },
+        oilendDate: "",
+        oilendTime: "",
+        cellData: {
+          platenumber: ""
+        },
+        vehId: "",
+        g_total: "",
+        comParam: "",
+        y_total: "",
+        category: "",
+        bak: "",
+        s_background_picture_of_the_front_page: "",
+        btnState: ""
+      };
+    },
+    computed: {
+      // 状态栏高度
+      statusBarHeight() {
+        return this.screenInfo.statusBarHeight || 0;
+      },
+      // 导航栏高度
+      navBarHeight() {
+        return this.screenInfo.platform === "ios" ? 49 : 44;
+      },
+      // 导航栏总高度（状态栏+导航栏）
+      navbarTotalHeight() {
+        return this.statusBarHeight + this.navBarHeight;
+      },
+      // 安全区域高度
+      safeScreenHeight() {
+        return this.screenInfo.screenHeight || 667;
+      }
+    },
+    onLoad(options) {
+      this.getOrderList();
+      this.getKeySendingList();
+    },
+    onReady() {
+      this.handleCurrentDate();
+    },
+    onShow() {
+      this.initialScreenInfo();
+      this.handleCurrentDate();
+    },
+    onShareAppMessage() {
+      return {
+        title: `请前往${this.bak || "车主指定位置"}寻找车辆`,
+        path: "/pages/desk/desk?scene=" + this.controlcode
+      };
+    },
+    methods: {
+      // 获取屏幕信息
+      async initialScreenInfo() {
+        try {
+          this.screenInfo = await info_screen();
+        } catch (error) {
+          uni.showToast({
+            title: "设备信息获取失败",
+            icon: "none",
+            duration: 3e3
+          });
+        }
+      },
+      // 获取当前年月日 时分
+      handleCurrentDate() {
+        const formatDate = (date) => {
+          const year = date.getFullYear();
+          const month = date.getMonth() + 1;
+          const day = date.getDate();
+          return `${year}-${month < 10 ? "0" + month : month}-${day < 10 ? "0" + day : day}`;
+        };
+        const formatTime = (date) => {
+          const hours = date.getHours();
+          const minutes = date.getMinutes();
+          return `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}`;
+        };
+        const now = /* @__PURE__ */ new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(now.getDate() + 1);
+        const currentDate = formatDate(now);
+        const tomorrowDate = formatDate(tomorrow);
+        const currentTime = formatTime(now);
+        this.oilendDate = currentDate;
+        this.oilendTime = currentTime;
+        this.startDate = currentDate;
+        this.endDate = tomorrowDate;
+        this.startTime = currentTime;
+        this.endTime = currentTime;
+      },
+      // 获取当前年月日 时分
+      handleCurrentDate() {
+        const formatDate = (date) => {
+          const year = date.getFullYear();
+          const month = date.getMonth() + 1;
+          const day = date.getDate();
+          return `${year}-${month < 10 ? "0" + month : month}-${day < 10 ? "0" + day : day}`;
+        };
+        const formatTime = (date) => {
+          const hours = date.getHours();
+          const minutes = date.getMinutes();
+          return `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}`;
+        };
+        const now = /* @__PURE__ */ new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(now.getDate() + 1);
+        const currentDate = formatDate(now);
+        const tomorrowDate = formatDate(tomorrow);
+        const currentTime = formatTime(now);
+        this.startDate = currentDate;
+        this.endDate = tomorrowDate;
+        this.startTime = currentTime;
+        this.endTime = currentTime;
+      },
+      // 发送电子钥匙弹窗
+      handleShowSendKeyModal(evt) {
+        formatAppLog("log", "at pages/blackTeche/sendTheKey/index.vue:475", evt, "1111");
+        const info = evt.currentTarget.dataset.item;
+        this.cellData = info;
+        this.c_send_key_show_momal = true;
+        this.vehId = info.id;
+      },
+      handleHideSengKeyModal() {
+        this.cellData = {};
+        this.c_send_key_show_momal = false;
+      },
+      handleHideEditKeyModal() {
+        this.c_edit_key_show_momal = false;
+        this.g_edit_info = {};
+      },
+      // 切换tabs标签
+      handleSwitchTab(e2) {
+        const flag = e2.currentTarget.dataset;
+        formatAppLog("log", "at pages/blackTeche/sendTheKey/index.vue:498", flag);
+        if ((flag == null ? void 0 : flag.index) == 1 && this.c_activeTab != 1) {
+          this.c_activeTab = 1;
+        }
+        if ((flag == null ? void 0 : flag.index) == 2 && this.c_activeTab != 2) {
+          this.c_activeTab = 2;
+        }
+      },
+      // 触底执行
+      handleLower() {
+        this.g_page + 1;
+        setTimeout(() => {
+          this.getOrderList();
+        }, 300);
+      },
+      // 电子钥匙发送记录到底执行
+      handleKeyLower() {
+        const page = this.y_page;
+        this.y_page = page + 1;
+        setTimeout(() => {
+          this.getKeySendingList();
+        }, 300);
+      },
+      // 下拉操作执行
+      handleRefresh() {
+        this.g_triggered = false;
+        this.g_page = 1;
+        this.g_items = [];
+        setTimeout(() => {
+          this.getOrderList();
+        }, 300);
+      },
+      handleKeyRefresh() {
+        this.y_triggered = false;
+        this.y_page = 1;
+        this.y_items = [];
+        setTimeout(() => {
+          this.getKeySendingList();
+        }, 300);
+      },
+      // 请求车辆列表
+      getOrderList() {
+        uni.showLoading({
+          title: "加载中..."
+        });
+        ({
+          page: this.g_page
+        });
+        u_paivateCarList().then((response) => {
+          if (response.code == 1e3) {
+            if (this.g_page > 1 && response.content.length === 0) {
+              uni.showToast({
+                title: `已加载全部数据：共${this.g_items.length}条`,
+                icon: "none",
+                duration: 1500
+              });
+            }
+            this.g_items = this.g_items.concat(response.content);
+            this.g_total = Number(response.count || 0).toLocaleString();
+            setTimeout(() => {
+              uni.hideLoading();
+            }, 300);
+          } else {
+            uni.hideLoading();
+          }
+        });
+      },
+      // 搜索记录
+      bindblurSea(evt) {
+        this.comParam = evt.detail.value;
+        this.y_triggered = false;
+        this.y_page = 1;
+        this.y_items = [];
+        setTimeout(() => {
+          this.getKeySendingList();
+        }, 300);
+      },
+      // 请求发送记录列表
+      getKeySendingList: async function(evt) {
+        uni.showLoading({
+          title: "加载中..."
+        });
+        ({
+          page: this.y_page
+        });
+        u_paivateRentRecord().then((response) => {
+          if (this.y_page > 1 && response.content.length === 0) {
+            uni.showToast({
+              title: `已加载全部数据：共${this.y_items.length}条`,
+              icon: "none",
+              duration: 1500
+            });
+            return;
+          }
+          this.y_total = response.count || 0;
+          this.y_items = [...this.y_items, ...response.content];
+          formatAppLog("log", "at pages/blackTeche/sendTheKey/index.vue:618", [...this.y_items, ...response.content]);
+        });
+      },
+      // 提交发送钥匙
+      handleFormSubmit(evt) {
+        const {
+          startDate,
+          startTime,
+          endDate,
+          endTime,
+          vehId
+        } = this;
+        const formData = evt.detail.value;
+        const validations = [
+          {
+            field: formData.personName,
+            message: "请输入使用人"
+          },
+          {
+            field: formData.mobile,
+            message: "请输入手机号"
+          }
+        ];
+        const validationError = validations.find(({
+          field
+        }) => !field);
+        if (validationError) {
+          uni.showToast({
+            title: validationError.message,
+            icon: "none",
+            duration: 1500
+          });
+          return;
+        }
+        const buildDateTime = (date, time) => `${date || ""} ${time ? `${time}:00` : "00:00:00"}`.trim();
+        const requestParams = {
+          vehId,
+          startDate: buildDateTime(startDate, startTime),
+          endDate: buildDateTime(endDate, endTime),
+          personName: formData.personName,
+          mobile: formData.mobile,
+          bak: formData.bak
+        };
+        const API_ENDPOINTS = {
+          baseURL: getApp().globalData.data.k1swUrl,
+          sendRentKey: u_paivateSendRentKey
+        };
+        const submitRequest = async () => {
+          try {
+            const response = await byGet(
+              `${API_ENDPOINTS.baseURL}${API_ENDPOINTS.sendRentKey}`,
+              requestParams
+            );
+            if (response.data.code !== 1e3) {
+              throw new Error(response.data.msg);
+            }
+            uni.showToast({
+              title: "发送成功",
+              icon: "none",
+              duration: 1500
+            });
+            this.c_send_key_show_momal = false;
+            this.g_items = [];
+            this.y_items = [];
+            this.y_page = 1;
+            setTimeout(() => {
+              this.getKeySendingList();
+              this.getOrderList();
+            }, 100);
+          } catch (error) {
+            formatAppLog("log", "at pages/blackTeche/sendTheKey/index.vue:689", "CatchClause", error);
+            formatAppLog("log", "at pages/blackTeche/sendTheKey/index.vue:690", "CatchClause", error);
+            uni.showToast({
+              title: error.message || "请求失败，请稍后重试",
+              icon: "none",
+              duration: 1500
+            });
+          }
+        };
+        submitRequest();
+      },
+      bindTimeChange(evt) {
+        const category = evt.currentTarget.dataset.index;
+        const value = evt.detail.value;
+        this[category] = value;
+      },
+      handleCance(evt) {
+        ({
+          controlCode: evt.currentTarget.dataset.item.controlcode
+        });
+        u_paivateCancelRentKey().then((response) => {
+          if (response.code == 1e3) {
+            this.c_send_key_show_momal = false, this.g_items = [], this.y_items = [], this.y_page = 1;
+            setTimeout(() => {
+              this.getKeySendingList();
+              this.getOrderList();
+            }, 300);
+          } else {
+            uni.showToast({
+              title: response.msg,
+              icon: "none",
+              duration: 1500
+            });
+          }
+        });
+      },
+      handleCopy(evt) {
+        const text = evt.currentTarget.dataset.item.simplecode;
+        uni.setClipboardData({
+          data: text,
+          success: () => {
+            this.copied = true;
+          }
+        });
+      },
+      handleForward(evt) {
+        var _a, _b, _c;
+        formatAppLog("log", "at pages/blackTeche/sendTheKey/index.vue:747", evt);
+        const controlcode = evt.currentTarget.dataset.item.controlcode;
+        const bak = (_c = (_b = (_a = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _a.dataset) == null ? void 0 : _b.item) == null ? void 0 : _c.bak;
+        this.controlcode = controlcode, this.bak = bak;
+      },
+      handleEditKey(evt) {
+        formatAppLog("log", "at pages/blackTeche/sendTheKey/index.vue:757", evt.currentTarget.dataset.item);
+        this.c_edit_key_show_momal = true;
+        this.g_edit_info = evt.currentTarget.dataset.item;
+      },
+      handleFormEdit() {
+        const {
+          startDate,
+          startTime,
+          endDate,
+          endTime,
+          g_edit_info
+        } = this;
+        const buildDateTime = (date, time) => `${date || ""} ${time ? `${time}:00` : "00:00:00"}`.trim();
+        const requestParams = {
+          controlCode: g_edit_info.controlcode,
+          startDate: buildDateTime(startDate, startTime),
+          endDate: buildDateTime(endDate, endTime)
+        };
+        byPost(
+          `${getApp().globalData.data.k1swUrl}${u_paivateUpdateRentKey.URL}`,
+          requestParams,
+          (response) => {
+            if (response.data.code == 1e3) {
+              this.g_edit_info = {};
+              this.c_edit_key_show_momal = false;
+              this.y_triggered = false;
+              this.y_page = 1;
+              this.y_items = [];
+              setTimeout(() => {
+                this.getKeySendingList();
+              }, 300);
+            }
+          },
+          (error) => {
+          }
+        );
+        formatAppLog("log", "at pages/blackTeche/sendTheKey/index.vue:797", requestParams);
+      }
+    }
+  };
+  function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_CustomNavBar = vue.resolveComponent("CustomNavBar");
+    const _component_time_line = vue.resolveComponent("time-line");
+    return vue.openBlock(), vue.createElementBlock("view", null, [
+      vue.createElementVNode("view", { class: "container" }, [
+        vue.createVNode(_component_CustomNavBar, { title: "发送电子钥匙" }),
+        vue.createElementVNode(
+          "view",
+          {
+            class: "record-container",
+            style: vue.normalizeStyle("margin-top: " + $options.navbarTotalHeight + "px;")
+          },
+          [
+            vue.createCommentVNode(" 切换部分 "),
+            vue.createElementVNode("view", { class: "record-tabs" }, [
+              vue.createElementVNode(
+                "view",
+                {
+                  class: "record-tabs-item",
+                  "data-index": "1",
+                  onClick: _cache[0] || (_cache[0] = (...args) => $options.handleSwitchTab && $options.handleSwitchTab(...args)),
+                  style: vue.normalizeStyle("background-image: url(" + ($data.c_activeTab == 1 ? $data.s_background_tabs_active_1 : $data.s_background_tabs_1) + ");")
+                },
+                " 发送钥匙",
+                4
+                /* STYLE */
+              ),
+              vue.createElementVNode(
+                "view",
+                {
+                  class: "record-tabs-item",
+                  "data-index": "2",
+                  onClick: _cache[1] || (_cache[1] = (...args) => $options.handleSwitchTab && $options.handleSwitchTab(...args)),
+                  style: vue.normalizeStyle("background-image: url(" + ($data.c_activeTab == 2 ? $data.s_background_tabs_2 : $data.s_background_tabs_active_2) + ");")
+                },
+                vue.toDisplayString($data.btnState) + "使用记录 ",
+                5
+                /* TEXT, STYLE */
+              )
+            ]),
+            vue.createCommentVNode(" 详情区域部分 "),
+            $data.c_activeTab == 1 ? (vue.openBlock(), vue.createElementBlock("scroll-view", {
+              key: 0,
+              "scroll-y": "",
+              onScrolltolower: _cache[3] || (_cache[3] = (...args) => $options.handleLower && $options.handleLower(...args)),
+              onRefresherrefresh: _cache[4] || (_cache[4] = (...args) => $options.handleRefresh && $options.handleRefresh(...args)),
+              "refresher-enabled": true,
+              "refresher-triggered": $data.g_triggered
+            }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($data.g_items, (item, index) => {
+                  return vue.openBlock(), vue.createElementBlock("view", {
+                    key: index,
+                    class: "content-item"
+                  }, [
+                    vue.createElementVNode("view", { class: "content-item-head" }, [
+                      vue.createElementVNode("view", { class: "head-left" }, [
+                        vue.createElementVNode("view", { class: "left-category" }, [
+                          vue.createElementVNode("image", { src: _imports_0$1 }),
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString(item.platenumber),
+                            1
+                            /* TEXT */
+                          )
+                        ]),
+                        !item.bluetoothKey ? (vue.openBlock(), vue.createElementBlock(
+                          "view",
+                          {
+                            key: 0,
+                            class: "left-model"
+                          },
+                          vue.toDisplayString(item.vehicleSerialName || "-") + vue.toDisplayString(item.vehicleModeName || "") + "111 ",
+                          1
+                          /* TEXT */
+                        )) : vue.createCommentVNode("v-if", true)
+                      ])
+                    ]),
+                    vue.createElementVNode("view", { class: "content-item-info" }, [
+                      !item.bluetoothKey ? (vue.openBlock(), vue.createElementBlock(
+                        "view",
+                        {
+                          key: 0,
+                          class: vue.normalizeClass("info-item  " + (item.vin.length > 15 ? "long-info-item" : ""))
+                        },
+                        [
+                          vue.createElementVNode("label", null, "车架号 ："),
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString(item.vin || "-"),
+                            1
+                            /* TEXT */
+                          )
+                        ],
+                        2
+                        /* CLASS */
+                      )) : vue.createCommentVNode("v-if", true),
+                      !item.bluetoothKey ? (vue.openBlock(), vue.createElementBlock(
+                        "view",
+                        {
+                          key: 1,
+                          class: vue.normalizeClass("info-item  " + (item.xsgw.length > 15 ? "long-info-item" : ""))
+                        },
+                        [
+                          vue.createElementVNode("label", null, "油箱容积 ："),
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString(item.xsgw ? item.xsgw + "L" : "-"),
+                            1
+                            /* TEXT */
+                          )
+                        ],
+                        2
+                        /* CLASS */
+                      )) : vue.createCommentVNode("v-if", true),
+                      !item.bluetoothKey ? (vue.openBlock(), vue.createElementBlock(
+                        "view",
+                        {
+                          key: 2,
+                          class: vue.normalizeClass("info-item  " + (item.carOwnerName.length > 15 ? "long-info-item" : ""))
+                        },
+                        [
+                          vue.createElementVNode("label", null, "设备平台 ："),
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString(item.carOwnerName || "-"),
+                            1
+                            /* TEXT */
+                          )
+                        ],
+                        2
+                        /* CLASS */
+                      )) : vue.createCommentVNode("v-if", true),
+                      vue.createElementVNode(
+                        "view",
+                        {
+                          class: vue.normalizeClass("info-item  " + (item.sn.length > 15 ? "long-info-item" : ""))
+                        },
+                        [
+                          vue.createElementVNode("label", null, "设备号 ："),
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString(item.sn || "-"),
+                            1
+                            /* TEXT */
+                          )
+                        ],
+                        2
+                        /* CLASS */
+                      )
+                    ]),
+                    vue.createElementVNode("view", { class: "content-item-footer" }, [
+                      vue.createElementVNode("view", { class: "footer-left" }),
+                      vue.createElementVNode("view", { class: "footer-right" }, [
+                        vue.createElementVNode("view", {
+                          class: "footer-right-btn",
+                          "data-item": item,
+                          onClick: _cache[2] || (_cache[2] = (...args) => $options.handleShowSendKeyModal && $options.handleShowSendKeyModal(...args))
+                        }, [
+                          vue.createElementVNode("text", null, "发送钥匙")
+                        ], 8, ["data-item"])
+                      ])
+                    ])
+                  ]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ], 40, ["refresher-triggered"])) : vue.createCommentVNode("v-if", true),
+            $data.c_activeTab == 2 ? (vue.openBlock(), vue.createElementBlock("scroll-view", {
+              key: 1,
+              "scroll-y": "",
+              onScrolltolower: _cache[8] || (_cache[8] = (...args) => $options.handleLower && $options.handleLower(...args)),
+              onRefresherrefresh: _cache[9] || (_cache[9] = (...args) => $options.handleRefresh && $options.handleRefresh(...args)),
+              "refresher-enabled": true,
+              "refresher-triggered": $data.g_triggered
+            }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($data.y_items, (item, index) => {
+                  return vue.openBlock(), vue.createElementBlock("view", {
+                    key: index,
+                    class: "content-card"
+                  }, [
+                    vue.createElementVNode("view", { class: "card-head" }, [
+                      vue.createElementVNode("view", { class: "card-head-left" }, [
+                        vue.createElementVNode(
+                          "text",
+                          null,
+                          vue.toDisplayString(item.platenumber),
+                          1
+                          /* TEXT */
+                        ),
+                        vue.createElementVNode(
+                          "text",
+                          null,
+                          vue.toDisplayString(item.personname),
+                          1
+                          /* TEXT */
+                        ),
+                        vue.createElementVNode("text", { class: "split-line" }),
+                        vue.createElementVNode(
+                          "text",
+                          { class: "phone-text" },
+                          vue.toDisplayString(item.mobile),
+                          1
+                          /* TEXT */
+                        )
+                      ]),
+                      vue.createElementVNode("view", { class: "card-head-right" }, [
+                        item.status ? (vue.openBlock(), vue.createElementBlock("text", {
+                          key: 0,
+                          style: { "color": "#7b7b7c" }
+                        }, "已取消")) : (vue.openBlock(), vue.createElementBlock("text", { key: 1 }, "使用中"))
+                      ])
+                    ]),
+                    vue.createElementVNode("view", { class: "card-info" }, [
+                      vue.createVNode(_component_time_line, {
+                        events: [{ createdate: item.startdate || "-" }, { createdate: item.enddate || "-" }]
+                      }, null, 8, ["events"])
+                    ]),
+                    !item.status ? (vue.openBlock(), vue.createElementBlock("view", {
+                      key: 0,
+                      class: "card-footer1",
+                      style: { "display": "flex", "justify-content": "space-between" }
+                    }, [
+                      vue.createElementVNode("view", null, [
+                        vue.createElementVNode("text", {
+                          onClick: _cache[5] || (_cache[5] = (...args) => $options.handleEditKey && $options.handleEditKey(...args)),
+                          "data-item": item,
+                          style: { "float": "left" }
+                        }, "修改", 8, ["data-item"])
+                      ]),
+                      vue.createElementVNode("view", { style: { "display": "flex", "flex-direction": "row" } }, [
+                        vue.createCommentVNode(' <button :data-item="item" open-type="share" @tap="handleForward">一键转发</button> '),
+                        vue.createElementVNode("text", {
+                          onClick: _cache[6] || (_cache[6] = (...args) => $options.handleCopy && $options.handleCopy(...args)),
+                          "data-item": item
+                        }, vue.toDisplayString($data.copied ? "已复制" : "复制链接"), 9, ["data-item"]),
+                        vue.createElementVNode("text", {
+                          onClick: _cache[7] || (_cache[7] = (...args) => $options.handleCance && $options.handleCance(...args)),
+                          "data-item": item
+                        }, "取消用车", 8, ["data-item"])
+                      ])
+                    ])) : vue.createCommentVNode("v-if", true)
+                  ]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ], 40, ["refresher-triggered"])) : vue.createCommentVNode("v-if", true)
+          ],
+          4
+          /* STYLE */
+        )
+      ]),
+      vue.createCommentVNode(" 发送电子钥匙弹窗 "),
+      $data.c_send_key_show_momal ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 0,
+        class: "modal-mask",
+        onClick: _cache[10] || (_cache[10] = (...args) => $options.handleHideSengKeyModal && $options.handleHideSengKeyModal(...args))
+      })) : vue.createCommentVNode("v-if", true),
+      $data.c_send_key_show_momal ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 1,
+        class: "modal-base-map"
+      }, [
+        vue.createElementVNode(
+          "form",
+          {
+            onSubmit: _cache[16] || (_cache[16] = (...args) => $options.handleFormSubmit && $options.handleFormSubmit(...args))
+          },
+          [
+            vue.createElementVNode("view", { class: "modal-container" }, [
+              vue.createElementVNode("view", { class: "modal-container-head" }, [
+                vue.createElementVNode("text", null, "发送电子钥匙"),
+                vue.createElementVNode("image", {
+                  src: _imports_1$1,
+                  onClick: _cache[11] || (_cache[11] = (...args) => $options.handleHideSengKeyModal && $options.handleHideSengKeyModal(...args))
+                })
+              ]),
+              vue.createElementVNode("view", { class: "modal-container-middle" }, [
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "车牌号"),
+                  vue.createElementVNode(
+                    "view",
+                    { class: "modal-form-region" },
+                    vue.toDisplayString($data.cellData.platenumber),
+                    1
+                    /* TEXT */
+                  )
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "使用人"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode("input", {
+                      placeholder: "请输入使用人",
+                      name: "personName",
+                      style: { "text-align": "right", "font-size": "28rpx" }
+                    })
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "手机号"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode("input", {
+                      placeholder: "请输入手机号",
+                      name: "mobile",
+                      style: { "text-align": "right", "font-size": "28rpx" }
+                    })
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "开始时间"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode(
+                      "picker",
+                      {
+                        mode: "date",
+                        "data-index": "startDate",
+                        onChange: _cache[12] || (_cache[12] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                      },
+                      [
+                        vue.createElementVNode("view", { class: "form-item-text" }, [
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString($data.startDate),
+                            1
+                            /* TEXT */
+                          )
+                        ])
+                      ],
+                      32
+                      /* NEED_HYDRATION */
+                    ),
+                    vue.createElementVNode(
+                      "picker",
+                      {
+                        mode: "time",
+                        "data-index": "startTime",
+                        onChange: _cache[13] || (_cache[13] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                      },
+                      [
+                        vue.createElementVNode("view", { class: "form-item-text" }, [
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString($data.startTime),
+                            1
+                            /* TEXT */
+                          )
+                        ])
+                      ],
+                      32
+                      /* NEED_HYDRATION */
+                    )
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "结束时间"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode(
+                      "picker",
+                      {
+                        mode: "date",
+                        "data-index": "endDate",
+                        onChange: _cache[14] || (_cache[14] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                      },
+                      [
+                        vue.createElementVNode("view", { class: "form-item-text" }, [
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString($data.endDate),
+                            1
+                            /* TEXT */
+                          )
+                        ])
+                      ],
+                      32
+                      /* NEED_HYDRATION */
+                    ),
+                    vue.createElementVNode(
+                      "picker",
+                      {
+                        mode: "time",
+                        "data-index": "endTime",
+                        onChange: _cache[15] || (_cache[15] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                      },
+                      [
+                        vue.createElementVNode("view", { class: "form-item-text" }, [
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString($data.endTime),
+                            1
+                            /* TEXT */
+                          )
+                        ])
+                      ],
+                      32
+                      /* NEED_HYDRATION */
+                    )
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "备注"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode("input", {
+                      placeholder: "请输入车位号或车辆位置",
+                      name: "bak",
+                      style: { "text-align": "right", "font-size": "28rpx" }
+                    })
+                  ])
+                ])
+              ]),
+              vue.createElementVNode("view", { class: "modal-container-footer" }, [
+                vue.createElementVNode("button", { formType: "submit" }, "确认")
+              ])
+            ])
+          ],
+          32
+          /* NEED_HYDRATION */
+        )
+      ])) : vue.createCommentVNode("v-if", true),
+      vue.createCommentVNode(" 修改电子钥匙 "),
+      $data.c_edit_key_show_momal ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 2,
+        class: "modal-mask",
+        onClick: _cache[17] || (_cache[17] = (...args) => $options.handleHideEditKeyModal && $options.handleHideEditKeyModal(...args))
+      })) : vue.createCommentVNode("v-if", true),
+      $data.c_edit_key_show_momal ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 3,
+        class: "modal-base-map"
+      }, [
+        vue.createElementVNode(
+          "form",
+          {
+            onSubmit: _cache[23] || (_cache[23] = (...args) => $options.handleFormEdit && $options.handleFormEdit(...args))
+          },
+          [
+            vue.createElementVNode("view", { class: "modal-container" }, [
+              vue.createElementVNode("view", { class: "modal-container-head" }, [
+                vue.createElementVNode("text", null, "修改"),
+                vue.createElementVNode("image", {
+                  src: _imports_1$1,
+                  onClick: _cache[18] || (_cache[18] = (...args) => $options.handleHideEditKeyModal && $options.handleHideEditKeyModal(...args))
+                })
+              ]),
+              vue.createElementVNode("view", { class: "modal-container-middle" }, [
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "车牌号"),
+                  vue.createElementVNode(
+                    "view",
+                    { class: "modal-form-region" },
+                    vue.toDisplayString($data.g_edit_info.platenumber),
+                    1
+                    /* TEXT */
+                  )
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "使用人"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode(
+                      "text",
+                      null,
+                      vue.toDisplayString($data.g_edit_info.personname),
+                      1
+                      /* TEXT */
+                    )
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "手机号"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode(
+                      "text",
+                      null,
+                      vue.toDisplayString($data.g_edit_info.mobile),
+                      1
+                      /* TEXT */
+                    )
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "开始时间"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode(
+                      "picker",
+                      {
+                        mode: "date",
+                        "data-index": "startDate",
+                        onChange: _cache[19] || (_cache[19] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                      },
+                      [
+                        vue.createElementVNode("view", { class: "form-item-text" }, [
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString($data.startDate),
+                            1
+                            /* TEXT */
+                          )
+                        ])
+                      ],
+                      32
+                      /* NEED_HYDRATION */
+                    ),
+                    vue.createElementVNode(
+                      "picker",
+                      {
+                        mode: "time",
+                        "data-index": "startTime",
+                        onChange: _cache[20] || (_cache[20] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                      },
+                      [
+                        vue.createElementVNode("view", { class: "form-item-text" }, [
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString($data.startTime),
+                            1
+                            /* TEXT */
+                          )
+                        ])
+                      ],
+                      32
+                      /* NEED_HYDRATION */
+                    )
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "结束时间"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode(
+                      "picker",
+                      {
+                        mode: "date",
+                        "data-index": "endDate",
+                        onChange: _cache[21] || (_cache[21] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                      },
+                      [
+                        vue.createElementVNode("view", { class: "form-item-text" }, [
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString($data.endDate),
+                            1
+                            /* TEXT */
+                          )
+                        ])
+                      ],
+                      32
+                      /* NEED_HYDRATION */
+                    ),
+                    vue.createElementVNode(
+                      "picker",
+                      {
+                        mode: "time",
+                        "data-index": "endTime",
+                        onChange: _cache[22] || (_cache[22] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                      },
+                      [
+                        vue.createElementVNode("view", { class: "form-item-text" }, [
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString($data.endTime),
+                            1
+                            /* TEXT */
+                          )
+                        ])
+                      ],
+                      32
+                      /* NEED_HYDRATION */
+                    )
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "middle-form-item" }, [
+                  vue.createElementVNode("label", null, "备注"),
+                  vue.createElementVNode("view", { class: "modal-form-region" }, [
+                    vue.createElementVNode(
+                      "text",
+                      null,
+                      vue.toDisplayString($data.g_edit_info.bak || "-"),
+                      1
+                      /* TEXT */
+                    )
+                  ])
+                ])
+              ]),
+              vue.createElementVNode("view", { class: "modal-container-footer" }, [
+                vue.createElementVNode("button", { formType: "submit" }, "确认")
+              ])
+            ])
+          ],
+          32
+          /* NEED_HYDRATION */
+        )
+      ])) : vue.createCommentVNode("v-if", true)
+    ]);
+  }
+  const PagesBlackTecheSendTheKeyIndex = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/blackTeche/sendTheKey/index.vue"]]);
+  const _sfc_main$3 = {
+    data() {
+      return {
+        // 底部tabbar高度
+        tabBarHeight: 80,
+        // 当前选中的底部tabbar索引
+        currentTab: 2,
+        // 原始链接
+        c_link: "https://k1sw.wiselink.net.cn/",
+        // 咨询入群弹窗状态
+        join_the_group_modal: false,
+        // 底部tab数据（网络图片）
+        tabList: [],
+        contentList: [],
+        height_from_head: 44,
+        head_height: "",
+        capsule_distance_to_the_right: "",
+        account: "",
+        personal_qr_code: ""
+      };
+    },
+    onLoad() {
+      this.initBottomDirectory();
+      this.initDirectoryStructure();
+    },
+    onShow() {
+    },
+    onReady() {
+      this.initLoginStatus();
+      this.initQrCode();
+    },
+    methods: {
+      // 获取系统头部各区域高度
+      initSystemInfo() {
+        const {
+          statusBarHeight: s
+        } = uni.getWindowInfo();
+        const m = uni.getMenuButtonBoundingClientRect();
+        if (!m) {
+          return;
+        }
+        const n = m.height + (m.top - s) * 2;
+        const c = uni.getWindowInfo().screenWidth - m.right;
+        this.setData({
+          height_from_head: s,
+          head_height: s + n,
+          capsule_distance_to_the_right: c
+        });
+      },
+      // 获取当前登录状态
+      initLoginStatus() {
+        uni.getStorage({
+          key: "userKey",
+          // 替换为你的缓存键值
+          success: (res2) => {
+            var _a, _b;
+            this.setData({
+              account: ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username)
+            });
+          },
+          fail(err) {
+            formatAppLog("error", "at pages/zoneCenter/index.vue:153", "获取失败", err);
+          }
+        });
+      },
+      // 请求入群码
+      async initQrCode() {
+        var _a;
+        const response = await u_getQrcodeImg();
+        if ((response == null ? void 0 : response.code) == 1e3) {
+          this.personal_qr_code = (_a = response == null ? void 0 : response.content) == null ? void 0 : _a.img;
+        }
+      },
+      // 获取底部导航数据
+      async initBottomDirectory() {
+        var _a;
+        const response = await u_navlist20();
+        if ((response == null ? void 0 : response.code) == 1e3) {
+          this.tabList = response == null ? void 0 : response.content, this.currentTab = ((_a = response == null ? void 0 : response.content) == null ? void 0 : _a.length) - 1;
+        }
+      },
+      // 获取目录结构数据
+      async initDirectoryStructure() {
+        const response = await u_mylist();
+        if ((response == null ? void 0 : response.code) == 1e3) {
+          this.contentList = response == null ? void 0 : response.content;
+        }
+      },
+      // 点击“咨询” 显示入群二维码
+      handleShowContact() {
+        this.setData({
+          join_the_group_modal: true
+        });
+      },
+      // 点击关闭咨询&群二维码
+      handleQRClose() {
+        this.setData({
+          join_the_group_modal: false
+        });
+      },
+      // 预览图片使其放大
+      handleQRShowImageMask() {
+        uni.previewMedia({
+          sources: [{
+            url: this.personal_qr_code,
+            // 图片路径
+            type: "image"
+          }]
+        });
+      },
+      // 切换底部导航
+      // 切换底部导航
+      handleSwitchTabNavigation(evt) {
+        const {
+          currentTarget: {
+            dataset: {
+              index: idx = null
+            } = {}
+          } = {}
+        } = evt ?? {};
+        if (idx === null) {
+          return;
+        }
+        const {
+          tabList = []
+        } = this;
+        const {
+          pagePath: targetUrl
+        } = tabList[idx] ?? {};
+        if (!targetUrl) {
+          return;
+        }
+        const [currentPage] = getCurrentPages().slice(-1);
+        const {
+          route: currentPath
+        } = currentPage ?? {};
+        if (!currentPath) {
+          return;
+        }
+        const targetPurePath = targetUrl.split("?")[0];
+        formatAppLog("log", "at pages/zoneCenter/index.vue:240", currentPath, targetPurePath);
+        if (currentPath !== targetPurePath) {
+          if (targetPurePath == "pages/privateCar/index") {
+            uni.redirectTo({
+              url: "/pages/index/index"
+            });
+          } else {
+            uni.redirectTo({
+              url: `/${targetUrl}`
+            });
+          }
+        }
+      },
+      // 返回上一页面
+      handleBackHome() {
+        uni.redirectTo({
+          url: "/pages/index/index"
+        });
+      },
+      // 点击工具执行
+      handleFunExe(evt) {
+        var _a, _b;
+        formatAppLog("log", "at pages/zoneCenter/index.vue:264", evt);
+        const info = (_b = (_a = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _a.dataset) == null ? void 0 : _b.info;
+        if (!info || !info.pagePath) {
+          return;
+        }
+        const {
+          pagePath
+        } = info;
+        uni.navigateTo({
+          url: `/${pagePath}`
+        });
+      },
+      handleOnExistingAccountTap() {
+        formatAppLog("log", "at pages/zoneCenter/index.vue:278", "占位：函数 handleOnExistingAccountTap 未声明");
+      },
+      onReachBottom() {
+        formatAppLog("log", "at pages/zoneCenter/index.vue:282", "占位：函数 onReachBottom 未声明");
+      }
+    }
+  };
+  function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+    return vue.openBlock(), vue.createElementBlock("view", null, [
+      vue.createCommentVNode(" 页面根容器：设置整体背景图，使用container样式控制布局 "),
+      vue.createElementVNode("view", { class: "container" }, [
+        vue.createCommentVNode(" 自定义头部区域：包含系统状态栏高度适配，使用custom-header样式 "),
+        vue.createElementVNode(
+          "view",
+          {
+            class: "custom-header",
+            style: vue.normalizeStyle("padding-top: " + $data.height_from_head + "px;height: " + $data.head_height + "px;")
+          },
+          [
+            vue.createElementVNode("view", { class: "custom-header-outer-layer" }, [
+              vue.createCommentVNode(' 	<image class="custom-header-outer-layer-image" src="/static/assets/images/index/home.png"\r\n						@tap="handleBackHome"></image> '),
+              vue.createElementVNode("view", { class: "custom-header-outer-layer-title" }, "个人中心"),
+              vue.createElementVNode("view", { class: "custom-header-outer-layer-user_name" }, [
+                $data.account ? (vue.openBlock(), vue.createElementBlock(
+                  "text",
+                  { key: 0 },
+                  vue.toDisplayString($data.account),
+                  1
+                  /* TEXT */
+                )) : (vue.openBlock(), vue.createElementBlock(
+                  vue.Fragment,
+                  { key: 1 },
+                  [
+                    vue.createElementVNode("text", {
+                      onClick: _cache[0] || (_cache[0] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args))
+                    }, "请登录"),
+                    vue.createElementVNode("image", {
+                      onClick: _cache[1] || (_cache[1] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args)),
+                      src: _imports_0$3
+                    })
+                  ],
+                  64
+                  /* STABLE_FRAGMENT */
+                ))
+              ])
+            ])
+          ],
+          4
+          /* STYLE */
+        ),
+        vue.createCommentVNode(" 中间滚动内容区：使用scroll-view实现垂直滚动，设置顶部和底部偏移量 "),
+        vue.createElementVNode(
+          "scroll-view",
+          {
+            class: "content",
+            "scroll-y": true,
+            style: vue.normalizeStyle("top: 90px; bottom: " + $data.tabBarHeight + "px;"),
+            onScrolltolower: _cache[3] || (_cache[3] = (...args) => $options.onReachBottom && $options.onReachBottom(...args))
+          },
+          [
+            vue.createElementVNode("view", { class: "my-content-list-container" }, [
+              vue.createElementVNode("view", { class: "my-content-list-inner" }, [
+                (vue.openBlock(true), vue.createElementBlock(
+                  vue.Fragment,
+                  null,
+                  vue.renderList($data.contentList, (item, index) => {
+                    return vue.openBlock(), vue.createElementBlock("view", {
+                      "data-info": item,
+                      class: vue.normalizeClass("my-content-list-item " + (index === $data.contentList.length - 1 ? "my-content-list-item_last" : "")),
+                      onClick: _cache[2] || (_cache[2] = (...args) => $options.handleFunExe && $options.handleFunExe(...args)),
+                      key: item.id
+                    }, [
+                      vue.createElementVNode("view", { class: "my-content-list-item__left" }, [
+                        vue.createElementVNode(
+                          "text",
+                          { class: "my-content-list-item__text" },
+                          vue.toDisplayString(item.text),
+                          1
+                          /* TEXT */
+                        )
+                      ]),
+                      vue.createElementVNode("image", {
+                        src: _imports_0$3,
+                        class: "my-content-list-item__arrow",
+                        mode: "widthFix"
+                      })
+                    ], 10, ["data-info"]);
+                  }),
+                  128
+                  /* KEYED_FRAGMENT */
+                ))
+              ])
+            ])
+          ],
+          36
+          /* STYLE, NEED_HYDRATION */
+        ),
+        vue.createCommentVNode(" 固定底部导航栏区域：使用tabbar样式，高度自适应 "),
+        vue.createElementVNode(
+          "view",
+          {
+            class: "tabbar",
+            style: vue.normalizeStyle("height: " + $data.tabBarHeight + "px;")
+          },
+          [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($data.tabList, (item, index) => {
+                return vue.openBlock(), vue.createElementBlock("view", {
+                  class: vue.normalizeClass("tab-item " + ($data.currentTab === index ? "active" : "")),
+                  onClick: _cache[4] || (_cache[4] = (...args) => $options.handleSwitchTabNavigation && $options.handleSwitchTabNavigation(...args)),
+                  "data-index": index,
+                  key: index
+                }, [
+                  $data.currentTab === index ? (vue.openBlock(), vue.createElementBlock("image", {
+                    key: 0,
+                    src: "https://k1sw.wiselink.net.cn/img/" + item.selectedIconPath,
+                    class: "tab-icon",
+                    mode: "widthFix"
+                  }, null, 8, ["src"])) : (vue.openBlock(), vue.createElementBlock("image", {
+                    key: 1,
+                    src: "https://k1sw.wiselink.net.cn/img/" + item.iconPath,
+                    class: "tab-icon",
+                    mode: "widthFix"
+                  }, null, 8, ["src"])),
+                  vue.createElementVNode(
+                    "text",
+                    null,
+                    vue.toDisplayString(item.text),
+                    1
+                    /* TEXT */
+                  )
+                ], 10, ["data-index"]);
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ],
+          4
+          /* STYLE */
+        )
+      ]),
+      vue.createCommentVNode(" 点击咨询入群 "),
+      vue.createElementVNode("view", {
+        class: "float-button",
+        onClick: _cache[5] || (_cache[5] = (...args) => $options.handleShowContact && $options.handleShowContact(...args))
+      }, [
+        vue.createElementVNode("image", { src: "https://k1sw.wiselink.net.cn/img/app2.0/desk/consulting.png" })
+      ]),
+      $data.join_the_group_modal ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 0,
+        class: "qr-group-container"
+      }, [
+        vue.createElementVNode("view", {
+          class: "qr-group-mask",
+          onClick: _cache[8] || (_cache[8] = (...args) => $options.handleQRClose && $options.handleQRClose(...args))
+        }, [
+          vue.createCommentVNode(" 关闭按钮 "),
+          vue.createElementVNode("view", {
+            class: "qr-group-close",
+            onClick: _cache[6] || (_cache[6] = (...args) => $options.handleQRClose && $options.handleQRClose(...args))
+          }, "×"),
+          vue.createElementVNode("view", { class: "qr-group-preview-content" }, [
+            vue.createElementVNode("image", {
+              onClick: _cache[7] || (_cache[7] = vue.withModifiers((...args) => $options.handleQRShowImageMask && $options.handleQRShowImageMask(...args), ["stop", "prevent"])),
+              class: "qr-group-preview-img",
+              src: $data.personal_qr_code,
+              mode: "widthFix"
+            }, null, 8, ["src"]),
+            vue.createElementVNode("text", { class: "qr-group-preview-desc" }, "请点击、长按官方群二维码加入交流群，获取体验权限！")
+          ])
+        ])
+      ])) : vue.createCommentVNode("v-if", true)
+    ]);
+  }
+  const PagesZoneCenterIndex = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/zoneCenter/index.vue"]]);
+  const _imports_0 = "/static/privateCar/car_icon.png";
+  const _imports_1 = "/static/privateCar/_edit.png";
+  const _imports_2 = "/static/privateCar/_delete.png";
+  const _imports_3 = "/static/privateCar/ss.png";
+  const _sfc_main$2 = {
+    components: {
+      CustomNavBar
+    },
+    data() {
+      return {
+        // 屏幕信息对象，当前为空
+        screenInfo: {},
+        // 标签页背景图片（未激活状态）
+        s_background_tabs_1: "/static/privateCar/1-1.png",
+        s_background_tabs_2: "/static/privateCar/1-2.png",
+        // 标签页背景图片（激活状态）
+        s_background_tabs_active_1: "/static/privateCar/2-1.png",
+        s_background_tabs_active_2: "/static/privateCar/2-2",
+        // 当前页面编号
+        g_page: 1,
+        // 项目列表，初始为空数组
+        g_items: [],
+        // 触发标识符，初始为false
+        g_triggered: false,
+        // 当前激活的标签页编号
+        c_activeTab: 1,
+        // 参数对象，包含车牌号、车辆序列名称等信息，初始值为空字符串
+        params: {
+          platenumber: "",
+          vehicleSerialName: "",
+          vehicleModeName: "",
+          sn: "",
+          code: ""
+        },
+        // 按钮状态文本，初始为“开通”
+        btnState: "开通",
+        // ID，初始为空字符串
+        id: "",
+        // 制动类型编号，初始为1
+        brakingType: 1,
+        // 图片加载状态宽度和高度，初始为“加载中...”
+        imageWidth: "加载中...",
+        imageHeight: "加载中...",
+        // 黑名单列表，初始为空数组
+        g_black: [],
+        // 车牌号码列表，初始为空数组
+        g_platenumbers: [],
+        // 来源，初始为空字符串
+        g_source: "",
+        // 多标识符标记，初始为空字符串
+        g_flagMulti: "",
+        // 信息，初始为空字符串
+        info: "",
+        // 所有参数，初始为空字符串
+        allParams: "",
+        // 类型，初始为空字符串
+        type: "",
+        // 名称，初始为空字符串
+        name: "",
+        // 序列号，初始为空字符串
+        sn: "",
+        // 总计，初始为空字符串
+        g_total: "",
+        // 角色列表索引，初始为空字符串
+        g_roleList_index: "",
+        // 首页背景图片路径，初始为空字符串
+        s_background_picture_of_the_front_page: ""
+      };
+    },
+    onLoad(options) {
+      this.initCarryParams(options);
+      this.initList(options);
+    },
+    onShow() {
+      this.initialScreenInfo();
+      this.handleGet();
+    },
+    computed: {
+      // 状态栏高度
+      statusBarHeight() {
+        return this.screenInfo.statusBarHeight || 0;
+      },
+      // 导航栏高度
+      navBarHeight() {
+        return this.screenInfo.platform === "ios" ? 49 : 44;
+      },
+      // 导航栏总高度（状态栏+导航栏）
+      navbarTotalHeight() {
+        return this.statusBarHeight + this.navBarHeight;
+      },
+      // 安全区域高度
+      safeScreenHeight() {
+        return this.screenInfo.screenHeight || 667;
+      }
+    },
+    methods: {
+      // 获取屏幕信息
+      async initialScreenInfo() {
+        try {
+          this.screenInfo = await info_screen();
+        } catch (error) {
+          uni.showToast({
+            title: "设备信息获取失败",
+            icon: "none",
+            duration: 3e3
+          });
+        }
+      },
+      handleChangeBlack(evt) {
+        const {
+          id
+        } = evt.currentTarget.dataset.item;
+        const {
+          g_black,
+          g_platenumbers,
+          g_items
+        } = this;
+        const blackSet = new Set(g_black);
+        const plateSet = new Set(g_platenumbers);
+        const vehicle = g_items.find((item) => item.id === id);
+        if (!vehicle) {
+          return;
+        }
+        if (blackSet.has(id)) {
+          blackSet.delete(id);
+          plateSet.delete(vehicle.platenumber);
+        } else {
+          blackSet.add(id);
+          plateSet.add(vehicle.platenumber);
+        }
+        this.g_black = [...blackSet];
+        this.g_platenumbers = [...plateSet];
+      },
+      handleJumpBlackInfo() {
+        uni.reLaunch({
+          url: `${this.g_source}?black=${this.g_black}&type=${this.type}&name=${this.name}&platenumbers=${this.g_platenumbers}&info=${JSON.stringify(this.info)}`
+        });
+      },
+      // 扫码按钮点击事件
+      scanCode() {
+        uni.scanCode({
+          onlyFromCamera: false,
+          // 是否只允许相机扫码（false表示允许从相册选择）
+          scanType: ["qrCode", "barCode"],
+          // 扫码类型：二维码、条形码
+          success: (res2) => {
+            formatAppLog("log", "at pages/listOfPrivateCars/list/index.vue:336", "扫码成功:", res2);
+            this.handleScanResult(res2.result);
+          },
+          fail: (err) => {
+            formatAppLog("error", "at pages/listOfPrivateCars/list/index.vue:340", "扫码失败:", err);
+            uni.showToast({
+              title: "扫码失败",
+              icon: "error"
+            });
+          }
+        });
+      },
+      // 处理扫码结果
+      handleScanResult(result) {
+        const params = this.params;
+        this.params = {
+          ...params,
+          sn: result
+        };
+      },
+      initCarryParams(evt) {
+        const {
+          source,
+          flagMulti,
+          info,
+          allParams,
+          type,
+          name
+        } = evt;
+        this.g_source = source;
+        this.g_flagMulti = flagMulti;
+        this.info = info && JSON.parse(info);
+        this.allParams = allParams;
+        this.type = type;
+        this.name = name;
+      },
+      handleSelectJump(evt) {
+        const {
+          item
+        } = evt.currentTarget.dataset;
+        uni.navigateTo({
+          url: `/pages/privateCar/SettingsDetail/index?sn=${item.sn}&bluetoothKey=${item.bluetoothKey}`
+        });
+      },
+      handleSelectCar(evt) {
+        var _a, _b, _c, _d, _e;
+        this.sn = (_c = (_b = (_a = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _a.dataset) == null ? void 0 : _b.item) == null ? void 0 : _c.sn;
+        uni.setStorage({
+          key: "bluetoothData",
+          data: (_e = (_d = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _d.dataset) == null ? void 0 : _e.item
+        });
+      },
+      // 管控列表数据
+      async initList(evt) {
+        uni.showLoading({
+          title: "加载中..."
+        });
+        const response = await u_paivatecarList();
+        if ((response == null ? void 0 : response.code) == 1e3) {
+          formatAppLog("log", "at pages/listOfPrivateCars/list/index.vue:404", response);
+          if (this.g_page > 1 && response.content.length === 0) {
+            uni.showToast({
+              title: `已加载全部数据：共${this.g_items.length}条`,
+              icon: "none",
+              duration: 3e3
+            });
+          }
+          this.g_items = this.g_items.concat(response.content);
+          this.g_total = Number(response.count || 0).toLocaleString();
+          setTimeout(() => {
+            var _a;
+            if (evt == null ? void 0 : evt.tabs) {
+              this.c_activeTab = evt == null ? void 0 : evt.tabs;
+            } else if (((_a = this.g_items) == null ? void 0 : _a.length) > 0) {
+              this.c_activeTab = 1;
+            } else {
+              this.c_activeTab = 2;
+            }
+            uni.hideLoading();
+          }, 1e3);
+        } else {
+          uni.showToast({
+            title: "请求失败，请稍后再试",
+            icon: "none",
+            duration: 2e3
+          });
+          uni.hideLoading();
+        }
+        return;
+      },
+      // 触底请求
+      handleLower() {
+        this.g_page = this.g_page + 1;
+        setTimeout(() => {
+          this.initList();
+        }, 100);
+      },
+      // 内容输入回调
+      handleBindinput(evt) {
+        const {
+          params
+        } = this;
+        params[evt.currentTarget.dataset.item] = evt.detail.value;
+        this.params = {
+          ...params
+        };
+      },
+      //提交内容
+      handleSubmit() {
+        var _a;
+        const param = {
+          ...this.params,
+          brakingType: this.brakingType,
+          id: this.id || ""
+        };
+        const validations = [
+          {
+            field: "platenumber",
+            message: "请填写车牌号"
+          },
+          {
+            field: "sn",
+            message: "请填写设备号"
+          }
+        ];
+        for (const {
+          field,
+          message
+        } of validations) {
+          if (!((_a = param[field]) == null ? void 0 : _a.trim())) {
+            uni.showToast({
+              title: message,
+              icon: "none",
+              duration: 3e3
+            });
+            return;
+          }
+        }
+        u_paivateAddOrUpdateCar(param).then((response) => {
+          if ((response == null ? void 0 : response.code) == 1e3) {
+            uni.showToast({
+              title: response == null ? void 0 : response.msg,
+              icon: "none",
+              duration: 3e3,
+              success: () => {
+                this.c_activeTab = 1;
+                this.params = {};
+                this.brakingType = 1;
+                this.g_page = 1;
+                this.g_items = [];
+                if (!this.id) {
+                  uni.redirectTo({
+                    url: "/pages/listOfPrivateCars/pdf/index"
+                  });
+                }
+                this.initList();
+              }
+            });
+          } else {
+            uni.showToast({
+              title: response == null ? void 0 : response.msg,
+              icon: "none",
+              duration: 3e3
+            });
+          }
+        });
+        return;
+      },
+      // 修改管控
+      handleEdit(evt) {
+        const info = evt.currentTarget.dataset.item;
+        this.c_activeTab = 2;
+        this.btnState = "修改";
+        this.id = info == null ? void 0 : info.id;
+        this.params = {
+          vehicleSerialName: info == null ? void 0 : info.vehicleSerialName,
+          vehicleModeName: info == null ? void 0 : info.vehicleModeName,
+          ccdate: info == null ? void 0 : info.ccdate,
+          introduction: info == null ? void 0 : info.introduction,
+          platenumber: info == null ? void 0 : info.platenumber,
+          vin: info == null ? void 0 : info.vin,
+          xsgw: info == null ? void 0 : info.xsgw,
+          sn: info == null ? void 0 : info.sn,
+          code: info == null ? void 0 : info.code
+        };
+        this.brakingType = info == null ? void 0 : info.brakingType;
+      },
+      // 删除车辆
+      handleDelete(evt) {
+        uni.showModal({
+          title: "提示",
+          content: "确认删除？",
+          complete: (res2) => {
+            if (res2.confirm) {
+              const info = evt.currentTarget.dataset.item;
+              const param = {
+                sn: info == null ? void 0 : info.sn,
+                code: info == null ? void 0 : info.code
+              };
+              u_paivateCarapiDeleteCar(param).then((response) => {
+                uni.hideLoading();
+                if ((response == null ? void 0 : response.code) == 1e3) {
+                  this.c_activeTab = 1;
+                  this.g_page = 1;
+                  this.g_items = [];
+                  uni.showToast({
+                    title: response == null ? void 0 : response.msg,
+                    icon: "none",
+                    duration: 3e3
+                  });
+                  this.initList();
+                } else {
+                  uni.showToast({
+                    title: response == null ? void 0 : response.msg,
+                    icon: "none",
+                    duration: 3e3
+                  });
+                }
+              });
+              return;
+            }
+          }
+        });
+      },
+      // 切换tabs标签
+      handleSwitchTab(e2) {
+        const flag = e2.target.dataset.flag;
+        if (flag == "设备清单") {
+          this.c_activeTab = 1;
+          this.btnState = "开通";
+          this.params = {};
+          this.id = "";
+          this.g_roleList_index = null;
+        }
+        if (flag == "开通设定" || flag == "修改设定") {
+          if (this.c_activeTab != 2) {
+            this.c_activeTab = 2;
+          }
+        }
+        if (flag == "功能设置") {
+          if (this.c_activeTab != 3) {
+            this.c_activeTab = 3;
+          }
+        }
+      },
+      handleGet() {
+        const _this = this;
+        uni.getStorage({
+          key: "bluetoothData",
+          success(res2) {
+            _this.sn = (res2 == null ? void 0 : res2.data.sn) || "";
+          }
+        });
+      },
+      // 导航到各个设置页面
+      navigateToUserInfo(evt) {
+        var _a, _b;
+        const sign = ((_b = (_a = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _a.dataset) == null ? void 0 : _b.sign) || evt;
+        const getActionMap = (item) => ({
+          default: {
+            url: `/pages/privateCar/btSettings/index?sign=${sign}&deviceIDC=${item == null ? void 0 : item.sn}&orgKey=${item == null ? void 0 : item.bluetoothKey}`
+          }
+        });
+        const executeNavigation = (ele) => {
+          const actionMap = getActionMap(ele);
+          const action = actionMap[sign] || actionMap.default;
+          if (action.url) {
+            if (sign == 1) {
+              uni.showModal({
+                title: "提示",
+                content: "如未与设备配对,请先执行蓝牙配对操作",
+                success: (res2) => {
+                  if (res2.confirm) {
+                    uni.navigateTo(action);
+                  }
+                }
+              });
+            } else {
+              uni.navigateTo(action);
+            }
+          } else {
+            uni.showModal({
+              title: action.title,
+              editable: true,
+              placeholderText: action.placeholderText,
+              success: (res2) => {
+                var _a2, _b2;
+                res2.confirm ? (_a2 = action.callback) == null ? void 0 : _a2.call(action, res2.content) : (_b2 = action.fallback) == null ? void 0 : _b2.call(action);
+              }
+            });
+          }
+        };
+        uni.getStorage({
+          key: "bluetoothData",
+          success: (res2) => {
+            executeNavigation(res2 == null ? void 0 : res2.data);
+          },
+          fail: () => {
+            const param = {
+              [u_carList.page]: 1
+            };
+            byGet("https://k1sw.wiselink.net.cn/" + u_carList.URL, param).then((response) => {
+              var _a2;
+              if (response.statusCode === 200) {
+                executeNavigation((_a2 = response == null ? void 0 : response.data) == null ? void 0 : _a2.content[0]);
+              }
+            }).catch(() => {
+            });
+          }
+        });
+      }
+    }
+  };
+  function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_CustomNavBar = vue.resolveComponent("CustomNavBar");
+    return vue.openBlock(), vue.createElementBlock("view", { class: "container" }, [
+      vue.createVNode(_component_CustomNavBar, { title: "设备清单" }),
+      vue.createElementVNode(
+        "view",
+        {
+          class: "record-container",
+          style: vue.normalizeStyle("margin-top: " + $options.navbarTotalHeight + "px;")
+        },
+        [
+          vue.createCommentVNode(" 切换部分 "),
+          vue.createElementVNode("view", { class: "record-tabs" }, [
+            vue.createElementVNode(
+              "view",
+              {
+                class: "record-tabs-item",
+                "data-flag": "设备清单",
+                onClick: _cache[0] || (_cache[0] = (...args) => $options.handleSwitchTab && $options.handleSwitchTab(...args)),
+                style: vue.normalizeStyle("background-image: url(" + ($data.c_activeTab == 1 ? $data.s_background_tabs_active_1 : $data.s_background_tabs_1) + ");")
+              },
+              " 设备清单",
+              4
+              /* STYLE */
+            ),
+            vue.createElementVNode(
+              "view",
+              {
+                class: "record-tabs-item",
+                "data-flag": "开通设定",
+                onClick: _cache[1] || (_cache[1] = (...args) => $options.handleSwitchTab && $options.handleSwitchTab(...args)),
+                style: vue.normalizeStyle("background-image: url(" + ($data.c_activeTab == 2 ? $data.s_background_tabs_2 : $data.s_background_tabs_active_2) + ");")
+              },
+              vue.toDisplayString($data.btnState) + "设定 ",
+              5
+              /* TEXT, STYLE */
+            )
+          ]),
+          vue.createCommentVNode(" 详情区域部分 "),
+          $data.c_activeTab == 1 ? (vue.openBlock(), vue.createElementBlock("scroll-view", {
+            key: 0,
+            "scroll-y": "",
+            onScrolltolower: _cache[5] || (_cache[5] = (...args) => $options.handleLower && $options.handleLower(...args)),
+            "refresher-triggered": $data.g_triggered
+          }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($data.g_items, (item, index) => {
+                return vue.openBlock(), vue.createElementBlock(
+                  "view",
+                  {
+                    key: index,
+                    class: "content-item",
+                    style: vue.normalizeStyle("border: " + ($data.sn == item.sn ? "1px solid #e4b6b6" : "") + ";")
+                  },
+                  [
+                    vue.createElementVNode("view", { class: "content-item-head" }, [
+                      vue.createElementVNode("view", { class: "head-left" }, [
+                        vue.createElementVNode("view", { class: "left-category" }, [
+                          vue.createElementVNode("image", { src: _imports_0 }),
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString(item.platenumber),
+                            1
+                            /* TEXT */
+                          )
+                        ]),
+                        vue.createElementVNode("view", { class: "left-split_line" }),
+                        vue.createElementVNode(
+                          "view",
+                          { class: "left-model" },
+                          vue.toDisplayString(item.vehicleSerialName || "-") + vue.toDisplayString(item.vehicleModeName || ""),
+                          1
+                          /* TEXT */
+                        )
+                      ]),
+                      !$data.g_flagMulti ? (vue.openBlock(), vue.createElementBlock("view", {
+                        key: 0,
+                        class: "head-right"
+                      }, [
+                        vue.createElementVNode("image", {
+                          src: _imports_1,
+                          "data-item": item,
+                          onClick: _cache[2] || (_cache[2] = (...args) => $options.handleEdit && $options.handleEdit(...args))
+                        }, null, 8, ["data-item"]),
+                        vue.createElementVNode("image", {
+                          src: _imports_2,
+                          "data-item": item,
+                          onClick: _cache[3] || (_cache[3] = (...args) => $options.handleDelete && $options.handleDelete(...args))
+                        }, null, 8, ["data-item"])
+                      ])) : vue.createCommentVNode("v-if", true)
+                    ]),
+                    vue.createElementVNode("view", { class: "content-item-info" }, [
+                      vue.createElementVNode(
+                        "view",
+                        {
+                          class: vue.normalizeClass("info-item  " + (item.sn.length > 15 ? "long-info-item" : ""))
+                        },
+                        [
+                          vue.createElementVNode("label", null, "设备号 ："),
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString(item.sn || "-"),
+                            1
+                            /* TEXT */
+                          )
+                        ],
+                        2
+                        /* CLASS */
+                      )
+                    ]),
+                    vue.createElementVNode("view", { class: "content-item-footer" }, [
+                      vue.createElementVNode("view", { class: "footer-left" }),
+                      vue.createElementVNode("view", {
+                        class: "footer-right",
+                        style: { "gap": "20rpx" }
+                      }, [
+                        vue.createCommentVNode(' <view class="footer-right-btn" :data-item="item" @tap="handleSelectJump">\r\n										<text>设置</text>\r\n									</view> '),
+                        $data.g_items.length > 1 ? (vue.openBlock(), vue.createElementBlock("view", {
+                          key: 0,
+                          class: "footer-right-btn",
+                          "data-item": item,
+                          onClick: _cache[4] || (_cache[4] = (...args) => $options.handleSelectCar && $options.handleSelectCar(...args))
+                        }, [
+                          vue.createElementVNode("text", null, "选择此车")
+                        ], 8, ["data-item"])) : vue.createCommentVNode("v-if", true)
+                      ])
+                    ])
+                  ],
+                  4
+                  /* STYLE */
+                );
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ], 40, ["refresher-triggered"])) : vue.createCommentVNode("v-if", true),
+          $data.c_activeTab == 2 ? (vue.openBlock(), vue.createElementBlock("scroll-view", {
+            key: 1,
+            "scroll-y": ""
+          }, [
+            vue.createElementVNode("view", { class: "card-info" }, [
+              vue.createCommentVNode(" 车牌号 "),
+              vue.createElementVNode("view", { class: "card-info-item" }, [
+                vue.createElementVNode("label", null, [
+                  vue.createTextVNode(" 车牌号 "),
+                  vue.createElementVNode("text", null, "*")
+                ]),
+                vue.createElementVNode("view", { class: "card-info-item-input" }, [
+                  vue.createElementVNode("input", {
+                    placeholder: "请输入车牌号",
+                    value: $data.params.platenumber,
+                    "data-item": "platenumber",
+                    onInput: _cache[6] || (_cache[6] = (...args) => $options.handleBindinput && $options.handleBindinput(...args))
+                  }, null, 40, ["value"])
+                ])
+              ]),
+              vue.createCommentVNode(" 车系 "),
+              vue.createElementVNode("view", { class: "card-info-item" }, [
+                vue.createElementVNode("label", null, [
+                  vue.createTextVNode(" 车系 "),
+                  vue.createElementVNode("text", null, "*")
+                ]),
+                vue.createElementVNode("view", { class: "card-info-item-input" }, [
+                  vue.createElementVNode("input", {
+                    placeholder: "请输入车系",
+                    value: $data.params.vehicleSerialName,
+                    "data-item": "vehicleSerialName",
+                    onInput: _cache[7] || (_cache[7] = (...args) => $options.handleBindinput && $options.handleBindinput(...args))
+                  }, null, 40, ["value"])
+                ])
+              ]),
+              vue.createCommentVNode(" 车型 "),
+              vue.createElementVNode("view", { class: "card-info-item" }, [
+                vue.createElementVNode("label", null, [
+                  vue.createTextVNode(" 车型 "),
+                  vue.createElementVNode("text", null, "*")
+                ]),
+                vue.createElementVNode("view", { class: "card-info-item-input" }, [
+                  vue.createElementVNode("input", {
+                    placeholder: "请输入车型",
+                    value: $data.params.vehicleModeName,
+                    "data-item": "vehicleModeName",
+                    onInput: _cache[8] || (_cache[8] = (...args) => $options.handleBindinput && $options.handleBindinput(...args))
+                  }, null, 40, ["value"])
+                ])
+              ]),
+              vue.createCommentVNode(" 设备号 "),
+              vue.createElementVNode("view", { class: "card-info-item" }, [
+                vue.createElementVNode("label", null, [
+                  vue.createTextVNode(" 设备号(sn) "),
+                  vue.createElementVNode("text", null, "*")
+                ]),
+                vue.createElementVNode("view", {
+                  class: "card-info-item-input",
+                  style: { "display": "flex", "flex-direction": "row", "align-items": "center" }
+                }, [
+                  $data.id != "" ? (vue.openBlock(), vue.createElementBlock(
+                    vue.Fragment,
+                    { key: 0 },
+                    [
+                      $data.id != "" ? (vue.openBlock(), vue.createElementBlock(
+                        "text",
+                        {
+                          key: 0,
+                          style: { "font-size": "26rpx" }
+                        },
+                        vue.toDisplayString($data.params.sn || "空"),
+                        1
+                        /* TEXT */
+                      )) : vue.createCommentVNode("v-if", true)
+                    ],
+                    64
+                    /* STABLE_FRAGMENT */
+                  )) : (vue.openBlock(), vue.createElementBlock(
+                    vue.Fragment,
+                    { key: 1 },
+                    [
+                      vue.createElementVNode("input", {
+                        placeholder: "请输入设备号(SN)",
+                        value: $data.params.sn,
+                        "data-item": "sn",
+                        onInput: _cache[9] || (_cache[9] = (...args) => $options.handleBindinput && $options.handleBindinput(...args))
+                      }, null, 40, ["value"]),
+                      vue.createElementVNode("image", {
+                        src: _imports_3,
+                        mode: "",
+                        onClick: _cache[10] || (_cache[10] = (...args) => $options.scanCode && $options.scanCode(...args)),
+                        style: { "width": "50rpx", "height": "50rpx" }
+                      })
+                    ],
+                    64
+                    /* STABLE_FRAGMENT */
+                  ))
+                ])
+              ]),
+              vue.createElementVNode("view", { class: "card-info-item" }, [
+                vue.createElementVNode("label", null, [
+                  vue.createTextVNode("code "),
+                  vue.createElementVNode("text", null, "*")
+                ]),
+                vue.createElementVNode("view", {
+                  class: "card-info-item-input",
+                  style: { "display": "flex", "flex-direction": "row", "align-items": "center" }
+                }, [
+                  $data.id != "" ? (vue.openBlock(), vue.createElementBlock(
+                    "text",
+                    {
+                      key: 0,
+                      style: { "font-size": "26rpx" }
+                    },
+                    vue.toDisplayString($data.params.code || "空"),
+                    1
+                    /* TEXT */
+                  )) : (vue.openBlock(), vue.createElementBlock("input", {
+                    key: 1,
+                    placeholder: "请输入code",
+                    value: $data.params.code,
+                    "data-item": "code",
+                    onInput: _cache[11] || (_cache[11] = (...args) => $options.handleBindinput && $options.handleBindinput(...args))
+                  }, null, 40, ["value"]))
+                ])
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "card-footer" }, [
+              vue.createElementVNode(
+                "view",
+                {
+                  onClick: _cache[12] || (_cache[12] = (...args) => $options.handleSubmit && $options.handleSubmit(...args))
+                },
+                "确认" + vue.toDisplayString($data.btnState),
+                1
+                /* TEXT */
+              )
+            ])
+          ])) : vue.createCommentVNode("v-if", true)
+        ],
+        4
+        /* STYLE */
+      ),
+      $data.c_activeTab == 1 && $data.g_flagMulti && $data.g_black.length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 0,
+        class: "levitation-button",
+        onClick: _cache[13] || (_cache[13] = (...args) => $options.handleJumpBlackInfo && $options.handleJumpBlackInfo(...args))
+      }, [
+        vue.createElementVNode("text", null, "确定")
+      ])) : vue.createCommentVNode("v-if", true)
+    ]);
+  }
+  const PagesListOfPrivateCarsListIndex = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$1], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/listOfPrivateCars/list/index.vue"]]);
+  const filter_sort = [
+    {
+      value: "asc",
+      name: "升序"
+    },
+    {
+      value: "desc",
+      name: "降序"
+    }
+  ];
+  const filter_type = [
+    {
+      value: "",
+      name: "全部"
+    },
+    {
+      value: 1,
+      name: "图片"
+    },
+    {
+      value: 2,
+      name: "视频"
+    },
+    {
+      value: 3,
+      name: "文档"
+    },
+    {
+      value: 4,
+      name: "其他"
+    }
+  ];
+  const _sfc_main$1 = {
+    data() {
+      return {
+        screenInfo: {},
+        navBarHeight: uni.getSystemInfoSync().platform == "ios" ? 49 : 44,
+        // 导航栏高度，默认值
+        searchBarHeight: 80,
+        // 搜索框高度，默认值
+        g_page: 1,
+        //列表页码
+        g_items: [],
+        //列表数据
+        g_param: {},
+        //筛选字段
+        g_triggered: false,
+        //下拉刷新状态
+        pageType: 0,
+        filter_industry: [],
+        filter_aggregate: [
+          {
+            id: 1,
+            name: "默认排序",
+            btnRender: false,
+            params: "a",
+            filter_work_status: filter_sort
+          },
+          {
+            id: 2,
+            name: "所有类型",
+            btnRender: false,
+            params: "a",
+            filter_work_status: filter_type
+          },
+          {
+            id: 3,
+            name: "所有行业",
+            btnRender: false,
+            params: "a",
+            filter_work_status: []
+          }
+        ],
+        s_background_picture_of_the_front_page: "",
+        g_total: 0
+      };
+    },
+    components: {
+      CustomNavBar
+    },
+    computed: {
+      // 状态栏高度
+      statusBarHeight() {
+        return this.screenInfo.statusBarHeight || 0;
+      },
+      // 导航栏高度
+      navBarHeight() {
+        return this.screenInfo.platform === "ios" ? 49 : 44;
+      },
+      // 导航栏总高度（状态栏+导航栏）
+      navbarTotalHeight() {
+        return this.statusBarHeight + this.navBarHeight;
+      },
+      // 安全区域高度
+      safeScreenHeight() {
+        return this.screenInfo.screenHeight || 667;
+      }
+    },
+    onLoad(options) {
+      this.pageType = (options == null ? void 0 : options.type) || 0;
+      this.$nextTick(() => {
+        this.initList();
+      });
+    },
+    onShow() {
+      this.initialiImageBaseConversion();
+      this.initialQuickEntry();
+      this.initialScreenInfo();
+    },
+    onReady() {
+    },
+    methods: {
+      // 获取屏幕信息
+      async initialScreenInfo() {
+        try {
+          this.screenInfo = await info_screen();
+        } catch (error) {
+          formatAppLog("error", "at pages/videoMaterials/index.vue:196", "[ScreenInfo] 获取屏幕信息失败:", error);
+          uni.showToast({
+            title: "设备信息获取失败",
+            icon: "none"
+          });
+        }
+      },
+      // 查询行业数据
+      async initialQuickEntry() {
+        const params = {
+          terminalId: -1
+        };
+        await u_industryList(params).then((response) => {
+          formatAppLog("log", "at pages/videoMaterials/index.vue:210", response);
+          const content = (response == null ? void 0 : response.content) || [];
+          const info = content.map(({
+            id,
+            name
+          }) => ({
+            value: id,
+            name
+          }));
+          const infoWithAll = [{
+            value: "",
+            name: "全部"
+          }, ...info];
+          const {
+            filter_aggregate
+          } = this;
+          if (Array.isArray(filter_aggregate) && filter_aggregate[2]) {
+            const updatedFilterAggregate = [...filter_aggregate];
+            updatedFilterAggregate[2] = {
+              ...updatedFilterAggregate[2],
+              filter_work_status: infoWithAll
+            };
+            this.filter_aggregate = updatedFilterAggregate;
+            this.filter_industry = infoWithAll;
+          }
+        });
+      },
+      // 全屏背景图
+      initialiImageBaseConversion() {
+        const imageMap = [{
+          path: "/static/images/home/car-bg.png",
+          key: "s_background_picture_of_the_front_page"
+        }];
+        const promises = imageMap.map(
+          (item) => new Promise((resolve, reject) => {
+            resolve({
+              [item.key]: item.path
+            });
+          })
+        );
+        Promise.all(promises).then((results) => {
+          const dataToUpdate = results.reduce((acc, curr) => ({
+            ...acc,
+            ...curr
+          }), {});
+          Object.keys(dataToUpdate).forEach((key) => {
+            this[key] = dataToUpdate[key];
+          });
+        });
+      },
+      bindPickerChange(evt) {
+        var _a, _b, _c;
+        const flag = (_b = (_a = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _a.dataset) == null ? void 0 : _b.id;
+        const key = (_c = evt == null ? void 0 : evt.detail) == null ? void 0 : _c.key;
+        const {
+          g_param,
+          filter_aggregate,
+          filter_industry
+        } = this;
+        const config = {
+          "1": {
+            targetKey: "sort",
+            sourceList: filter_sort
+          },
+          "2": {
+            targetKey: "fileType",
+            sourceList: filter_type
+          },
+          "3": {
+            targetKey: "industry",
+            sourceList: filter_industry
+          }
+        };
+        const setting = config[flag];
+        if (!setting)
+          return;
+        const {
+          targetKey,
+          sourceList
+        } = setting;
+        const selectedItem = sourceList == null ? void 0 : sourceList[key];
+        if (!selectedItem)
+          return;
+        const newGParam = {
+          ...g_param,
+          [targetKey]: selectedItem.value
+        };
+        const newFilterAggregate = [...filter_aggregate];
+        const index = newFilterAggregate.findIndex((item) => item.id == flag);
+        if (index !== -1) {
+          newFilterAggregate[index] = {
+            ...newFilterAggregate[index],
+            name: selectedItem.name
+            // 👈 关键：复用 name 字段
+          };
+        }
+        this.g_param = newGParam;
+        this.filter_aggregate = newFilterAggregate;
+        this.g_page = 1;
+        this.g_items = [];
+        this.$nextTick(() => {
+          this.initList();
+        });
+      },
+      handleBlur(evt) {
+        var _a;
+        const inputValue = ((_a = evt == null ? void 0 : evt.detail) == null ? void 0 : _a.value) ?? "";
+        const {
+          g_param
+        } = this;
+        this.g_param = {
+          ...g_param,
+          name: inputValue
+        };
+        this.g_page = 1;
+        this.g_items = [];
+        this.$nextTick(() => {
+          this.initList();
+        });
+      },
+      // 列表数据
+      async initList(evt) {
+        formatAppLog("log", "at pages/videoMaterials/index.vue:352", this.g_param);
+        ({
+          page: this.g_page,
+          ...this.g_param
+        });
+        const handle = evt ? u_promotionalApiWxBooklist : u_promotionalApi;
+        await handle().then((response) => {
+          formatAppLog("log", "at pages/videoMaterials/index.vue:359", response);
+          if (response.code == 1e3) {
+            if (this.g_page > 1 && response.content.length === 0) {
+              uni.showToast({
+                title: `已加载全部数据：共${this.g_items.length}条`,
+                icon: "none"
+              });
+            }
+            this.g_items = this.g_items.concat(response.content);
+            this.g_total = Number(response.count || 0).toLocaleString();
+          } else {
+            uni.showToast({
+              title: "请求失败，请稍后再试",
+              icon: "none"
+            });
+          }
+        });
+      },
+      // 触底请求
+      handleLower() {
+        this.g_page = this.g_page + 1;
+        this.$nextTick(() => {
+          this.initList(this.pageType);
+        });
+      },
+      /**
+       * 根据链接后缀判断类型：图片、视频、文档 或 其他
+       * @param {string} url - 链接地址
+       * @returns {string} 返回类型：'image' | 'video' | 'document' | 'unknown'
+       */
+      getLinkTypeByExtension(url) {
+        const match = url.match(/\.([a-zA-Z0-9]+)(\?|#|$)/);
+        if (!match)
+          return "unknown";
+        const ext = match[1].toLowerCase();
+        const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "ico"];
+        const videoExtensions = ["mp4", "webm", "ogg", "mov", "avi", "flv", "mkv"];
+        const documentExtensions = [
+          "pdf",
+          "doc",
+          "docx",
+          "ppt",
+          "pptx",
+          "xls",
+          "xlsx",
+          "txt",
+          "rtf",
+          "md",
+          "zip",
+          "rar"
+        ];
+        if (imageExtensions.includes(ext))
+          return "image";
+        if (videoExtensions.includes(ext))
+          return "video";
+        if (documentExtensions.includes(ext))
+          return "document";
+        return "unknown";
+      },
+      hadleCopyLink(evt) {
+        var _a, _b;
+        const info = (_b = (_a = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _a.dataset) == null ? void 0 : _b.item;
+        uni.setClipboardData({
+          data: `${info == null ? void 0 : info.title} https://k3a.wiselink.net.cn/img/${encodeURI(info.filepath)}`,
+          success: function() {
+            uni.showToast({
+              title: "已复制到剪贴板",
+              icon: "none"
+            });
+          },
+          fail: function(err) {
+            uni.showToast({
+              title: "复制失败",
+              icon: "none"
+            });
+            formatAppLog("error", "at pages/videoMaterials/index.vue:426", "复制失败:", err);
+          }
+        });
+      },
+      hadleView(evt) {
+        var _a, _b;
+        const path = `https://k3a.wiselink.net.cn/img/${(_b = (_a = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _a.dataset) == null ? void 0 : _b.item.filepath}`;
+        this.getLinkTypeByExtension(path);
+        uni.navigateTo({
+          url: `/pages/agreementWebView/agreementWebView?url=${path}`
+        });
+      }
+    }
+  };
+  function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_CustomNavBar = vue.resolveComponent("CustomNavBar");
+    return vue.openBlock(), vue.createElementBlock("view", { class: "container" }, [
+      vue.createVNode(_component_CustomNavBar, {
+        title: $data.pageType ? "使用指南" : "视频物料"
+      }, null, 8, ["title"]),
+      vue.createCommentVNode(" index.wxml "),
+      vue.createElementVNode(
+        "view",
+        {
+          class: "header-content",
+          style: vue.normalizeStyle("margin-top: " + $options.navbarTotalHeight + "px;")
+        },
+        [
+          vue.createCommentVNode(' <view class="search-box">\r\n				<input placeholder="请输入名称" @blur="handleBlur" class="search-input" />\r\n			</view> ')
+        ],
+        4
+        /* STYLE */
+      ),
+      vue.createElementVNode("view", { class: "record-container" }, [
+        vue.createCommentVNode(" 详情区域部分 "),
+        vue.createElementVNode("scroll-view", { "scroll-y": "" }, [
+          (vue.openBlock(true), vue.createElementBlock(
+            vue.Fragment,
+            null,
+            vue.renderList($data.g_items, (item, index) => {
+              return vue.openBlock(), vue.createElementBlock("view", {
+                key: index,
+                class: "content-item"
+              }, [
+                vue.createElementVNode("view", { class: "content-item-head" }, [
+                  vue.createElementVNode("view", { class: "head-left" }, [
+                    vue.createElementVNode("view", { class: "left-category" }, [
+                      vue.createElementVNode(
+                        "text",
+                        null,
+                        vue.toDisplayString(item.title),
+                        1
+                        /* TEXT */
+                      )
+                    ])
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "content-item-info" }, [
+                  !$data.pageType ? (vue.openBlock(), vue.createElementBlock("view", {
+                    key: 0,
+                    class: "info-item"
+                  }, [
+                    vue.createElementVNode("label", null, "主/子序号 ："),
+                    vue.createElementVNode(
+                      "text",
+                      null,
+                      vue.toDisplayString(item.dsx || "-") + "/" + vue.toDisplayString(item.xsx),
+                      1
+                      /* TEXT */
+                    )
+                  ])) : vue.createCommentVNode("v-if", true),
+                  !$data.pageType ? (vue.openBlock(), vue.createElementBlock(
+                    "view",
+                    {
+                      key: 1,
+                      class: vue.normalizeClass(["info-item", item.createusername && item.createusername.length > 15 ? "long-info-item" : ""])
+                    },
+                    [
+                      vue.createElementVNode("label", null, "创建人 ："),
+                      vue.createElementVNode(
+                        "text",
+                        null,
+                        vue.toDisplayString(item.createusername || "-"),
+                        1
+                        /* TEXT */
+                      )
+                    ],
+                    2
+                    /* CLASS */
+                  )) : vue.createCommentVNode("v-if", true),
+                  vue.createElementVNode(
+                    "view",
+                    {
+                      class: vue.normalizeClass(["info-item", item.fileTypeName && item.fileTypeName.length > 15 ? "long-info-item" : ""])
+                    },
+                    [
+                      vue.createElementVNode("label", null, "类型 ："),
+                      vue.createElementVNode(
+                        "text",
+                        null,
+                        vue.toDisplayString(item.fileTypeName || "-"),
+                        1
+                        /* TEXT */
+                      )
+                    ],
+                    2
+                    /* CLASS */
+                  ),
+                  vue.createElementVNode(
+                    "view",
+                    {
+                      class: vue.normalizeClass(["info-item", item.industryName && item.industryName.length > 15 ? "long-info-item" : ""])
+                    },
+                    [
+                      vue.createElementVNode("label", null, "行业 ："),
+                      vue.createElementVNode(
+                        "text",
+                        null,
+                        vue.toDisplayString(item.industryName || "-"),
+                        1
+                        /* TEXT */
+                      )
+                    ],
+                    2
+                    /* CLASS */
+                  ),
+                  vue.createElementVNode("view", { class: "info-item long-info-item" }, [
+                    vue.createElementVNode("label", null, "创建时间 ："),
+                    vue.createElementVNode(
+                      "text",
+                      null,
+                      vue.toDisplayString(item.createdate || "-"),
+                      1
+                      /* TEXT */
+                    )
+                  ]),
+                  vue.createElementVNode("view", { class: "info-item long-info-item" }, [
+                    vue.createElementVNode("label", null, "备注 ："),
+                    vue.createElementVNode(
+                      "text",
+                      null,
+                      vue.toDisplayString(item.bak || "-"),
+                      1
+                      /* TEXT */
+                    )
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "content-item-footer" }, [
+                  vue.createElementVNode("view", { class: "footer-left" }),
+                  vue.createElementVNode("view", {
+                    class: "footer-right",
+                    style: { "display": "flex", "gap": "10rpx" }
+                  }, [
+                    vue.createElementVNode("view", {
+                      class: "footer-right-btn",
+                      "data-item": item,
+                      onClick: _cache[0] || (_cache[0] = (...args) => $options.hadleView && $options.hadleView(...args))
+                    }, [
+                      vue.createElementVNode("text", null, "查看")
+                    ], 8, ["data-item"])
+                  ])
+                ])
+              ]);
+            }),
+            128
+            /* KEYED_FRAGMENT */
+          ))
+        ])
+      ])
+    ]);
+  }
+  const PagesVideoMaterialsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__scopeId", "data-v-60a55764"], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/videoMaterials/index.vue"]]);
   __definePage("pages/index/index", PagesIndexIndex);
+  __definePage("pages/ZoneHome/index", PagesZoneHomeIndex);
+  __definePage("pages/blackTeche/sendTheKey/index", PagesBlackTecheSendTheKeyIndex);
+  __definePage("pages/zoneCenter/index", PagesZoneCenterIndex);
+  __definePage("pages/listOfPrivateCars/list/index", PagesListOfPrivateCarsListIndex);
+  __definePage("pages/videoMaterials/index", PagesVideoMaterialsIndex);
   const _sfc_main = {
     onLaunch: function() {
       formatAppLog("log", "at App.vue:4", "App Launch");

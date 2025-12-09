@@ -11,4 +11,16 @@ export const u_getQrcodeImg = (data) => http.get('/deskapi/getQrcodeImg', data)
 export const u_getHomeArea = (data) => http.get('/deskapi/homeArea', data)
 export const u_booklist = (data) => http.get('/deskapi/booklist', data)
 export const u_mylist = (data) => http.get('/deskapi/mylist', data)
-  
+export const u_paivatecarList = (data) => http.get('/carapi/getCarList', data)
+export const u_paivateAddOrUpdateCar = (data) => http.postFormData('/carapi/addOrUpdateCar', data)
+export const u_paivateCarapiDeleteCar = (data) => http.postFormData('/carapi/deleteCar', data)
+export const u_paivateUpdateRentKey = (data) => http.postFormData('/rentKeyApi/updateRentKey', data) 
+export const u_paivateCarList = (data) => http.get('/carapi/getCarList', data) 
+export const u_paivateRentRecord = (data) => http.get('/rentKeyApi/rentRecord', data) 
+export const u_paivateSendRentKey = (data) => http.get('/rentKeyApi/sendRentKey', data) 
+export const u_paivateCancelRentKey = (data) => http.get('/rentKeyApi/cancelRentKey', data) 
+export const u_promotionalApi = (data) => http.get('/promotionalApi/list', data)
+export const u_promotionalApiWxBooklist = (data) => http.get('/promotionalApi/wxFilelist', data)
+export const u_industryList = (data) => http.get('/promotionalApi/industryList', data)
+
+

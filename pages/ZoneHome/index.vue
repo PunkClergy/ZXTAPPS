@@ -371,9 +371,16 @@
 				const targetPurePath = targetUrl.split('?')[0];
 				console.log(currentPath, targetPurePath);
 				if (currentPath !== targetPurePath) {
-					uni.redirectTo({
-						url: `/${targetUrl}`
-					});
+					if (targetPurePath == 'pages/privateCar/index') {
+						uni.redirectTo({
+							url: '/pages/index/index'
+						})
+					} else {
+						uni.redirectTo({
+							url: `/${targetUrl}`
+						});
+					}
+
 				}
 			},
 

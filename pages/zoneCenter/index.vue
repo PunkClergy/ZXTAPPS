@@ -79,11 +79,6 @@
 		u_navlist20,
 		u_mylist
 	} from '@/api'
-	// const {
-	// 	byGet,
-	// 	byPost,
-	// 	isLogin
-	// } = require('../../utils/request/http');
 	export default {
 		data() {
 			return {
@@ -244,9 +239,16 @@
 				const targetPurePath = targetUrl.split('?')[0];
 				console.log(currentPath, targetPurePath);
 				if (currentPath !== targetPurePath) {
-					uni.redirectTo({
-						url: `/${targetUrl}`
-					});
+					if (targetPurePath == 'pages/privateCar/index') {
+						uni.redirectTo({
+							url: '/pages/index/index'
+						})
+					} else {
+						uni.redirectTo({
+							url: `/${targetUrl}`
+						});
+					}
+
 				}
 			},
 
