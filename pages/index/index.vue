@@ -1724,6 +1724,8 @@
 		background: linear-gradient(to bottom left, #dbe2e8, #fff 100%);
 		background-repeat: no-repeat;
 		font-family: PingFang SC;
+		overflow: hidden !important;
+		height: 100% !important;
 	}
 
 	/* ========== 1. 头部区域样式 ========== */
