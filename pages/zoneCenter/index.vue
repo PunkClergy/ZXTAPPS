@@ -142,12 +142,10 @@
 			// 获取当前登录状态
 			initLoginStatus() {
 				uni.getStorage({
-					key: 'userKey',
+					key: 'user_info',
 					// 替换为你的缓存键值
 					success: (res) => {
-						this.setData({
-							account: res?.data?.companyName || res?.data?.username
-						});
+							this.account= res?.data?.companyName || res?.data?.username
 					},
 					fail(err) {
 						console.error('获取失败', err); // 失败时的错误信息
@@ -276,6 +274,9 @@
 
 			handleOnExistingAccountTap() {
 				console.log('占位：函数 handleOnExistingAccountTap 未声明');
+				uni.redirectTo({
+					url:'/pages/login/index'
+				})
 			},
 
 			onReachBottom() {

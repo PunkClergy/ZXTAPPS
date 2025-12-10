@@ -232,7 +232,7 @@
 			// 获取当前登录状态
 			initLoginStatus() {
 				uni.getStorage({
-					key: 'userKey',
+					key: 'user_info',
 					// 替换为你的缓存键值
 					success: (res) => {
 						this.account = res?.data?.companyName || res?.data?.username
@@ -408,6 +408,9 @@
 
 			handleOnExistingAccountTap() {
 				console.log('占位：函数 handleOnExistingAccountTap 未声明');
+				uni.redirectTo({
+					url:'/pages/login/index'
+				})
 			},
 
 			onReachBottom() {

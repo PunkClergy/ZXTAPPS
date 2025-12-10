@@ -22,5 +22,8 @@ export const u_paivateCancelRentKey = (data) => http.get('/rentKeyApi/cancelRent
 export const u_promotionalApi = (data) => http.get('/promotionalApi/list', data)
 export const u_promotionalApiWxBooklist = (data) => http.get('/promotionalApi/wxFilelist', data)
 export const u_industryList = (data) => http.get('/promotionalApi/industryList', data)
+export const login = (data) => http.postFormData('/api/login', data) 
+export const u_register = (data) => http.postFormData('/userapi/userReg', data) //注册
+
 
 
