@@ -145,7 +145,7 @@
 					key: 'user_info',
 					// 替换为你的缓存键值
 					success: (res) => {
-							this.account= res?.data?.companyName || res?.data?.username
+						this.account = res?.data?.companyName || res?.data?.username
 					},
 					fail(err) {
 						console.error('获取失败', err); // 失败时的错误信息
@@ -172,12 +172,15 @@
 
 			// 获取目录结构数据
 			async initDirectoryStructure() {
-				const response = await u_mylist()
-				if (response?.code == 1000) {
-					this.contentList = response?.content
+				const response = await u_mylist();
+				if (response?.code === 1000) {
+					this.contentList = response.content.concat({
+						iconPath: null,
+						menuId: null,
+						pagePath: "",
+						text: "退出"
+					});
 				}
-
-
 			},
 
 			// 点击“咨询” 显示入群二维码
@@ -262,6 +265,27 @@
 				console.log(evt);
 				const info = evt?.currentTarget?.dataset?.info;
 				if (!info || !info.pagePath) {
+					wx.showModal({
+						title: '提示',
+						content: '确定要退出吗？',
+						showCancel: true,
+						cancelText: '取消',
+						confirmText: '确定',
+						success: (res) => {
+							if (res.confirm) {
+								const app = getApp();
+								if (app?.data) app.data.userInfo = ''; // 安全修改全局数据
+								try {
+									wx.clearStorageSync();
+								} catch (e) {
+									console.error('清除存储失败', e);
+								}
+								wx.redirectTo({
+									url: '/pages/index/index'
+								});
+							}
+						}
+					});
 					return;
 				}
 				const {
@@ -275,7 +299,7 @@
 			handleOnExistingAccountTap() {
 				console.log('占位：函数 handleOnExistingAccountTap 未声明');
 				uni.redirectTo({
-					url:'/pages/login/index'
+					url: '/pages/login/index'
 				})
 			},
 
