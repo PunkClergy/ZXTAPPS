@@ -214,7 +214,6 @@ http.setInterceptor({
 		const token = uni.getStorageSync('token')
 		let header = config.header || {}
 		header['funAreaId'] = 1978//暂时写死参数
-		header['token'] = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjg4MTY1MTc5MjQ5LCJ1c2VyIjoie1wiYWNxdWllc2NlbnRcIjoxLFwiYnR5cGVcIjowLFwiY29tcGFueUlkXCI6ODM4MCxcImNvbXBhbnlOYW1lXCI6XCLljJfkuqzkuLDlj7DmgLvpg6jln7rlnLBcIixcImZpbjNDb21wYW55SWRcIjo3NDAsXCJpZFwiOjMzMTAsXCJpbnZpdGVDb2RlXCI6XCJCR1IwQlwiLFwibW9iaWxlXCI6XCIxMzY4MzE4NzAzOVwiLFwicGVyc29uSW52aXRlQ29kZVwiOlwiQkdSMEJcIixcInJlYWxuYW1lXCI6XCLniYjmnKxcIixcInVzZXJuYW1lXCI6XCIxMzY4MzE4NzAzOVwiLFwieGN4T3BlbklkXCI6XCJvdlhXODYzWEFQakYxZmVhWGhPbXlnQ0o4bDRjXCJ9IiwiaWF0IjoxNzY1MTc5MjQ5fQ.0RnsSvhAMHl2HCePO558NxKgg3og1Q9ySnLbRHsTum0'
 		
 		if (token) {
 			header['token'] = token
@@ -235,7 +234,7 @@ http.setInterceptor({
 		if (response.data.code === 9000) {
 			// token过期处理
 			uni.navigateTo({
-				url: '/pages/login/login'
+				url: '/pages/login/index'
 			})
 		}
 		return response

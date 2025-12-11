@@ -44,7 +44,9 @@
 							<view class="top-fixed-signal-layar-info">
 								<text class="top-fixed-signal-layar-title">当前电量：</text>
 								<text class="top-fixed-signal-text">{{ parsedData.electric || 100 }}%</text>
+								
 							</view>
+							<view style="color: #bbb;font-size: 20rpx;">私家车设备电量</view>
 						</view>
 						<view class="top-fixed-signal-layar">
 							<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/bluetooth@2x.png"
@@ -53,6 +55,7 @@
 								<text class="top-fixed-signal-layar-title">蓝牙状态：</text>
 								<text class="top-fixed-signal-text">{{ parsedData.electric?'蓝牙已连接':'蓝牙未连接' }}</text>
 							</view>
+							<view style="color: #bbb;font-size: 20rpx;">蓝牙连接，支持手动</view>
 						</view>
 						<view class="top-fixed-signal-layar">
 							<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/pair@2x.png"
@@ -61,13 +64,18 @@
 								<text class="top-fixed-signal-layar-title">蓝牙配对：</text>
 								<text class="top-fixed-signal-text">{{ parsedData.pairStatus || '未配对' }}</text>
 							</view>
+							<view style="color: #bbb;font-size: 20rpx;">蓝牙配对，感应生效</view>
 						</view>
 					</view>
 				</view>
 			</view>
 			<view class="middle-scroll">
 				<view class="middle-title">
-					<text>感应开关锁</text>
+					<view style="display: flex;flex-direction: column;">
+						<text>感应开关锁</text>
+						<text style="font-size: 20rpx;color: #bbb;">开启后支持感应舒适进入功能，关闭则禁用该功能。</text>
+						</view>
+					
 					<switch @change="handleToggleSensorMode" :checked="parsedData.inductionMode" color="#1B64B1"
 						style="transform: scale(0.8)" />
 				</view>
