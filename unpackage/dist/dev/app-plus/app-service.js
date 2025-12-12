@@ -480,7 +480,6 @@ if (uni.restoreGlobal) {
       const token = uni.getStorageSync("token");
       let header = config.header || {};
       header["funAreaId"] = 1978;
-      header["token"] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjg4MTY1MTc5MjQ5LCJ1c2VyIjoie1wiYWNxdWllc2NlbnRcIjoxLFwiYnR5cGVcIjowLFwiY29tcGFueUlkXCI6ODM4MCxcImNvbXBhbnlOYW1lXCI6XCLljJfkuqzkuLDlj7DmgLvpg6jln7rlnLBcIixcImZpbjNDb21wYW55SWRcIjo3NDAsXCJpZFwiOjMzMTAsXCJpbnZpdGVDb2RlXCI6XCJCR1IwQlwiLFwibW9iaWxlXCI6XCIxMzY4MzE4NzAzOVwiLFwicGVyc29uSW52aXRlQ29kZVwiOlwiQkdSMEJcIixcInJlYWxuYW1lXCI6XCLniYjmnKxcIixcInVzZXJuYW1lXCI6XCIxMzY4MzE4NzAzOVwiLFwieGN4T3BlbklkXCI6XCJvdlhXODYzWEFQakYxZmVhWGhPbXlnQ0o4bDRjXCJ9IiwiaWF0IjoxNzY1MTc5MjQ5fQ.0RnsSvhAMHl2HCePO558NxKgg3og1Q9ySnLbRHsTum0";
       if (token) {
         header["token"] = token;
       }
@@ -495,7 +494,7 @@ if (uni.restoreGlobal) {
     response: (response) => {
       if (response.data.code === 9e3) {
         uni.navigateTo({
-          url: "/pages/login/login"
+          url: "/pages/login/index"
         });
       }
       return response;
@@ -521,6 +520,8 @@ if (uni.restoreGlobal) {
   const u_promotionalApi = (data) => http.get("/promotionalApi/list", data);
   const u_promotionalApiWxBooklist = (data) => http.get("/promotionalApi/wxFilelist", data);
   const u_industryList = (data) => http.get("/promotionalApi/industryList", data);
+  const login = (data) => http.postFormData("/api/login", data);
+  const u_register = (data) => http.postFormData("/userapi/userReg", data);
   const getSystemInfoComplete = (systemInfo, complete) => {
     uni.getSystemInfo({
       success: systemInfo,
@@ -1533,7 +1534,7 @@ if (uni.restoreGlobal) {
     connectBLEConnected,
     isDeviceConnected
   };
-  const _imports_0$3 = "/static/assets/images/home/right_1.png";
+  const _imports_0$4 = "/static/assets/images/home/right_1.png";
   const _imports_1$4 = "/static/assets/images/home/car_icon.png";
   const _imports_2$1 = "/static/assets/images/close.png";
   const _export_sfc = (sfc, props) => {
@@ -1555,7 +1556,7 @@ if (uni.restoreGlobal) {
     CONTROL_WINDOW: 7
     //操作车窗
   };
-  const _sfc_main$8 = {
+  const _sfc_main$a = {
     components: {},
     data() {
       return {
@@ -1698,7 +1699,6 @@ if (uni.restoreGlobal) {
       this.initBottomDirectory();
       this.initToConfigureCache();
       this.handleSystemInfo();
-      this.initCheckTimer();
       this.options = options;
     },
     onShow: function() {
@@ -1725,8 +1725,23 @@ if (uni.restoreGlobal) {
       });
     },
     onReady() {
+      this.initLoginStatus();
     },
     methods: {
+      // 获取当前登录状态
+      initLoginStatus() {
+        uni.getStorage({
+          key: "user_info",
+          success: (res2) => {
+            var _a, _b;
+            formatAppLog("log", "at pages/index/index.vue:541", res2);
+            this.account = ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username);
+          },
+          fail(err) {
+            formatAppLog("error", "at pages/index/index.vue:546", "获取失败", err);
+          }
+        });
+      },
       // 点击操作手动区事件
       handleParseEventDynamicCode($, evt) {
         this.handleEvent(evt);
@@ -1787,7 +1802,7 @@ if (uni.restoreGlobal) {
           return;
         }
         const targetPurePath = targetUrl.split("?")[0];
-        formatAppLog("log", "at pages/index/index.vue:590", currentPath, targetPurePath);
+        formatAppLog("log", "at pages/index/index.vue:613", currentPath, targetPurePath);
         if (currentPath !== targetPurePath) {
           if (targetPurePath == "pages/privateCar/index") {
             uni.redirectTo({
@@ -1908,14 +1923,14 @@ if (uni.restoreGlobal) {
               pixelRatio,
               statusBarHeight
             };
-            formatAppLog("log", "at pages/index/index.vue:716", "设备信息:", this.deviceInfo);
+            formatAppLog("log", "at pages/index/index.vue:739", "设备信息:", this.deviceInfo);
           },
           fail: console.error
         });
       },
       // 启动连接状态轮询
       startConnectionStatusPolling() {
-        formatAppLog("log", "at pages/index/index.vue:724", this.pageInterval);
+        formatAppLog("log", "at pages/index/index.vue:747", this.pageInterval);
         if (this.pageInterval) {
           return;
         }
@@ -1935,24 +1950,10 @@ if (uni.restoreGlobal) {
         this.g_capsule_distance_to_the_right = 0;
         this.g_screenTotalHeight = screenHeight;
       },
-      // 获取当前登录状态
-      initLoginStatus() {
-        uni.getStorage({
-          key: "userKey",
-          // 替换为你的缓存键值
-          success: (res2) => {
-            var _a, _b;
-            this.account = ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username);
-          },
-          fail(err) {
-            formatAppLog("error", "at pages/index/index.vue:757", "获取失败", err);
-          }
-        });
-      },
       // 初始化钥匙按钮内容
       initContro() {
         this.controlItemspanel = this.splitArray(dist.getControlItems(), 4);
-        formatAppLog("log", "at pages/index/index.vue:765", this.splitArray(dist.getControlItems(), 4));
+        formatAppLog("log", "at pages/index/index.vue:775", this.splitArray(dist.getControlItems(), 4));
       },
       initCheckTimer() {
         if (this.checkTimer) {
@@ -1977,7 +1978,7 @@ if (uni.restoreGlobal) {
           that.orgKey = that.handleTransformation(data == null ? void 0 : data.bluetoothKey);
           that.orgKeyOld = data == null ? void 0 : data.bluetoothKey;
           that.bluetoothData = data;
-          formatAppLog("log", "at pages/index/index.vue:795", that);
+          formatAppLog("log", "at pages/index/index.vue:805", that);
           setTimeout(() => {
             that.handleBule();
           }, 500);
@@ -1994,11 +1995,11 @@ if (uni.restoreGlobal) {
             that.code = code;
             handleData(response.data.content);
           }).catch((err) => {
-            formatAppLog("error", "at pages/index/index.vue:815", "获取蓝牙数据失败:", err);
+            formatAppLog("error", "at pages/index/index.vue:825", "获取蓝牙数据失败:", err);
           });
         };
         if (options == null ? void 0 : options.scene) {
-          formatAppLog("log", "at pages/index/index.vue:822", "处理URL参数:", options.scene);
+          formatAppLog("log", "at pages/index/index.vue:832", "处理URL参数:", options.scene);
           fetchBluetoothData(options.scene);
           uni.setStorage({
             key: "scene",
@@ -2091,9 +2092,9 @@ if (uni.restoreGlobal) {
       },
       // 处理蓝牙连接状态：检查设备是否已连接，决定执行连接或重连逻辑
       handleBule() {
-        formatAppLog("log", "at pages/index/index.vue:926", "idc", this.deviceIDC);
+        formatAppLog("log", "at pages/index/index.vue:936", "idc", this.deviceIDC);
         bleKeyManager.isDeviceConnected(this.deviceIDC, (status, param) => {
-          formatAppLog("log", "at pages/index/index.vue:928", "222222222--2-2-2-22-2-", status);
+          formatAppLog("log", "at pages/index/index.vue:938", "222222222--2-2-2-22-2-", status);
           if (status) {
             this.btnStartConnectConnected();
           } else {
@@ -2224,7 +2225,7 @@ if (uni.restoreGlobal) {
       },
       // 打包并发送数据（支持动态数据体长度）
       PackAndSend3a(type, dataLength, data, sign) {
-        formatAppLog("log", "at pages/index/index.vue:1089", type, dataLength, data, sign);
+        formatAppLog("log", "at pages/index/index.vue:1099", type, dataLength, data, sign);
         const header = [36];
         const end = [36];
         const paddedData = [...data].concat(new Array(dataLength - data.length).fill(0)).slice(
@@ -2243,7 +2244,7 @@ if (uni.restoreGlobal) {
       PackAndSend07: function(type, len, data) {
         const defaultData = [0, 0, 0, 0, 0, 0, 0];
         var packet = [36, type, len, data, ...defaultData, 36];
-        formatAppLog("log", "at pages/index/index.vue:1106", packet);
+        formatAppLog("log", "at pages/index/index.vue:1116", packet);
         bleKeyManager.dispatcherSend2(this.arrayToArrayBuffer(packet));
       },
       // 数组转ArrayBuffer
@@ -2299,9 +2300,9 @@ if (uni.restoreGlobal) {
       },
       //  数据解析按钮处理
       parseData: function(hexData) {
-        formatAppLog("log", "at pages/index/index.vue:1187", "hexData", hexData);
+        formatAppLog("log", "at pages/index/index.vue:1197", "hexData", hexData);
         const parsedResult = dist.getParseHexDataObject(hexData);
-        formatAppLog("log", "at pages/index/index.vue:1189", "parsedResult", parsedResult);
+        formatAppLog("log", "at pages/index/index.vue:1199", "parsedResult", parsedResult);
         if (parsedResult) {
           this.parsedData = parsedResult;
           this.updateMyPositionStyles();
@@ -2434,7 +2435,7 @@ if (uni.restoreGlobal) {
               }
             });
             const result = Array.from(uniqueMap.values());
-            formatAppLog("log", "at pages/index/index.vue:1340", "合并并优先保留 enabled=false 的结果：", result);
+            formatAppLog("log", "at pages/index/index.vue:1350", "合并并优先保留 enabled=false 的结果：", result);
             this.controlItems = result;
             setTimeout(() => {
               this.controlItemspanel = this.splitArray(result, 4);
@@ -2510,7 +2511,7 @@ if (uni.restoreGlobal) {
         }
         const touchX = touch.clientX;
         const relativeX = touchX - trackInfo.left;
-        formatAppLog("log", "at pages/index/index.vue:1434", `${trackId} - 判断滑动值`);
+        formatAppLog("log", "at pages/index/index.vue:1444", `${trackId} - 判断滑动值`);
         const trackConfig = {
           lockTrack: {
             maxProgress: 200,
@@ -2588,7 +2589,7 @@ if (uni.restoreGlobal) {
                 duration: 1500
               });
             } else {
-              formatAppLog("warn", "at pages/index/index.vue:1516", "[提示]", tipText);
+              formatAppLog("warn", "at pages/index/index.vue:1526", "[提示]", tipText);
             }
           }
         };
@@ -2613,7 +2614,7 @@ if (uni.restoreGlobal) {
               trackType
             );
           }
-          formatAppLog("log", "at pages/index/index.vue:1541", trackId, trackType);
+          formatAppLog("log", "at pages/index/index.vue:1551", trackId, trackType);
           if (trackType == "lock") {
             this.lockThumbStyle = `left: ${validProgress / 2}%;`;
             this.lockRange = validProgress / 2;
@@ -2703,7 +2704,7 @@ if (uni.restoreGlobal) {
         };
         const instructionMap = dist.getInstructionMap(sendCommand);
         const idActions = instructionMap[id];
-        formatAppLog("log", "at pages/index/index.vue:1650", idActions);
+        formatAppLog("log", "at pages/index/index.vue:1660", idActions);
         if (!idActions) {
           return;
         }
@@ -2768,11 +2769,14 @@ if (uni.restoreGlobal) {
         });
       },
       handleOnExistingAccountTap() {
-        formatAppLog("log", "at pages/index/index.vue:1723", "占位：函数 handleOnExistingAccountTap 未声明");
+        formatAppLog("log", "at pages/index/index.vue:1733", "占位：函数 handleOnExistingAccountTap 未声明");
+        uni.redirectTo({
+          url: "/pages/login/index"
+        });
       }
     }
   };
-  function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", null, [
       vue.createCommentVNode(" 自定义头部区域：使用custom-header样式 "),
       vue.createElementVNode(
@@ -2800,7 +2804,7 @@ if (uni.restoreGlobal) {
                   }, "请登录"),
                   vue.createElementVNode("image", {
                     onClick: _cache[1] || (_cache[1] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args)),
-                    src: _imports_0$3
+                    src: _imports_0$4
                   })
                 ],
                 64
@@ -2868,7 +2872,8 @@ if (uni.restoreGlobal) {
                       1
                       /* TEXT */
                     )
-                  ])
+                  ]),
+                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx" } }, "私家车设备电量")
                 ]),
                 vue.createElementVNode("view", { class: "top-fixed-signal-layar" }, [
                   vue.createElementVNode("image", {
@@ -2884,7 +2889,8 @@ if (uni.restoreGlobal) {
                       1
                       /* TEXT */
                     )
-                  ])
+                  ]),
+                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx" } }, "蓝牙连接，支持手动")
                 ]),
                 vue.createElementVNode("view", { class: "top-fixed-signal-layar" }, [
                   vue.createElementVNode("image", {
@@ -2900,14 +2906,18 @@ if (uni.restoreGlobal) {
                       1
                       /* TEXT */
                     )
-                  ])
+                  ]),
+                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx" } }, "蓝牙配对，感应生效")
                 ])
               ])
             ])
           ]),
           vue.createElementVNode("view", { class: "middle-scroll" }, [
             vue.createElementVNode("view", { class: "middle-title" }, [
-              vue.createElementVNode("text", null, "感应开关锁"),
+              vue.createElementVNode("view", { style: { "display": "flex", "flex-direction": "column" } }, [
+                vue.createElementVNode("text", null, "感应开关锁"),
+                vue.createElementVNode("text", { style: { "font-size": "20rpx", "color": "#bbb" } }, "开启后支持感应舒适进入功能，关闭则禁用该功能。")
+              ]),
               vue.createElementVNode("switch", {
                 onChange: _cache[4] || (_cache[4] = (...args) => $options.handleToggleSensorMode && $options.handleToggleSensorMode(...args)),
                 checked: $data.parsedData.inductionMode,
@@ -3361,7 +3371,7 @@ if (uni.restoreGlobal) {
                                     1
                                     /* TEXT */
                                   ),
-                                  vue.createElementVNode("image", { src: _imports_0$3 })
+                                  vue.createElementVNode("image", { src: _imports_0$4 })
                                 ])
                               ], 40, ["data-item", "data-index", "range"])
                             ])
@@ -3423,9 +3433,9 @@ if (uni.restoreGlobal) {
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesIndexIndex = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$7], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/index/index.vue"]]);
+  const PagesIndexIndex = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$9], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/index/index.vue"]]);
   const _imports_1$3 = "/static/assets/images/index/useGuideIcon.png";
-  const _sfc_main$7 = {
+  const _sfc_main$9 = {
     data() {
       return {
         // 底部tabbar高度
@@ -3511,7 +3521,7 @@ if (uni.restoreGlobal) {
       // 获取当前登录状态
       initLoginStatus() {
         uni.getStorage({
-          key: "userKey",
+          key: "user_info",
           // 替换为你的缓存键值
           success: (res2) => {
             var _a, _b;
@@ -3675,19 +3685,22 @@ if (uni.restoreGlobal) {
       },
       handleOnExistingAccountTap() {
         formatAppLog("log", "at pages/ZoneHome/index.vue:410", "占位：函数 handleOnExistingAccountTap 未声明");
+        uni.redirectTo({
+          url: "/pages/login/index"
+        });
       },
       onReachBottom() {
-        formatAppLog("log", "at pages/ZoneHome/index.vue:414", "占位：函数 onReachBottom 未声明");
+        formatAppLog("log", "at pages/ZoneHome/index.vue:417", "占位：函数 onReachBottom 未声明");
       },
       handleUseJump() {
-        formatAppLog("log", "at pages/ZoneHome/index.vue:418", "占位：函数 handleUseJump 未声明");
+        formatAppLog("log", "at pages/ZoneHome/index.vue:421", "占位：函数 handleUseJump 未声明");
       },
       handleOnGetPhoneNumber() {
-        formatAppLog("log", "at pages/ZoneHome/index.vue:422", "占位：函数 handleOnGetPhoneNumber 未声明");
+        formatAppLog("log", "at pages/ZoneHome/index.vue:425", "占位：函数 handleOnGetPhoneNumber 未声明");
       }
     }
   };
-  function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     var _a;
     return vue.openBlock(), vue.createElementBlock("view", null, [
       vue.createCommentVNode(" 页面根容器：设置整体背景图，使用container样式控制布局 "),
@@ -3730,7 +3743,7 @@ if (uni.restoreGlobal) {
                       }, "请登录"),
                       vue.createElementVNode("image", {
                         onClick: _cache[1] || (_cache[1] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args)),
-                        src: _imports_0$3
+                        src: _imports_0$4
                       })
                     ],
                     64
@@ -3998,7 +4011,7 @@ if (uni.restoreGlobal) {
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesZoneHomeIndex = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$6], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/ZoneHome/index.vue"]]);
+  const PagesZoneHomeIndex = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$8], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/ZoneHome/index.vue"]]);
   const info_screen = () => {
     return new Promise((resolve, reject) => {
       uni.getSystemInfo({
@@ -4013,9 +4026,9 @@ if (uni.restoreGlobal) {
       });
     });
   };
-  const _imports_0$2 = "/static/public/nav_left.png";
+  const _imports_0$3 = "/static/public/nav_left.png";
   const _imports_1$2 = "/static/public/home.png";
-  const _sfc_main$6 = {
+  const _sfc_main$8 = {
     name: "CustomHeader",
     props: {
       title: {
@@ -4085,7 +4098,7 @@ if (uni.restoreGlobal) {
       this.initialScreenInfo();
     }
   };
-  function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -4114,7 +4127,7 @@ if (uni.restoreGlobal) {
           [
             vue.createElementVNode("view", { style: { "display": "flex", "align-items": "center", "gap": "30rpx" } }, [
               vue.createElementVNode("image", {
-                src: _imports_0$2,
+                src: _imports_0$3,
                 class: "action-icon back-icon",
                 onClick: _cache[0] || (_cache[0] = (...args) => $options.handleBack && $options.handleBack(...args))
               }),
@@ -4140,8 +4153,8 @@ if (uni.restoreGlobal) {
       /* STYLE */
     );
   }
-  const CustomNavBar = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$5], ["__scopeId", "data-v-3f55fa2f"], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/components/custom-header/index.vue"]]);
-  const _sfc_main$5 = {
+  const CustomNavBar = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$7], ["__scopeId", "data-v-3f55fa2f"], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/components/custom-header/index.vue"]]);
+  const _sfc_main$7 = {
     data() {
       return {};
     },
@@ -4155,7 +4168,7 @@ if (uni.restoreGlobal) {
     created: function() {
     }
   };
-  function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "timeline-container" }, [
       (vue.openBlock(true), vue.createElementBlock(
         vue.Fragment,
@@ -4196,10 +4209,10 @@ if (uni.restoreGlobal) {
       ))
     ]);
   }
-  const timeLine = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$4], ["__scopeId", "data-v-3085ce19"], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/components/timeline/timeline.vue"]]);
-  const _imports_0$1 = "/static/public/car_01.png";
+  const timeLine = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$6], ["__scopeId", "data-v-3085ce19"], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/components/timeline/timeline.vue"]]);
+  const _imports_0$2 = "/static/public/car_01.png";
   const _imports_1$1 = "/static/privateCar/right_1.png";
-  const _sfc_main$4 = {
+  const _sfc_main$6 = {
     components: {
       CustomNavBar,
       timeLine
@@ -4648,7 +4661,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_CustomNavBar = vue.resolveComponent("CustomNavBar");
     const _component_time_line = vue.resolveComponent("time-line");
     return vue.openBlock(), vue.createElementBlock("view", null, [
@@ -4708,7 +4721,7 @@ if (uni.restoreGlobal) {
                     vue.createElementVNode("view", { class: "content-item-head" }, [
                       vue.createElementVNode("view", { class: "head-left" }, [
                         vue.createElementVNode("view", { class: "left-category" }, [
-                          vue.createElementVNode("image", { src: _imports_0$1 }),
+                          vue.createElementVNode("image", { src: _imports_0$2 }),
                           vue.createElementVNode(
                             "text",
                             null,
@@ -5258,8 +5271,8 @@ if (uni.restoreGlobal) {
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesBlackTecheSendTheKeyIndex = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/blackTeche/sendTheKey/index.vue"]]);
-  const _sfc_main$3 = {
+  const PagesBlackTecheSendTheKeyIndex = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$5], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/blackTeche/sendTheKey/index.vue"]]);
+  const _sfc_main$5 = {
     data() {
       return {
         // 底部tabbar高度
@@ -5311,16 +5324,14 @@ if (uni.restoreGlobal) {
       // 获取当前登录状态
       initLoginStatus() {
         uni.getStorage({
-          key: "userKey",
+          key: "user_info",
           // 替换为你的缓存键值
           success: (res2) => {
             var _a, _b;
-            this.setData({
-              account: ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username)
-            });
+            this.account = ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username);
           },
           fail(err) {
-            formatAppLog("error", "at pages/zoneCenter/index.vue:153", "获取失败", err);
+            formatAppLog("error", "at pages/zoneCenter/index.vue:151", "获取失败", err);
           }
         });
       },
@@ -5343,8 +5354,13 @@ if (uni.restoreGlobal) {
       // 获取目录结构数据
       async initDirectoryStructure() {
         const response = await u_mylist();
-        if ((response == null ? void 0 : response.code) == 1e3) {
-          this.contentList = response == null ? void 0 : response.content;
+        if ((response == null ? void 0 : response.code) === 1e3) {
+          this.contentList = response.content.concat({
+            iconPath: null,
+            menuId: null,
+            pagePath: "",
+            text: "退出"
+          });
         }
       },
       // 点击“咨询” 显示入群二维码
@@ -5399,7 +5415,7 @@ if (uni.restoreGlobal) {
           return;
         }
         const targetPurePath = targetUrl.split("?")[0];
-        formatAppLog("log", "at pages/zoneCenter/index.vue:240", currentPath, targetPurePath);
+        formatAppLog("log", "at pages/zoneCenter/index.vue:241", currentPath, targetPurePath);
         if (currentPath !== targetPurePath) {
           if (targetPurePath == "pages/privateCar/index") {
             uni.redirectTo({
@@ -5421,9 +5437,31 @@ if (uni.restoreGlobal) {
       // 点击工具执行
       handleFunExe(evt) {
         var _a, _b;
-        formatAppLog("log", "at pages/zoneCenter/index.vue:264", evt);
+        formatAppLog("log", "at pages/zoneCenter/index.vue:265", evt);
         const info = (_b = (_a = evt == null ? void 0 : evt.currentTarget) == null ? void 0 : _a.dataset) == null ? void 0 : _b.info;
         if (!info || !info.pagePath) {
+          wx.showModal({
+            title: "提示",
+            content: "确定要退出吗？",
+            showCancel: true,
+            cancelText: "取消",
+            confirmText: "确定",
+            success: (res2) => {
+              if (res2.confirm) {
+                const app = getApp();
+                if (app == null ? void 0 : app.data)
+                  app.data.userInfo = "";
+                try {
+                  wx.clearStorageSync();
+                } catch (e2) {
+                  formatAppLog("error", "at pages/zoneCenter/index.vue:281", "清除存储失败", e2);
+                }
+                wx.redirectTo({
+                  url: "/pages/index/index"
+                });
+              }
+            }
+          });
           return;
         }
         const {
@@ -5434,14 +5472,17 @@ if (uni.restoreGlobal) {
         });
       },
       handleOnExistingAccountTap() {
-        formatAppLog("log", "at pages/zoneCenter/index.vue:278", "占位：函数 handleOnExistingAccountTap 未声明");
+        formatAppLog("log", "at pages/zoneCenter/index.vue:300", "占位：函数 handleOnExistingAccountTap 未声明");
+        uni.redirectTo({
+          url: "/pages/login/index"
+        });
       },
       onReachBottom() {
-        formatAppLog("log", "at pages/zoneCenter/index.vue:282", "占位：函数 onReachBottom 未声明");
+        formatAppLog("log", "at pages/zoneCenter/index.vue:307", "占位：函数 onReachBottom 未声明");
       }
     }
   };
-  function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", null, [
       vue.createCommentVNode(" 页面根容器：设置整体背景图，使用container样式控制布局 "),
       vue.createElementVNode("view", { class: "container" }, [
@@ -5472,7 +5513,7 @@ if (uni.restoreGlobal) {
                     }, "请登录"),
                     vue.createElementVNode("image", {
                       onClick: _cache[1] || (_cache[1] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args)),
-                      src: _imports_0$3
+                      src: _imports_0$4
                     })
                   ],
                   64
@@ -5516,7 +5557,7 @@ if (uni.restoreGlobal) {
                         )
                       ]),
                       vue.createElementVNode("image", {
-                        src: _imports_0$3,
+                        src: _imports_0$4,
                         class: "my-content-list-item__arrow",
                         mode: "widthFix"
                       })
@@ -5610,12 +5651,12 @@ if (uni.restoreGlobal) {
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesZoneCenterIndex = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/zoneCenter/index.vue"]]);
-  const _imports_0 = "/static/privateCar/car_icon.png";
+  const PagesZoneCenterIndex = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$4], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/zoneCenter/index.vue"]]);
+  const _imports_0$1 = "/static/privateCar/car_icon.png";
   const _imports_1 = "/static/privateCar/_edit.png";
   const _imports_2 = "/static/privateCar/_delete.png";
   const _imports_3 = "/static/privateCar/ss.png";
-  const _sfc_main$2 = {
+  const _sfc_main$4 = {
     components: {
       CustomNavBar
     },
@@ -6070,7 +6111,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_CustomNavBar = vue.resolveComponent("CustomNavBar");
     return vue.openBlock(), vue.createElementBlock("view", { class: "container" }, [
       vue.createVNode(_component_CustomNavBar, { title: "设备清单" }),
@@ -6130,7 +6171,7 @@ if (uni.restoreGlobal) {
                     vue.createElementVNode("view", { class: "content-item-head" }, [
                       vue.createElementVNode("view", { class: "head-left" }, [
                         vue.createElementVNode("view", { class: "left-category" }, [
-                          vue.createElementVNode("image", { src: _imports_0 }),
+                          vue.createElementVNode("image", { src: _imports_0$1 }),
                           vue.createElementVNode(
                             "text",
                             null,
@@ -6362,7 +6403,7 @@ if (uni.restoreGlobal) {
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesListOfPrivateCarsListIndex = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$1], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/listOfPrivateCars/list/index.vue"]]);
+  const PagesListOfPrivateCarsListIndex = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/listOfPrivateCars/list/index.vue"]]);
   const filter_sort = [
     {
       value: "asc",
@@ -6395,7 +6436,7 @@ if (uni.restoreGlobal) {
       name: "其他"
     }
   ];
-  const _sfc_main$1 = {
+  const _sfc_main$3 = {
     data() {
       return {
         screenInfo: {},
@@ -6711,7 +6752,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_CustomNavBar = vue.resolveComponent("CustomNavBar");
     return vue.openBlock(), vue.createElementBlock("view", { class: "container" }, [
       vue.createVNode(_component_CustomNavBar, {
@@ -6868,13 +6909,581 @@ if (uni.restoreGlobal) {
       ])
     ]);
   }
-  const PagesVideoMaterialsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__scopeId", "data-v-60a55764"], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/videoMaterials/index.vue"]]);
+  const PagesVideoMaterialsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2], ["__scopeId", "data-v-60a55764"], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/videoMaterials/index.vue"]]);
+  const langs = {
+    "zh-CN": {
+      language: "English",
+      signedin: "已登录",
+      signin: "去登录",
+      vehiclelist: "车辆列表",
+      vehiclebinding: "车辆绑定",
+      vehicle: "车辆",
+      create: "新增",
+      update: "修改",
+      dailyrental: "短租",
+      vin: "车架号",
+      fuel: "油箱容积",
+      cartype: "车辆类型",
+      platform: "设备平台",
+      devID: "设备号",
+      selfserve: "自助取还",
+      fullservice: "非自助取还",
+      selectcar: "选择此车",
+      plate: "车牌号",
+      series: "车系",
+      model: "车型",
+      year: "年款",
+      start: "启动方式",
+      confirm: "确认",
+      pushstart: "一键启动",
+      physkey: "机械钥匙",
+      other: "其他",
+      explain: "说明",
+      explain1: "为使用按键按下启动",
+      explain2: "为使用钥匙片拧动启动",
+      licenseplatenumber: "请输入车牌号",
+      deviceidentificationnumber: "请输入设备号",
+      vehicleseries: "请输入车系",
+      vehiclemodel: "请输入车型",
+      modelyear: "请输入年款",
+      vehicleidentificationnumber: "请输入车架号",
+      fueltankcapacity: "请输入邮箱容积",
+      userdirectory: "人员列表",
+      accesscontrol: "权限管理",
+      account: "账号",
+      role: "角色",
+      mobile: "手机号",
+      permissionssettings: "权限设置",
+      adduser: "新增人员",
+      edituser: "修改人员",
+      user: "人员",
+      name: "姓名",
+      password: "密码",
+      pleaseaccount: "请输入账号",
+      pleasename: "请输入姓名",
+      pleasepassword: "请输入密码",
+      pleasemobile: "请输入手机号",
+      transferadmin: "移交管理员",
+      sendkey: "发送钥匙",
+      usagelog: "使用记录",
+      cancelled: "已取消",
+      inuse: "使用中",
+      copylink: "复制链接",
+      cancelride: "取消用车",
+      starttime: "Start Time",
+      endtime: "End Time",
+      vehicleselection: "选择车辆",
+      reselect: "重新选择",
+      company: "企业名称",
+      contact: "联系人",
+      phone: "联系电话",
+      notes: "备注",
+      invoice_name: "开票名称",
+      tax_id: "纳税人识别号",
+      address: "地址",
+      bank: "开户行",
+      company_placeholder: "请输入企业名称",
+      contact_placeholder: "请输入联系人",
+      phone_placeholder: "请输入联系电话",
+      notes_placeholder: "请输入备注",
+      invoice_name_placeholder: "请输入开票名称",
+      tax_id_placeholder: "请输入纳税人识别号",
+      address_placeholder: "请输入地址",
+      bank_placeholder: "请输入开户行",
+      account_placeholder: "请输入开户账号",
+      phone_number: "请输入电话",
+      businesshours: "营业时间",
+      signup: "注册",
+      haveanaccount: "已有账号?",
+      loginnow: "立即登录",
+      entercode: "请输入验证码",
+      Reenterpassword: "请再次输入密码",
+      verificationcode: "验证码",
+      confirmpassword: "确认密码",
+      username: "用户名",
+      pleaseusername: "请输入用户名"
+    },
+    "en-US": {
+      language: "中文",
+      signedin: "Signed in",
+      signin: "Sign in",
+      vehiclelist: "Vehicle List",
+      vehiclebinding: "Vehicle Binding",
+      vehicle: "Vehicle",
+      create: "Create ",
+      update: "Update ",
+      dailyrental: "D.Rental",
+      vin: "Vin",
+      fuel: "Fuel",
+      cartype: "Car Type",
+      platform: "Platform",
+      devID: "DevID",
+      selfserve: "Self-Serve",
+      fullservice: "Full-Service",
+      selectcar: "Select Car",
+      plate: "Plate",
+      series: "Series",
+      model: "Model",
+      year: "Year",
+      start: "Start",
+      confirm: "Confirm ",
+      pushstart: "PushStart",
+      phykey: "PhysKey",
+      other: "Other",
+      explain: "Explain",
+      explain1: "Press Button Start",
+      explain2: "Turn Key Start",
+      licenseplatenumber: "License Plate Number",
+      deviceidentificationnumber: "Device Identification Number",
+      vehicleseries: "Vehicle Series",
+      vehiclemodel: "Vehicle Model",
+      modelyear: "Model Year",
+      vehicleidentificationnumber: "Vehicle Identification Number (VIN)",
+      fueltankcapacity: "Fuel Tank Capacity",
+      userdirectory: "User Directory",
+      accesscontrol: "Access Control",
+      role: "Role",
+      mobile: "Mobile",
+      permissionssettings: "Permissions Settings",
+      adduser: "Create User",
+      edituser: "Edit User",
+      user: "User",
+      name: "Name",
+      password: "Password",
+      pleaseaccount: "Please enter Account",
+      pleasepassword: "Please enter Password",
+      pleasename: "Please enter Name",
+      pleasemobile: "Please enter Phone",
+      transferadmin: "Transfer Admin",
+      sendkey: "Send Key",
+      usagelog: "Usage Log",
+      cancelled: "Cancelled",
+      inuse: "In Use",
+      copylink: "Copy Link",
+      cancelride: "Cancel Ride",
+      starttime: "Start Time",
+      endtime: "End Time",
+      vehicleselection: "Vehicle Selection",
+      reselect: "Reselect",
+      company: "Company",
+      contact: "Contact",
+      phone: "Phone",
+      notes: "Notes",
+      invoice_name: "Invoice Name",
+      tax_id: "Tax ID",
+      address: "Address",
+      bank: "Bank",
+      account: "Account",
+      company_placeholder: "Enter company name",
+      contact_placeholder: "Enter contact person",
+      phone_placeholder: "Enter phone number",
+      notes_placeholder: "Enter notes",
+      invoice_name_placeholder: "Enter invoice name",
+      tax_id_placeholder: "Enter tax ID",
+      address_placeholder: "Enter address",
+      bank_placeholder: "Enter bank name",
+      account_placeholder: "Enter account number",
+      phone_number: "Enter phone number",
+      businesshours: "Business Hours",
+      Reenterpassword: "Re-enter Password",
+      verificationcode: "verification Code",
+      signup: "Sign Up",
+      haveanaccount: "Have an account?",
+      loginnow: "Log In Now",
+      entercode: "Enter Code",
+      confirmpassword: "Confirm Password",
+      username: "Username",
+      pleaseusername: "Please enter username"
+    }
+  };
+  let currentLang = uni.getStorageSync("lang") || "zh-CN";
+  if (!langs[currentLang]) {
+    currentLang = "zh-CN";
+    uni.setStorageSync("lang", currentLang);
+  }
+  const _imports_0 = "/static/public/logo.png";
+  const _sfc_main$2 = {
+    data() {
+      return {
+        username: "",
+        password: "",
+        isSubmitting: false,
+        init_qr_code: "",
+        langs: {}
+      };
+    },
+    components: {
+      CustomNavBar
+    },
+    mounted() {
+      this.infinityGetQrcodeImg();
+    },
+    onShow() {
+      this.handleGetCurrentLanguage();
+    },
+    methods: {
+      handleGetCurrentLanguage() {
+        let currentLang2 = uni.getStorageSync("lang") || "zh-CN";
+        this.langs = langs[currentLang2];
+      },
+      // 预览图片
+      handlePreviewImage(evt) {
+        uni.previewMedia({
+          sources: [{
+            url: this.init_qr_code,
+            // 图片路径
+            type: "image"
+          }]
+        });
+      },
+      handlePreviewImage() {
+        if (this.init_qr_code) {
+          uni.previewImage({
+            urls: [this.init_qr_code],
+            longPressActions: {
+              itemList: ["保存图片到相册"],
+              success: (data) => {
+              }
+            }
+          });
+        }
+      },
+      async infinityGetQrcodeImg() {
+        var _a;
+        formatAppLog("log", "at pages/login/index.vue:114", 111);
+        try {
+          const response = await u_getQrcodeImg();
+          if ((response == null ? void 0 : response.code) == 1e3) {
+            this.init_qr_code = (_a = response == null ? void 0 : response.content) == null ? void 0 : _a.img;
+          }
+        } catch (error) {
+          uni.showToast({
+            title: "查询失败",
+            icon: "none"
+          });
+        }
+      },
+      async handleLogin() {
+        if (!this.username || !this.password) {
+          uni.showToast({
+            title: "请输入用户名和密码",
+            icon: "none"
+          });
+          return;
+        }
+        this.isSubmitting = true;
+        try {
+          const response = await login({
+            username: this.username,
+            password: this.password,
+            type: 2
+          });
+          uni.setStorageSync("token", response.content.token);
+          uni.setStorageSync("user_info", response.content);
+          uni.reLaunch({
+            url: "/pages/index/index"
+          });
+        } catch (error) {
+          uni.showToast({
+            title: "登录失败，请检查用户名和密码",
+            icon: "none"
+          });
+        } finally {
+          this.isSubmitting = false;
+        }
+      },
+      handleRegister() {
+        uni.navigateTo({
+          url: "/pages/register/register"
+        });
+      }
+    }
+  };
+  function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_CustomNavBar = vue.resolveComponent("CustomNavBar");
+    return vue.openBlock(), vue.createElementBlock(
+      vue.Fragment,
+      null,
+      [
+        vue.createCommentVNode(" index.wxml "),
+        vue.createElementVNode("view", { class: "container" }, [
+          vue.createVNode(_component_CustomNavBar, { title: "登录" }),
+          vue.createCommentVNode(" 上部分：登录区域 "),
+          vue.createElementVNode("view", { class: "login-area" }, [
+            vue.createCommentVNode(" Logo 区域 "),
+            vue.createElementVNode("view", { class: "logo-container fade-in" }, [
+              vue.createElementVNode("view", { class: "logo-wrapper" }, [
+                vue.createElementVNode("image", {
+                  src: _imports_0,
+                  class: "logo-img"
+                }),
+                vue.createElementVNode("text", { class: "logo-text" }, "智信通wiselink")
+              ]),
+              vue.createElementVNode("text", { class: "slogan" }, "智信通汽车出行技术服务运营提供商")
+            ]),
+            vue.createCommentVNode(" 登录方式选择 "),
+            vue.createElementVNode("view", { class: "input-group" }, [
+              vue.createElementVNode("view", { class: "input-item" }, [
+                vue.createElementVNode(
+                  "view",
+                  { class: "input-label" },
+                  vue.toDisplayString($data.langs.account),
+                  1
+                  /* TEXT */
+                ),
+                vue.withDirectives(vue.createElementVNode("input", {
+                  class: "input-field",
+                  placeholder: $data.langs.pleaseaccount,
+                  "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.username = $event)
+                }, null, 8, ["placeholder"]), [
+                  [vue.vModelText, $data.username]
+                ])
+              ]),
+              vue.createElementVNode("view", { class: "input-item" }, [
+                vue.createElementVNode(
+                  "view",
+                  { class: "input-label" },
+                  vue.toDisplayString($data.langs.password),
+                  1
+                  /* TEXT */
+                ),
+                vue.withDirectives(vue.createElementVNode("input", {
+                  class: "input-field",
+                  placeholder: $data.langs.pleasepassword,
+                  "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $data.password = $event),
+                  password: true
+                }, null, 8, ["placeholder"]), [
+                  [vue.vModelText, $data.password]
+                ])
+              ]),
+              vue.createElementVNode("view", null, [
+                vue.createElementVNode(
+                  "button",
+                  {
+                    class: "login-btn",
+                    onClick: _cache[2] || (_cache[2] = (...args) => $options.handleLogin && $options.handleLogin(...args))
+                  },
+                  vue.toDisplayString($data.langs.loginnow),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "text",
+                  {
+                    class: "register",
+                    onClick: _cache[3] || (_cache[3] = (...args) => $options.handleRegister && $options.handleRegister(...args))
+                  },
+                  vue.toDisplayString($data.langs.signup),
+                  1
+                  /* TEXT */
+                )
+              ])
+            ])
+          ]),
+          vue.createCommentVNode(" 下部分：信息展示 "),
+          vue.createElementVNode("view", { class: "info-area" }, [
+            vue.createElementVNode("view", { class: "info-card" }, [
+              vue.createElementVNode("text", { class: "product-name" }, "智前通wiselink"),
+              vue.createElementVNode("view", { style: { "font-size": "26rpx", "color": "#575658" } }, "商务合作咨询、更多产品了解，请点击、长按官方群二维码，有专属客服服务！"),
+              vue.createElementVNode("view", { style: { "display": "flex", "justify-content": "center" } }, [
+                vue.createElementVNode("image", {
+                  src: $data.init_qr_code,
+                  style: { "width": "300rpx", "height": "300rpx" },
+                  onClick: _cache[4] || (_cache[4] = (...args) => $options.handlePreviewImage && $options.handlePreviewImage(...args))
+                }, null, 8, ["src"])
+              ]),
+              vue.createElementVNode("view", { class: "contact-info" }, [
+                vue.createElementVNode("text", { class: "company-name" }, "智信通·中国北京")
+              ])
+            ])
+          ])
+        ])
+      ],
+      2112
+      /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
+    );
+  }
+  const PagesLoginIndex = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$1], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/login/index.vue"]]);
+  const _sfc_main$1 = {
+    data() {
+      return {
+        username: "",
+        password: "",
+        confirmPassword: "",
+        phone: "",
+        smsCode: "",
+        isSubmitting: false,
+        smsDisabled: false,
+        smsBtnText: "",
+        countdown: 60,
+        langs: {}
+      };
+    },
+    components: {
+      CustomNavBar
+    },
+    onShow() {
+      this.handleGetCurrentLanguage();
+    },
+    methods: {
+      handleGetCurrentLanguage() {
+        let currentLang2 = uni.getStorageSync("lang") || "zh-CN";
+        this.langs = langs[currentLang2];
+      },
+      // 表单验证
+      validateForm() {
+        if (!this.password) {
+          uni.showToast({ title: "请输入密码", icon: "none" });
+          return false;
+        }
+        if (this.password !== this.confirmPassword) {
+          uni.showToast({ title: "两次输入的密码不一致", icon: "none" });
+          return false;
+        }
+        if (!this.username) {
+          uni.showToast({ title: "用户名", icon: "none" });
+          return false;
+        }
+        return true;
+      },
+      // 注册处理
+      async handleRegister() {
+        if (this.isSubmitting)
+          return;
+        if (!this.validateForm())
+          return;
+        this.isSubmitting = true;
+        try {
+          const response = await u_register({
+            password: this.password,
+            username: this.username
+          });
+          formatAppLog("log", "at pages/register/register.vue:105", response);
+          if (response.code === 1e3) {
+            uni.showToast({ title: "注册成功" });
+            setTimeout(() => {
+              uni.navigateBack();
+            }, 3e3);
+          } else {
+            uni.showToast({ title: response.msg || "注册失败", icon: "none" });
+          }
+        } catch (error) {
+          uni.showToast({ title: "请求失败，请稍后重试", icon: "none" });
+        } finally {
+          this.isSubmitting = false;
+        }
+      },
+      // 跳转到登录页面
+      goToLogin() {
+        uni.navigateBack();
+      }
+    }
+  };
+  function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_CustomNavBar = vue.resolveComponent("CustomNavBar");
+    return vue.openBlock(), vue.createElementBlock("view", { class: "container" }, [
+      vue.createVNode(_component_CustomNavBar, { title: "注册账号" }),
+      vue.createElementVNode("view", { class: "register-area" }, [
+        vue.createCommentVNode(" Logo 区域 "),
+        vue.createElementVNode("view", { class: "logo-container fade-in" }, [
+          vue.createElementVNode("view", { class: "logo-wrapper" }, [
+            vue.createElementVNode("image", {
+              src: _imports_0,
+              class: "logo-img"
+            }),
+            vue.createElementVNode("text", { class: "logo-text" }, "智信通wiselink")
+          ]),
+          vue.createElementVNode("text", { class: "slogan" }, "智信通汽车出行技术服务运营提供商")
+        ]),
+        vue.createCommentVNode(" 注册表单 "),
+        vue.createElementVNode("view", { class: "input-group" }, [
+          vue.createElementVNode("view", { class: "input-item" }, [
+            vue.createElementVNode(
+              "view",
+              { class: "input-label" },
+              vue.toDisplayString($data.langs.username),
+              1
+              /* TEXT */
+            ),
+            vue.withDirectives(vue.createElementVNode("input", {
+              class: "input-field",
+              placeholder: $data.langs.pleaseusername,
+              "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.username = $event)
+            }, null, 8, ["placeholder"]), [
+              [vue.vModelText, $data.username]
+            ])
+          ]),
+          vue.createElementVNode("view", { class: "input-item" }, [
+            vue.createElementVNode(
+              "view",
+              { class: "input-label" },
+              vue.toDisplayString($data.langs.password),
+              1
+              /* TEXT */
+            ),
+            vue.withDirectives(vue.createElementVNode("input", {
+              class: "input-field",
+              placeholder: $data.langs.pleasepassword,
+              "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $data.password = $event),
+              password: true
+            }, null, 8, ["placeholder"]), [
+              [vue.vModelText, $data.password]
+            ])
+          ]),
+          vue.createElementVNode("view", { class: "input-item" }, [
+            vue.createElementVNode(
+              "view",
+              { class: "input-label" },
+              vue.toDisplayString($data.langs.confirmpassword),
+              1
+              /* TEXT */
+            ),
+            vue.withDirectives(vue.createElementVNode("input", {
+              class: "input-field",
+              placeholder: $data.langs.Reenterpassword,
+              "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => $data.confirmPassword = $event),
+              password: true
+            }, null, 8, ["placeholder"]), [
+              [vue.vModelText, $data.confirmPassword]
+            ])
+          ]),
+          vue.createElementVNode("button", {
+            class: "register-btn",
+            disabled: $data.isSubmitting,
+            onClick: _cache[3] || (_cache[3] = (...args) => $options.handleRegister && $options.handleRegister(...args))
+          }, vue.toDisplayString($data.langs.signup), 9, ["disabled"]),
+          vue.createElementVNode("view", { class: "login-link" }, [
+            vue.createElementVNode(
+              "text",
+              null,
+              vue.toDisplayString($data.langs.haveanaccount),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              {
+                class: "link-text",
+                onClick: _cache[4] || (_cache[4] = (...args) => $options.goToLogin && $options.goToLogin(...args))
+              },
+              vue.toDisplayString($data.langs.loginnow),
+              1
+              /* TEXT */
+            )
+          ])
+        ])
+      ])
+    ]);
+  }
+  const PagesRegisterRegister = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/register/register.vue"]]);
   __definePage("pages/index/index", PagesIndexIndex);
   __definePage("pages/ZoneHome/index", PagesZoneHomeIndex);
   __definePage("pages/blackTeche/sendTheKey/index", PagesBlackTecheSendTheKeyIndex);
   __definePage("pages/zoneCenter/index", PagesZoneCenterIndex);
   __definePage("pages/listOfPrivateCars/list/index", PagesListOfPrivateCarsListIndex);
   __definePage("pages/videoMaterials/index", PagesVideoMaterialsIndex);
+  __definePage("pages/login/index", PagesLoginIndex);
+  __definePage("pages/register/register", PagesRegisterRegister);
   const _sfc_main = {
     onLaunch: function() {
       formatAppLog("log", "at App.vue:4", "App Launch");
