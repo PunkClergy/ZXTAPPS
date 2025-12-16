@@ -499,7 +499,7 @@
 			// 获取设备信息
 			this.handleSystemInfo();
 			// // 创建定时器
-			// this.initCheckTimer();
+			this.initCheckTimer();
 			// 参数内容获取
 			this.options = options
 

@@ -160,7 +160,7 @@ function isDeviceConnected(deviceIDC, param) {
 							param(true, result);
 						},
 						fail: function(result) {
-							logger.e('查询已连接设备,未成功建立连接!!!',result);
+							logger.e('查询已连接设备,未成功建立连接!!!', result);
 							param(false, result);
 						}
 					});
@@ -393,7 +393,7 @@ function onBluetoothDeviceFound() {
 		if (devices.devices[0].name != '') {
 			logger.e('device found:' + devices.devices[0].name);
 		}
-		if (gIdc == devices.devices[0].localName) {
+		if (gIdc == devices.devices[0].name || gIdc == devices.devices[0].localName) {
 			console.log(devices);
 			deviceId = devices.devices[0].deviceId;
 			saveBLEDeviceInfo(gIdc);
@@ -465,7 +465,10 @@ function getBLEDeviceServicesConnected() {
 		success: function(res) {
 			logger.e('device设备的读服务id:', WriteServiceFixed);
 			logger.e('device设备的写服务id:', ReadServiceFixed);
-			getBLEDeviceWriteCharacteristicsConnected();
+			setTimeout(() => {
+				getBLEDeviceWriteCharacteristicsConnected();
+			}, 1000)
+
 		}
 	});
 }

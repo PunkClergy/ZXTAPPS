@@ -107,10 +107,10 @@ class Http {
 		const errMsg = error.errMsg || ''
 
 		if (errMsg.includes('timeout')) {
-			uni.showToast({
-				title: '请求超时',
-				icon: 'none'
-			})
+			// uni.showToast({
+			// 	title: '请求超时',
+			// 	icon: 'none'
+			// })
 		} else if (errMsg.includes('abort')) {
 			console.log('请求被取消')
 		} else {

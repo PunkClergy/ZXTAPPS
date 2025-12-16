@@ -7,7 +7,7 @@
   "id": "__UNI__0192300",
   "name": "ZxtWiselink",
   "version": {
-    "name": "1.0.4",
+    "name": "1.0.6",
     "code": 102
   },
   "description": "",
@@ -145,7 +145,6 @@
       "style": "dark",
       "background": "#F8F8F8"
     },
-    "arguments": "{\"name\":\"\",\"path\":\"\",\"query\":\"\"}",
     "allowsInlineMediaPlayback": true,
     "uni-app": {
       "control": "uni-v3",
