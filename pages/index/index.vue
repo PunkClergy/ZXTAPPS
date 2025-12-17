@@ -78,7 +78,7 @@
 						<text>感应开关锁</text>
 						<text style="font-size: 20rpx;color: #bbb;">
 							开启：自动感应智信通MCCK蓝牙，实现开门不罚站 关门不回头，无感自动开关锁。
-							关闭：需手动操作：掏出手机 → 打开智信通小程序 → 在「我的手机汽车钥匙功能」区域→ 完成开关门操作。</text>
+							关闭：需手动操作：掏出手机 → 打开智信通APPS → 在「我的手机汽车钥匙功能」区域→ 完成开关门操作。</text>
 					</view>
 
 					<switch @change="handleToggleSensorMode" :checked="parsedData.inductionMode" color="#1B64B1"

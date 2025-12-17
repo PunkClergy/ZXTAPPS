@@ -263,10 +263,13 @@
 		u_paivateRentRecord,
 		u_paivateSendRentKey,
 		u_paivateCancelRentKey,
+		u_sendRentKey,
+		u_updateRentKey
 	} from '@/api'
 	import {
 		info_screen
 	} from '@/utils/scheme/screen.js'
+	import 'url-search-params-polyfill';
 
 	export default {
 		components: {
@@ -659,14 +662,15 @@
 					bak: formData.bak
 				};
 				const API_ENDPOINTS = {
-					baseURL: getApp().globalData.data.k1swUrl,
+					baseURL: '',
 					sendRentKey: u_paivateSendRentKey
 				};
 				const submitRequest = async () => {
 					try {
-						const response = await byGet(`${API_ENDPOINTS.baseURL}${API_ENDPOINTS.sendRentKey}`,
-							requestParams);
-						if (response.data.code !== 1000) {
+						const response = await u_sendRentKey(requestParams)
+						// const response = await byGet(`${API_ENDPOINTS.baseURL}${API_ENDPOINTS.sendRentKey}`,
+						// 	requestParams);
+						if (response.code !== 1000) {
 							throw new Error(response.data.msg);
 						}
 						uni.showToast({
@@ -761,7 +765,7 @@
 
 			},
 
-			handleFormEdit() {
+			async handleFormEdit() {
 				const {
 					startDate,
 					startTime,
@@ -775,25 +779,20 @@
 					startDate: buildDateTime(startDate, startTime),
 					endDate: buildDateTime(endDate, endTime)
 				};
-				byPost(
-					`${getApp().globalData.data.k1swUrl}${u_paivateUpdateRentKey.URL}`,
-					requestParams,
-					(response) => {
-						if (response.data.code == 1000) {
-							this.g_edit_info = {}
-							this.c_edit_key_show_momal = false
-							this.y_triggered = false
-							this.y_page = 1
-							this.y_items = []
-							setTimeout(() => {
-								this.getKeySendingList();
-							}, 300)
+				const response = await u_updateRentKey(requestParams)
+				console.log(response,'0000')
+				if (response.code == 1000) {
+					this.g_edit_info = {}
+					this.c_edit_key_show_momal = false
+					this.y_triggered = false
+					this.y_page = 1
+					this.y_items = []
+					setTimeout(() => {
+						this.getKeySendingList();
+					}, 300)
 
 
-						}
-					},
-					(error) => {}
-				);
+				}
 				console.log(requestParams);
 			}
 		}
@@ -1393,7 +1392,7 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		bottom: 0;
+		bottom: 10;
 		background: rgba(0, 0, 0, 0.4);
 		z-index: 998;
 	}
