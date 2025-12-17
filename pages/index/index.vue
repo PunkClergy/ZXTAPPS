@@ -4,7 +4,10 @@
 		<view class="custom-header"
 			:style="'padding-top: ' + g_height_from_head + 'px;height: ' + g_head_height + 'px;'">
 			<view class="custom-header-outer-layer">
-				<view class="custom-header-outer-layer-title">私家车</view>
+				<view class="custom-header-outer-layer-title">
+					<view class="custom-header-outer-layer-title">私家车</view>
+					<view style="color: #bbb;font-size: 20rpx;">智信通手机汽车互联钥匙 <br />mobile car connect key(MCCK)</view>
+				</view>
 				<view class="custom-header-outer-layer-user_name">
 					<block v-if="account">
 						<text>{{ account }}</text>
@@ -42,20 +45,20 @@
 							<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/battery-01.png"
 								style="width: 46rpx; height: 25rpx" />
 							<view class="top-fixed-signal-layar-info">
-								<text class="top-fixed-signal-layar-title">当前电量：</text>
+								<text class="top-fixed-signal-layar-title">电量：</text>
 								<text class="top-fixed-signal-text">{{ parsedData.electric || 100 }}%</text>
-								
+
 							</view>
-							<view style="color: #bbb;font-size: 20rpx;">私家车设备电量</view>
+							<view style="color: #bbb;font-size: 20rpx;text-align: left;">MCCK设备当前电量</view>
 						</view>
 						<view class="top-fixed-signal-layar">
 							<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/bluetooth@2x.png"
 								style="width: 30rpx; height: 33rpx" />
 							<view class="top-fixed-signal-layar-info">
 								<text class="top-fixed-signal-layar-title">蓝牙状态：</text>
-								<text class="top-fixed-signal-text">{{ parsedData.electric?'蓝牙已连接':'蓝牙未连接' }}</text>
+								<text class="top-fixed-signal-text">{{ parsedData.electric?'已连接':'未连接' }}</text>
 							</view>
-							<view style="color: #bbb;font-size: 20rpx;">蓝牙连接，支持手动</view>
+							<view style="color: #bbb;font-size: 20rpx;text-align: left;">MCCK蓝牙连接，支持手动</view>
 						</view>
 						<view class="top-fixed-signal-layar">
 							<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/pair@2x.png"
@@ -64,7 +67,7 @@
 								<text class="top-fixed-signal-layar-title">蓝牙配对：</text>
 								<text class="top-fixed-signal-text">{{ parsedData.pairStatus || '未配对' }}</text>
 							</view>
-							<view style="color: #bbb;font-size: 20rpx;">蓝牙配对，感应生效</view>
+							<view style="color: #bbb;font-size: 20rpx;text-align: left;">MCCK蓝牙配对，感应生效</view>
 						</view>
 					</view>
 				</view>
@@ -73,9 +76,11 @@
 				<view class="middle-title">
 					<view style="display: flex;flex-direction: column;">
 						<text>感应开关锁</text>
-						<text style="font-size: 20rpx;color: #bbb;">开启后支持感应舒适进入功能，关闭则禁用该功能。</text>
-						</view>
-					
+						<text style="font-size: 20rpx;color: #bbb;">
+							开启：自动感应智信通MCCK蓝牙，实现开门不罚站 关门不回头，无感自动开关锁。
+							关闭：需手动操作：掏出手机 → 打开智信通小程序 → 在「我的手机汽车钥匙功能」区域→ 完成开关门操作。</text>
+					</view>
+
 					<switch @change="handleToggleSensorMode" :checked="parsedData.inductionMode" color="#1B64B1"
 						style="transform: scale(0.8)" />
 				</view>
@@ -106,7 +111,7 @@
 								</view>
 							</view>
 						</view>
-						<view class="middle-concrete-content-debugging-tip">拖动圆环，根据您与车辆的距离设定开锁感应范围。携带手机进入范围时，车辆将自动开锁。
+						<view class="middle-concrete-content-debugging-tip">初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “开锁” 图标位置，调整至满意状态后保存。
 						</view>
 					</view>
 					<view class="middle-concrete-content-debugging">
@@ -135,7 +140,7 @@
 								</view>
 							</view>
 						</view>
-						<view class="middle-concrete-content-debugging-tip">拖动圆环，根据您与车辆的距离设定关锁感应范围。携带手机离开范围时，车辆将自动关锁。
+						<view class="middle-concrete-content-debugging-tip">初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “关锁” 图标位置，调整至满意状态后保存。
 						</view>
 					</view>
 					<view class="middle-concrete-content-debugging">
@@ -164,7 +169,7 @@
 								</view>
 							</view>
 						</view>
-						<view class="middle-concrete-content-debugging-tip">如车辆启动时频繁开锁关锁, 请拖动圆环远离车辆。调试本项会同步调整关锁灵敏度。
+						<view class="middle-concrete-content-debugging-tip">初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “关锁” 图标位置，调整至满意状态后保存。
 						</view>
 					</view>
 				</view>
@@ -498,8 +503,6 @@
 			this.initToConfigureCache();
 			// 获取设备信息
 			this.handleSystemInfo();
-			// // 创建定时器
-			this.initCheckTimer();
 			// 参数内容获取
 			this.options = options
 
@@ -540,14 +543,16 @@
 					success: (res) => {
 						console.log(res)
 						this.account = res?.data?.companyName || res?.data?.username
-			
+						// 创建定时器
+						this.initCheckTimer();
+
 					},
 					fail(err) {
 						console.error('获取失败', err); // 失败时的错误信息
 					}
 				});
 			},
-			
+
 			// 点击操作手动区事件
 			handleParseEventDynamicCode($, evt) {
 				this.handleEvent(evt);
@@ -612,16 +617,16 @@
 				const targetPurePath = targetUrl.split('?')[0];
 				console.log(currentPath, targetPurePath);
 				if (currentPath !== targetPurePath) {
-					if(targetPurePath == 'pages/privateCar/index'){
+					if (targetPurePath == 'pages/privateCar/index') {
 						uni.redirectTo({
-							url:'/pages/index/index'
+							url: '/pages/index/index'
 						})
-					}else{
+					} else {
 						uni.redirectTo({
 							url: `/${targetUrl}`
 						});
 					}
-					
+
 				}
 			},
 
@@ -767,7 +772,7 @@
 				this.g_screenTotalHeight = screenHeight
 
 			},
-			
+
 
 			// 初始化钥匙按钮内容
 			initContro() {
@@ -1732,7 +1737,7 @@
 			handleOnExistingAccountTap() {
 				console.log('占位：函数 handleOnExistingAccountTap 未声明');
 				uni.redirectTo({
-					url:'/pages/login/index'
+					url: '/pages/login/index'
 				})
 			}
 		}

@@ -1698,7 +1698,6 @@ if (uni.restoreGlobal) {
       this.initBottomDirectory();
       this.initToConfigureCache();
       this.handleSystemInfo();
-      this.initCheckTimer();
       this.options = options;
     },
     onShow: function() {
@@ -1734,11 +1733,12 @@ if (uni.restoreGlobal) {
           key: "user_info",
           success: (res2) => {
             var _a, _b;
-            formatAppLog("log", "at pages/index/index.vue:541", res2);
+            formatAppLog("log", "at pages/index/index.vue:544", res2);
             this.account = ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username);
+            this.initCheckTimer();
           },
           fail(err) {
-            formatAppLog("error", "at pages/index/index.vue:546", "获取失败", err);
+            formatAppLog("error", "at pages/index/index.vue:551", "获取失败", err);
           }
         });
       },
@@ -1802,7 +1802,7 @@ if (uni.restoreGlobal) {
           return;
         }
         const targetPurePath = targetUrl.split("?")[0];
-        formatAppLog("log", "at pages/index/index.vue:613", currentPath, targetPurePath);
+        formatAppLog("log", "at pages/index/index.vue:618", currentPath, targetPurePath);
         if (currentPath !== targetPurePath) {
           if (targetPurePath == "pages/privateCar/index") {
             uni.redirectTo({
@@ -1923,14 +1923,14 @@ if (uni.restoreGlobal) {
               pixelRatio,
               statusBarHeight
             };
-            formatAppLog("log", "at pages/index/index.vue:739", "设备信息:", this.deviceInfo);
+            formatAppLog("log", "at pages/index/index.vue:744", "设备信息:", this.deviceInfo);
           },
           fail: console.error
         });
       },
       // 启动连接状态轮询
       startConnectionStatusPolling() {
-        formatAppLog("log", "at pages/index/index.vue:747", this.pageInterval);
+        formatAppLog("log", "at pages/index/index.vue:752", this.pageInterval);
         if (this.pageInterval) {
           return;
         }
@@ -1953,7 +1953,7 @@ if (uni.restoreGlobal) {
       // 初始化钥匙按钮内容
       initContro() {
         this.controlItemspanel = this.splitArray(dist.getControlItems(), 4);
-        formatAppLog("log", "at pages/index/index.vue:775", this.splitArray(dist.getControlItems(), 4));
+        formatAppLog("log", "at pages/index/index.vue:780", this.splitArray(dist.getControlItems(), 4));
       },
       initCheckTimer() {
         if (this.checkTimer) {
@@ -1978,7 +1978,7 @@ if (uni.restoreGlobal) {
           that.orgKey = that.handleTransformation(data == null ? void 0 : data.bluetoothKey);
           that.orgKeyOld = data == null ? void 0 : data.bluetoothKey;
           that.bluetoothData = data;
-          formatAppLog("log", "at pages/index/index.vue:805", that);
+          formatAppLog("log", "at pages/index/index.vue:810", that);
           setTimeout(() => {
             that.handleBule();
           }, 500);
@@ -1995,11 +1995,11 @@ if (uni.restoreGlobal) {
             that.code = code;
             handleData(response.data.content);
           }).catch((err) => {
-            formatAppLog("error", "at pages/index/index.vue:825", "获取蓝牙数据失败:", err);
+            formatAppLog("error", "at pages/index/index.vue:830", "获取蓝牙数据失败:", err);
           });
         };
         if (options == null ? void 0 : options.scene) {
-          formatAppLog("log", "at pages/index/index.vue:832", "处理URL参数:", options.scene);
+          formatAppLog("log", "at pages/index/index.vue:837", "处理URL参数:", options.scene);
           fetchBluetoothData(options.scene);
           uni.setStorage({
             key: "scene",
@@ -2092,9 +2092,9 @@ if (uni.restoreGlobal) {
       },
       // 处理蓝牙连接状态：检查设备是否已连接，决定执行连接或重连逻辑
       handleBule() {
-        formatAppLog("log", "at pages/index/index.vue:936", "idc", this.deviceIDC);
+        formatAppLog("log", "at pages/index/index.vue:941", "idc", this.deviceIDC);
         bleKeyManager.isDeviceConnected(this.deviceIDC, (status, param) => {
-          formatAppLog("log", "at pages/index/index.vue:938", "222222222--2-2-2-22-2-", status);
+          formatAppLog("log", "at pages/index/index.vue:943", "222222222--2-2-2-22-2-", status);
           if (status) {
             this.btnStartConnectConnected();
           } else {
@@ -2225,7 +2225,7 @@ if (uni.restoreGlobal) {
       },
       // 打包并发送数据（支持动态数据体长度）
       PackAndSend3a(type, dataLength, data, sign) {
-        formatAppLog("log", "at pages/index/index.vue:1099", type, dataLength, data, sign);
+        formatAppLog("log", "at pages/index/index.vue:1104", type, dataLength, data, sign);
         const header = [36];
         const end = [36];
         const paddedData = [...data].concat(new Array(dataLength - data.length).fill(0)).slice(
@@ -2244,7 +2244,7 @@ if (uni.restoreGlobal) {
       PackAndSend07: function(type, len, data) {
         const defaultData = [0, 0, 0, 0, 0, 0, 0];
         var packet = [36, type, len, data, ...defaultData, 36];
-        formatAppLog("log", "at pages/index/index.vue:1116", packet);
+        formatAppLog("log", "at pages/index/index.vue:1121", packet);
         bleKeyManager.dispatcherSend2(this.arrayToArrayBuffer(packet));
       },
       // 数组转ArrayBuffer
@@ -2300,9 +2300,9 @@ if (uni.restoreGlobal) {
       },
       //  数据解析按钮处理
       parseData: function(hexData) {
-        formatAppLog("log", "at pages/index/index.vue:1197", "hexData", hexData);
+        formatAppLog("log", "at pages/index/index.vue:1202", "hexData", hexData);
         const parsedResult = dist.getParseHexDataObject(hexData);
-        formatAppLog("log", "at pages/index/index.vue:1199", "parsedResult", parsedResult);
+        formatAppLog("log", "at pages/index/index.vue:1204", "parsedResult", parsedResult);
         if (parsedResult) {
           this.parsedData = parsedResult;
           this.updateMyPositionStyles();
@@ -2435,7 +2435,7 @@ if (uni.restoreGlobal) {
               }
             });
             const result = Array.from(uniqueMap.values());
-            formatAppLog("log", "at pages/index/index.vue:1350", "合并并优先保留 enabled=false 的结果：", result);
+            formatAppLog("log", "at pages/index/index.vue:1355", "合并并优先保留 enabled=false 的结果：", result);
             this.controlItems = result;
             setTimeout(() => {
               this.controlItemspanel = this.splitArray(result, 4);
@@ -2511,7 +2511,7 @@ if (uni.restoreGlobal) {
         }
         const touchX = touch.clientX;
         const relativeX = touchX - trackInfo.left;
-        formatAppLog("log", "at pages/index/index.vue:1444", `${trackId} - 判断滑动值`);
+        formatAppLog("log", "at pages/index/index.vue:1449", `${trackId} - 判断滑动值`);
         const trackConfig = {
           lockTrack: {
             maxProgress: 200,
@@ -2589,7 +2589,7 @@ if (uni.restoreGlobal) {
                 duration: 1500
               });
             } else {
-              formatAppLog("warn", "at pages/index/index.vue:1526", "[提示]", tipText);
+              formatAppLog("warn", "at pages/index/index.vue:1531", "[提示]", tipText);
             }
           }
         };
@@ -2614,7 +2614,7 @@ if (uni.restoreGlobal) {
               trackType
             );
           }
-          formatAppLog("log", "at pages/index/index.vue:1551", trackId, trackType);
+          formatAppLog("log", "at pages/index/index.vue:1556", trackId, trackType);
           if (trackType == "lock") {
             this.lockThumbStyle = `left: ${validProgress / 2}%;`;
             this.lockRange = validProgress / 2;
@@ -2704,7 +2704,7 @@ if (uni.restoreGlobal) {
         };
         const instructionMap = dist.getInstructionMap(sendCommand);
         const idActions = instructionMap[id];
-        formatAppLog("log", "at pages/index/index.vue:1660", idActions);
+        formatAppLog("log", "at pages/index/index.vue:1665", idActions);
         if (!idActions) {
           return;
         }
@@ -2769,7 +2769,7 @@ if (uni.restoreGlobal) {
         });
       },
       handleOnExistingAccountTap() {
-        formatAppLog("log", "at pages/index/index.vue:1733", "占位：函数 handleOnExistingAccountTap 未声明");
+        formatAppLog("log", "at pages/index/index.vue:1738", "占位：函数 handleOnExistingAccountTap 未声明");
         uni.redirectTo({
           url: "/pages/login/index"
         });
@@ -2787,7 +2787,14 @@ if (uni.restoreGlobal) {
         },
         [
           vue.createElementVNode("view", { class: "custom-header-outer-layer" }, [
-            vue.createElementVNode("view", { class: "custom-header-outer-layer-title" }, "私家车"),
+            vue.createElementVNode("view", { class: "custom-header-outer-layer-title" }, [
+              vue.createElementVNode("view", { class: "custom-header-outer-layer-title" }, "私家车"),
+              vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx" } }, [
+                vue.createTextVNode("智信通手机汽车互联钥匙 "),
+                vue.createElementVNode("br"),
+                vue.createTextVNode("mobile car connect key(MCCK)")
+              ])
+            ]),
             vue.createElementVNode("view", { class: "custom-header-outer-layer-user_name" }, [
               $data.account ? (vue.openBlock(), vue.createElementBlock(
                 "text",
@@ -2864,7 +2871,7 @@ if (uni.restoreGlobal) {
                     style: { "width": "46rpx", "height": "25rpx" }
                   }),
                   vue.createElementVNode("view", { class: "top-fixed-signal-layar-info" }, [
-                    vue.createElementVNode("text", { class: "top-fixed-signal-layar-title" }, "当前电量："),
+                    vue.createElementVNode("text", { class: "top-fixed-signal-layar-title" }, "电量："),
                     vue.createElementVNode(
                       "text",
                       { class: "top-fixed-signal-text" },
@@ -2873,7 +2880,7 @@ if (uni.restoreGlobal) {
                       /* TEXT */
                     )
                   ]),
-                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx" } }, "私家车设备电量")
+                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx", "text-align": "left" } }, "MCCK设备当前电量")
                 ]),
                 vue.createElementVNode("view", { class: "top-fixed-signal-layar" }, [
                   vue.createElementVNode("image", {
@@ -2885,12 +2892,12 @@ if (uni.restoreGlobal) {
                     vue.createElementVNode(
                       "text",
                       { class: "top-fixed-signal-text" },
-                      vue.toDisplayString($data.parsedData.electric ? "蓝牙已连接" : "蓝牙未连接"),
+                      vue.toDisplayString($data.parsedData.electric ? "已连接" : "未连接"),
                       1
                       /* TEXT */
                     )
                   ]),
-                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx" } }, "蓝牙连接，支持手动")
+                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx", "text-align": "left" } }, "MCCK蓝牙连接，支持手动")
                 ]),
                 vue.createElementVNode("view", { class: "top-fixed-signal-layar" }, [
                   vue.createElementVNode("image", {
@@ -2907,7 +2914,7 @@ if (uni.restoreGlobal) {
                       /* TEXT */
                     )
                   ]),
-                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx" } }, "蓝牙配对，感应生效")
+                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx", "text-align": "left" } }, "MCCK蓝牙配对，感应生效")
                 ])
               ])
             ])
@@ -2916,7 +2923,7 @@ if (uni.restoreGlobal) {
             vue.createElementVNode("view", { class: "middle-title" }, [
               vue.createElementVNode("view", { style: { "display": "flex", "flex-direction": "column" } }, [
                 vue.createElementVNode("text", null, "感应开关锁"),
-                vue.createElementVNode("text", { style: { "font-size": "20rpx", "color": "#bbb" } }, "开启后支持感应舒适进入功能，关闭则禁用该功能。")
+                vue.createElementVNode("text", { style: { "font-size": "20rpx", "color": "#bbb" } }, " 开启：自动感应智信通MCCK蓝牙，实现开门不罚站 关门不回头，无感自动开关锁。 关闭：需手动操作：掏出手机 → 打开智信通小程序 → 在「我的手机汽车钥匙功能」区域→ 完成开关门操作。")
               ]),
               vue.createElementVNode("switch", {
                 onChange: _cache[4] || (_cache[4] = (...args) => $options.handleToggleSensorMode && $options.handleToggleSensorMode(...args)),
@@ -2996,7 +3003,7 @@ if (uni.restoreGlobal) {
                     /* STYLE */
                   )
                 ]),
-                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, "拖动圆环，根据您与车辆的距离设定开锁感应范围。携带手机进入范围时，车辆将自动开锁。 ")
+                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, "初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “开锁” 图标位置，调整至满意状态后保存。 ")
               ]),
               vue.createElementVNode("view", { class: "middle-concrete-content-debugging" }, [
                 vue.createElementVNode("view", { class: "middle-concrete-content-debugging-title" }, "关锁信号敏感值DIY"),
@@ -3068,7 +3075,7 @@ if (uni.restoreGlobal) {
                     /* STYLE */
                   )
                 ]),
-                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, "拖动圆环，根据您与车辆的距离设定关锁感应范围。携带手机离开范围时，车辆将自动关锁。 ")
+                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, "初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “关锁” 图标位置，调整至满意状态后保存。 ")
               ]),
               vue.createElementVNode("view", { class: "middle-concrete-content-debugging" }, [
                 vue.createElementVNode("view", { class: "middle-concrete-content-debugging-title" }, "特殊情况DIY"),
@@ -3140,7 +3147,7 @@ if (uni.restoreGlobal) {
                     /* STYLE */
                   )
                 ]),
-                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, "如车辆启动时频繁开锁关锁, 请拖动圆环远离车辆。调试本项会同步调整关锁灵敏度。 ")
+                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, "初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “关锁” 图标位置，调整至满意状态后保存。 ")
               ])
             ])
           ]),
