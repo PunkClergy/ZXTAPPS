@@ -1535,8 +1535,8 @@ if (uni.restoreGlobal) {
     isDeviceConnected
   };
   const _imports_0$4 = "/static/assets/images/home/right_1.png";
-  const _imports_1$4 = "/static/assets/images/home/car_icon.png";
-  const _imports_2$1 = "/static/assets/images/close.png";
+  const _imports_0$3 = "/static/privateCar/car_icon.png";
+  const _imports_2$1 = "/static/privateCar/close.png";
   const _export_sfc = (sfc, props) => {
     const target = sfc.__vccOpts || sfc;
     for (const [key, val] of props) {
@@ -1734,12 +1734,12 @@ if (uni.restoreGlobal) {
           key: "user_info",
           success: (res2) => {
             var _a, _b;
-            formatAppLog("log", "at pages/index/index.vue:544", res2);
+            formatAppLog("log", "at pages/index/index.vue:549", res2);
             this.account = ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username);
             this.initCheckTimer();
           },
           fail(err) {
-            formatAppLog("error", "at pages/index/index.vue:551", "获取失败", err);
+            formatAppLog("error", "at pages/index/index.vue:556", "获取失败", err);
           }
         });
       },
@@ -1803,7 +1803,7 @@ if (uni.restoreGlobal) {
           return;
         }
         const targetPurePath = targetUrl.split("?")[0];
-        formatAppLog("log", "at pages/index/index.vue:618", currentPath, targetPurePath);
+        formatAppLog("log", "at pages/index/index.vue:623", currentPath, targetPurePath);
         if (currentPath !== targetPurePath) {
           if (targetPurePath == "pages/privateCar/index") {
             uni.redirectTo({
@@ -1924,14 +1924,14 @@ if (uni.restoreGlobal) {
               pixelRatio,
               statusBarHeight
             };
-            formatAppLog("log", "at pages/index/index.vue:744", "设备信息:", this.deviceInfo);
+            formatAppLog("log", "at pages/index/index.vue:749", "设备信息:", this.deviceInfo);
           },
           fail: console.error
         });
       },
       // 启动连接状态轮询
       startConnectionStatusPolling() {
-        formatAppLog("log", "at pages/index/index.vue:752", this.pageInterval);
+        formatAppLog("log", "at pages/index/index.vue:757", this.pageInterval);
         if (this.pageInterval) {
           return;
         }
@@ -1954,7 +1954,7 @@ if (uni.restoreGlobal) {
       // 初始化钥匙按钮内容
       initContro() {
         this.controlItemspanel = this.splitArray(dist.getControlItems(), 4);
-        formatAppLog("log", "at pages/index/index.vue:780", this.splitArray(dist.getControlItems(), 4));
+        formatAppLog("log", "at pages/index/index.vue:785", this.splitArray(dist.getControlItems(), 4));
       },
       initCheckTimer() {
         if (this.checkTimer) {
@@ -1979,7 +1979,7 @@ if (uni.restoreGlobal) {
           that.orgKey = that.handleTransformation(data == null ? void 0 : data.bluetoothKey);
           that.orgKeyOld = data == null ? void 0 : data.bluetoothKey;
           that.bluetoothData = data;
-          formatAppLog("log", "at pages/index/index.vue:810", that);
+          formatAppLog("log", "at pages/index/index.vue:815", that);
           setTimeout(() => {
             that.handleBule();
           }, 500);
@@ -1996,11 +1996,11 @@ if (uni.restoreGlobal) {
             that.code = code;
             handleData(response.data.content);
           }).catch((err) => {
-            formatAppLog("error", "at pages/index/index.vue:830", "获取蓝牙数据失败:", err);
+            formatAppLog("error", "at pages/index/index.vue:835", "获取蓝牙数据失败:", err);
           });
         };
         if (options == null ? void 0 : options.scene) {
-          formatAppLog("log", "at pages/index/index.vue:837", "处理URL参数:", options.scene);
+          formatAppLog("log", "at pages/index/index.vue:842", "处理URL参数:", options.scene);
           fetchBluetoothData(options.scene);
           uni.setStorage({
             key: "scene",
@@ -2041,12 +2041,6 @@ if (uni.restoreGlobal) {
       },
       // 去绑定车辆
       handleBindVechi() {
-        if (!isLogin()) {
-          uni.navigateTo({
-            url: "/pages/system/managerLoginView/loginView"
-          });
-          return;
-        }
         uni.redirectTo({
           url: "/pages/listOfPrivateCars/list/index"
         });
@@ -2093,9 +2087,9 @@ if (uni.restoreGlobal) {
       },
       // 处理蓝牙连接状态：检查设备是否已连接，决定执行连接或重连逻辑
       handleBule() {
-        formatAppLog("log", "at pages/index/index.vue:941", "idc", this.deviceIDC);
+        formatAppLog("log", "at pages/index/index.vue:946", "idc", this.deviceIDC);
         bleKeyManager.isDeviceConnected(this.deviceIDC, (status, param) => {
-          formatAppLog("log", "at pages/index/index.vue:943", "222222222--2-2-2-22-2-", status);
+          formatAppLog("log", "at pages/index/index.vue:948", "222222222--2-2-2-22-2-", status);
           if (status) {
             this.btnStartConnectConnected();
           } else {
@@ -2226,7 +2220,7 @@ if (uni.restoreGlobal) {
       },
       // 打包并发送数据（支持动态数据体长度）
       PackAndSend3a(type, dataLength, data, sign) {
-        formatAppLog("log", "at pages/index/index.vue:1104", type, dataLength, data, sign);
+        formatAppLog("log", "at pages/index/index.vue:1109", type, dataLength, data, sign);
         const header = [36];
         const end = [36];
         const paddedData = [...data].concat(new Array(dataLength - data.length).fill(0)).slice(
@@ -2245,7 +2239,7 @@ if (uni.restoreGlobal) {
       PackAndSend07: function(type, len, data) {
         const defaultData = [0, 0, 0, 0, 0, 0, 0];
         var packet = [36, type, len, data, ...defaultData, 36];
-        formatAppLog("log", "at pages/index/index.vue:1121", packet);
+        formatAppLog("log", "at pages/index/index.vue:1126", packet);
         bleKeyManager.dispatcherSend2(this.arrayToArrayBuffer(packet));
       },
       // 数组转ArrayBuffer
@@ -2301,9 +2295,9 @@ if (uni.restoreGlobal) {
       },
       //  数据解析按钮处理
       parseData: function(hexData) {
-        formatAppLog("log", "at pages/index/index.vue:1202", "hexData", hexData);
+        formatAppLog("log", "at pages/index/index.vue:1207", "hexData", hexData);
         const parsedResult = dist.getParseHexDataObject(hexData);
-        formatAppLog("log", "at pages/index/index.vue:1204", "parsedResult", parsedResult);
+        formatAppLog("log", "at pages/index/index.vue:1209", "parsedResult", parsedResult);
         if (parsedResult) {
           this.parsedData = parsedResult;
           this.updateMyPositionStyles();
@@ -2436,7 +2430,7 @@ if (uni.restoreGlobal) {
               }
             });
             const result = Array.from(uniqueMap.values());
-            formatAppLog("log", "at pages/index/index.vue:1355", "合并并优先保留 enabled=false 的结果：", result);
+            formatAppLog("log", "at pages/index/index.vue:1360", "合并并优先保留 enabled=false 的结果：", result);
             this.controlItems = result;
             setTimeout(() => {
               this.controlItemspanel = this.splitArray(result, 4);
@@ -2485,6 +2479,7 @@ if (uni.restoreGlobal) {
       // 滑块拖动事件
       async onlockSlide(e2) {
         var _a, _b;
+        formatAppLog("log", "at pages/index/index.vue:1418", e2, "wwwww");
         if (((_a = this.parsedData) == null ? void 0 : _a.pairStatus) == "未配对") {
           const now = Date.now();
           if (now - this.lastPairTime < 3e3)
@@ -2512,7 +2507,7 @@ if (uni.restoreGlobal) {
         }
         const touchX = touch.clientX;
         const relativeX = touchX - trackInfo.left;
-        formatAppLog("log", "at pages/index/index.vue:1449", `${trackId} - 判断滑动值`);
+        formatAppLog("log", "at pages/index/index.vue:1455", `${trackId} - 判断滑动值`);
         const trackConfig = {
           lockTrack: {
             maxProgress: 200,
@@ -2590,7 +2585,7 @@ if (uni.restoreGlobal) {
                 duration: 1500
               });
             } else {
-              formatAppLog("warn", "at pages/index/index.vue:1531", "[提示]", tipText);
+              formatAppLog("warn", "at pages/index/index.vue:1537", "[提示]", tipText);
             }
           }
         };
@@ -2615,7 +2610,7 @@ if (uni.restoreGlobal) {
               trackType
             );
           }
-          formatAppLog("log", "at pages/index/index.vue:1556", trackId, trackType);
+          formatAppLog("log", "at pages/index/index.vue:1562", trackId, trackType);
           if (trackType == "lock") {
             this.lockThumbStyle = `left: ${validProgress / 2}%;`;
             this.lockRange = validProgress / 2;
@@ -2627,6 +2622,84 @@ if (uni.restoreGlobal) {
           const hexProgress = toTwoHex(validProgress);
           this.btnCmdSend(17, cmdParam, hexProgress);
         }
+      },
+      // DIY恢复出厂设置
+      initToTwoHex(num) {
+        return num.toString(16).padStart(2, "0").toUpperCase();
+      },
+      handleRestoreSettings() {
+        const CONST = {
+          // 敏感值配置
+          DEFAULT_UNLOCK_SENSITIVITY: 50,
+          // 默认开锁敏感值
+          DEFAULT_LOCK_SENSITIVITY: 70,
+          // 默认关锁敏感值
+          CMD_SET_SENSITIVITY: 17,
+          // 设置敏感值指令码
+          // 状态与路径
+          LOGIN_PAGE: "/pages/system/managerLoginView/loginView",
+          CONNECTION_STATE_UNCONNECTED: "未连接",
+          PAIR_STATUS_UNPAIRED: "未配对",
+          // 提示文本
+          TOAST_BLUETOOTH_UNCONNECTED: "请等待蓝牙连接后重试",
+          TOAST_SET_SUCCESS: "设置成功",
+          MODAL_TITLE: "温馨提示",
+          MODAL_CONTENT: "关锁敏感值不得低于开锁敏感值，使用默认关锁值前，需先将开锁敏感值设为默认值。",
+          // 错误日志
+          ERROR_MSG_UNLOCK: "设置开锁敏感值默认值失败：",
+          ERROR_MSG_LOCK: "设置关锁敏感值默认值失败："
+        };
+        uni.showModal({
+          title: "确认重置",
+          content: "是否将开关锁敏感值恢复到出厂设置？",
+          confirmText: "确认",
+          success: (res2) => {
+            if (res2 == null ? void 0 : res2.confirm) {
+              const checkBluetooth = () => {
+                if (this.connectionState === CONST.CONNECTION_STATE_UNCONNECTED) {
+                  uni.showToast({
+                    title: CONST.TOAST_BLUETOOTH_UNCONNECTED,
+                    icon: "none"
+                  });
+                  return false;
+                }
+                return true;
+              };
+              const checkPair = (parsedData2) => {
+                const {
+                  inductionMode = false,
+                  pairStatus = CONST.PAIR_STATUS_UNPAIRED
+                } = parsedData2 || {};
+                if (!inductionMode && pairStatus === CONST.PAIR_STATUS_UNPAIRED) {
+                  this.btnPair();
+                  return false;
+                }
+                return true;
+              };
+              const setSensitivity = (sensitivity, type, errorMsg) => {
+                try {
+                  this.btnCmdSend(CONST.CMD_SET_SENSITIVITY, type, this.initToTwoHex(
+                    sensitivity
+                  ));
+                  uni.showToast({
+                    title: CONST.TOAST_SET_SUCCESS,
+                    icon: "none",
+                    duration: 1500
+                  });
+                } catch (e2) {
+                  formatAppLog("error", "at pages/index/index.vue:1663", errorMsg, e2);
+                }
+              };
+              if (!checkBluetooth())
+                return;
+              const parsedData = this.parsedData || {};
+              if (!checkPair(parsedData))
+                return;
+              setSensitivity(CONST.DEFAULT_LOCK_SENSITIVITY, 0, CONST.ERROR_MSG_LOCK);
+              setSensitivity(CONST.DEFAULT_UNLOCK_SENSITIVITY, 1, CONST.ERROR_MSG_UNLOCK);
+            }
+          }
+        });
       },
       // 更多设置弹窗
       /**
@@ -2705,7 +2778,7 @@ if (uni.restoreGlobal) {
         };
         const instructionMap = dist.getInstructionMap(sendCommand);
         const idActions = instructionMap[id];
-        formatAppLog("log", "at pages/index/index.vue:1665", idActions);
+        formatAppLog("log", "at pages/index/index.vue:1770", idActions);
         if (!idActions) {
           return;
         }
@@ -2770,7 +2843,7 @@ if (uni.restoreGlobal) {
         });
       },
       handleOnExistingAccountTap() {
-        formatAppLog("log", "at pages/index/index.vue:1738", "占位：函数 handleOnExistingAccountTap 未声明");
+        formatAppLog("log", "at pages/index/index.vue:1843", "占位：函数 handleOnExistingAccountTap 未声明");
         uni.redirectTo({
           url: "/pages/login/index"
         });
@@ -2924,7 +2997,7 @@ if (uni.restoreGlobal) {
             vue.createElementVNode("view", { class: "middle-title" }, [
               vue.createElementVNode("view", { style: { "display": "flex", "flex-direction": "column" } }, [
                 vue.createElementVNode("text", null, "感应开关锁"),
-                vue.createElementVNode("text", { style: { "font-size": "20rpx", "color": "#bbb" } }, " 开启：自动感应智信通MCCK蓝牙，实现开门不罚站 关门不回头，无感自动开关锁。 关闭：需手动操作：掏出手机 → 打开智信通APPS → 在「我的手机汽车钥匙功能」区域→ 完成开关门操作。")
+                vue.createElementVNode("text", { style: { "font-size": "20rpx", "color": "#bbb" } }, " 开启：实现开门不罚站 关门不回头，无感自动开关锁。 关闭：需手动操作： 在「我的手机汽车钥匙功能」区域-完成开关门操作。 ")
               ]),
               vue.createElementVNode("switch", {
                 onChange: _cache[4] || (_cache[4] = (...args) => $options.handleToggleSensorMode && $options.handleToggleSensorMode(...args)),
@@ -2933,9 +3006,54 @@ if (uni.restoreGlobal) {
                 style: { "transform": "scale(0.8)" }
               }, null, 40, ["checked"])
             ]),
+            vue.createElementVNode("view", { class: "signal-card" }, [
+              vue.createElementVNode("view", { class: "signal-info-group" }, [
+                vue.createElementVNode(
+                  "view",
+                  { class: "signal-info-item" },
+                  "我的位置 :" + vue.toDisplayString($data.parsedData.signalValue || 40),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "view",
+                  { class: "signal-info-item" },
+                  "开锁敏感值:" + vue.toDisplayString($data.parsedData.inductionUnlockSignal || 50),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "view",
+                  { class: "signal-info-item" },
+                  "关锁敏感值:" + vue.toDisplayString($data.parsedData.inductionLockSignal || 60),
+                  1
+                  /* TEXT */
+                )
+              ]),
+              vue.createElementVNode("view", { class: "signal-desc-group" }, [
+                vue.createElementVNode("view", { class: "signal-desc-item" }, "【我的位置】: 手机与硬件设备的蓝牙信号值，数值越小信号越强"),
+                vue.createElementVNode("view", { class: "signal-desc-item" }, '【变化规则】: "我的位置",该数值随手机移动实时变动。'),
+                vue.createElementVNode("view", { class: "signal-desc-item" }, "【开锁敏感值】: 信号值低于此值，车辆感应开锁"),
+                vue.createElementVNode("view", { class: "signal-desc-item" }, "【关锁敏感值】: 信号值高于此值，车辆感应关锁")
+              ]),
+              vue.createElementVNode("view", { style: { "font-size": "24rpx", "color": "#5B5959", "margin-top": "10rpx" } }, "温馨提示：默认设置若不合预期（开关锁位置/距离），请在个下方性化 DIY 处调整开关锁值")
+            ]),
             vue.createElementVNode("view", { class: "middle-concrete-content" }, [
               vue.createElementVNode("view", { class: "middle-concrete-content-debugging" }, [
-                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-title" }, "开锁信号敏感值DIY"),
+                vue.createElementVNode("view", { style: { "display": "flex", "flex-direction": "row", "justify-content": "space-between", "border-bottom": "1rpx solid #f1f1f1", "padding": "15rpx 0rpx" } }, [
+                  vue.createElementVNode("view", { style: { "font-size": "25rpx", "font-weight": "bold" } }, "舒适进入个性化DIY"),
+                  vue.createElementVNode("view", {
+                    onClick: _cache[5] || (_cache[5] = (...args) => $options.handleRestoreSettings && $options.handleRestoreSettings(...args)),
+                    style: { "font-size": "20rpx", "border": "1rpx solid #bbb", "background-color": "#3b82f6", "padding": "10rpx 10rpx", "border-radius": "10rpx", "color": "#fff" }
+                  }, " 恢复出厂设置")
+                ]),
+                vue.createCommentVNode(" 开锁 "),
+                vue.createElementVNode("view", {
+                  class: "middle-concrete-content-debugging-title",
+                  style: { "display": "flex", "flex-direction": "row", "justify-content": "space-between" }
+                }, [
+                  vue.createElementVNode("view", null, "开锁DIY")
+                ]),
                 vue.createElementVNode("view", {
                   class: "middle-concrete-content-debugging-slider-track tarck-unlock",
                   id: "unlockTrack"
@@ -2954,12 +3072,12 @@ if (uni.restoreGlobal) {
                     vue.createElementVNode("view", { class: "middle-concrete-content-debugging-info" }, [
                       vue.createElementVNode("image", {
                         class: "middle-concrete-content-debugging-info-image",
-                        src: _imports_1$4
+                        src: _imports_0$3
                       }),
                       vue.createElementVNode(
                         "text",
                         { class: "middle-concrete-content-debugging-info-text" },
-                        "开锁范围: " + vue.toDisplayString($data.parsedData.inductionUnlockSignal || 50),
+                        "敏感值: " + vue.toDisplayString($data.parsedData.inductionUnlockSignal || 50),
                         1
                         /* TEXT */
                       )
@@ -2971,43 +3089,18 @@ if (uni.restoreGlobal) {
                       class: "middle-concrete-content-debugging-slider-thumb",
                       style: vue.normalizeStyle($data.unlockThumbStyle),
                       "data-id": "unlockTrack",
-                      onTouchmove: _cache[5] || (_cache[5] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
+                      onTouchmove: _cache[6] || (_cache[6] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
                     },
                     [
                       vue.createElementVNode("image", { src: "https://k1sw.wiselink.net.cn/img/app2.0/sjc/open@2x.png" })
                     ],
                     36
                     /* STYLE, NEED_HYDRATION */
-                  ),
-                  vue.createElementVNode(
-                    "view",
-                    {
-                      class: "middle-concrete-content-debugging-person-icon",
-                      style: vue.normalizeStyle($data.myPositionStyle)
-                    },
-                    [
-                      vue.createElementVNode("view", { class: "middle-concrete-content-debugging-person-info" }, [
-                        vue.createElementVNode("image", {
-                          class: "middle-concrete-content-debugging-person-info-image",
-                          src: "https://k1sw.wiselink.net.cn/img/app2.0/sjc/my_place.png"
-                        }),
-                        vue.createElementVNode(
-                          "text",
-                          { class: "middle-concrete-content-debugging-info-text" },
-                          "我的位置:" + vue.toDisplayString($data.parsedData.signalValue || 40),
-                          1
-                          /* TEXT */
-                        )
-                      ])
-                    ],
-                    4
-                    /* STYLE */
                   )
                 ]),
-                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, "初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “开锁” 图标位置，调整至满意状态后保存。 ")
-              ]),
-              vue.createElementVNode("view", { class: "middle-concrete-content-debugging" }, [
-                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-title" }, "关锁信号敏感值DIY"),
+                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, ' 如开锁距离过远，则滑动"锁"图标调小数值，如开锁距离过近，则滑动"锁"图标调大数值。 '),
+                vue.createCommentVNode(" 关锁 "),
+                vue.createElementVNode("view", { style: { "font-weight": "bold", "font-size": "23rpx", "color": "#BA2B2B" } }, "关锁DIY"),
                 vue.createElementVNode("view", {
                   class: "middle-concrete-content-debugging-slider-track tarck-lock",
                   id: "lockTrack"
@@ -3025,13 +3118,13 @@ if (uni.restoreGlobal) {
                   vue.createElementVNode("view", { class: "middle-concrete-content-debugging-car-icon" }, [
                     vue.createElementVNode("view", { class: "middle-concrete-content-debugging-info" }, [
                       vue.createElementVNode("image", {
-                        src: _imports_1$4,
+                        src: _imports_0$3,
                         class: "middle-concrete-content-debugging-info-image"
                       }),
                       vue.createElementVNode(
                         "text",
                         { class: "middle-concrete-content-debugging-info-text" },
-                        "关锁范围: " + vue.toDisplayString($data.parsedData.inductionLockSignal || 60),
+                        "敏感值: " + vue.toDisplayString($data.parsedData.inductionLockSignal || 60),
                         1
                         /* TEXT */
                       )
@@ -3043,43 +3136,18 @@ if (uni.restoreGlobal) {
                       class: "middle-concrete-content-debugging-slider-thumb",
                       style: vue.normalizeStyle($data.lockThumbStyle),
                       "data-id": "lockTrack",
-                      onTouchmove: _cache[6] || (_cache[6] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
+                      onTouchmove: _cache[7] || (_cache[7] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
                     },
                     [
                       vue.createElementVNode("image", { src: "https://k1sw.wiselink.net.cn/img/app2.0/sjc/shut@2x.png" })
                     ],
                     36
                     /* STYLE, NEED_HYDRATION */
-                  ),
-                  vue.createElementVNode(
-                    "view",
-                    {
-                      class: "middle-concrete-content-debugging-person-icon",
-                      style: vue.normalizeStyle($data.myPositionStyle)
-                    },
-                    [
-                      vue.createElementVNode("view", { class: "middle-concrete-content-debugging-person-info" }, [
-                        vue.createElementVNode("image", {
-                          class: "middle-concrete-content-debugging-person-info-image",
-                          src: "https://k1sw.wiselink.net.cn/img/app2.0/sjc/my_place.png"
-                        }),
-                        vue.createElementVNode(
-                          "text",
-                          { class: "middle-concrete-content-debugging-info-text" },
-                          "我的位置:" + vue.toDisplayString($data.parsedData.signalValue || 50),
-                          1
-                          /* TEXT */
-                        )
-                      ])
-                    ],
-                    4
-                    /* STYLE */
                   )
                 ]),
-                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, "初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “关锁” 图标位置，调整至满意状态后保存。 ")
-              ]),
-              vue.createElementVNode("view", { class: "middle-concrete-content-debugging" }, [
-                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-title" }, "特殊情况DIY"),
+                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, ' 如关锁距离过远，则滑动"锁"图标调小数值，如关锁距离过近，则滑动"锁"图标调大数值。 '),
+                vue.createCommentVNode(" 开车期间频繁开关锁调整DIY "),
+                vue.createElementVNode("view", { style: { "font-weight": "bold", "font-size": "23rpx", "color": "#BA2B2B" } }, "开车期间频繁开关锁调整DIY"),
                 vue.createElementVNode("view", {
                   class: "middle-concrete-content-debugging-slider-track tarck-special",
                   id: "unlockTrack"
@@ -3097,13 +3165,13 @@ if (uni.restoreGlobal) {
                   vue.createElementVNode("view", { class: "middle-concrete-content-debugging-car-icon" }, [
                     vue.createElementVNode("view", { class: "middle-concrete-content-debugging-info" }, [
                       vue.createElementVNode("image", {
-                        src: _imports_1$4,
+                        src: _imports_0$3,
                         class: "middle-concrete-content-debugging-info-image"
                       }),
                       vue.createElementVNode(
                         "text",
                         { class: "middle-concrete-content-debugging-info-text" },
-                        "关锁范围: " + vue.toDisplayString($data.parsedData.inductionLockSignal || 60),
+                        "敏感值: " + vue.toDisplayString($data.parsedData.inductionLockSignal || 60),
                         1
                         /* TEXT */
                       )
@@ -3115,40 +3183,16 @@ if (uni.restoreGlobal) {
                       class: "middle-concrete-content-debugging-slider-thumb",
                       style: vue.normalizeStyle($data.lockThumbStyle),
                       "data-id": "lockTrack",
-                      onTouchmove: _cache[7] || (_cache[7] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
+                      onTouchmove: _cache[8] || (_cache[8] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
                     },
                     [
                       vue.createElementVNode("image", { src: "https://k1sw.wiselink.net.cn/img/app2.0/sjc/special@2x.png" })
                     ],
                     36
                     /* STYLE, NEED_HYDRATION */
-                  ),
-                  vue.createElementVNode(
-                    "view",
-                    {
-                      class: "middle-concrete-content-debugging-person-icon",
-                      style: vue.normalizeStyle($data.myPositionStyle)
-                    },
-                    [
-                      vue.createElementVNode("view", { class: "middle-concrete-content-debugging-person-info" }, [
-                        vue.createElementVNode("image", {
-                          class: "middle-concrete-content-debugging-person-info-image",
-                          src: "https://k1sw.wiselink.net.cn/img/app2.0/sjc/my_place.png"
-                        }),
-                        vue.createElementVNode(
-                          "text",
-                          { class: "middle-concrete-content-debugging-info-text" },
-                          "我的位置: " + vue.toDisplayString($data.parsedData.signalValue || 50),
-                          1
-                          /* TEXT */
-                        )
-                      ])
-                    ],
-                    4
-                    /* STYLE */
                   )
                 ]),
-                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, "初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “关锁” 图标位置，调整至满意状态后保存。 ")
+                vue.createElementVNode("view", { class: "middle-concrete-content-debugging-tip" }, " 如开车期间频繁开关锁，建议调大数值～调整后关锁数值会同步更新，关门敏感度会降低。 ")
               ])
             ])
           ]),
@@ -3164,7 +3208,7 @@ if (uni.restoreGlobal) {
                 vue.createElementVNode("text", {
                   class: "bottom-fixed-identification-more",
                   "data-key": "key_settings",
-                  onClick: _cache[8] || (_cache[8] = (...args) => $options.handleMoreSettings && $options.handleMoreSettings(...args))
+                  onClick: _cache[9] || (_cache[9] = (...args) => $options.handleMoreSettings && $options.handleMoreSettings(...args))
                 }, "更多钥匙功能 >")
               ]),
               vue.createElementVNode("swiper", {
@@ -3242,7 +3286,7 @@ if (uni.restoreGlobal) {
             vue.renderList($data.tabList, (item, index) => {
               return vue.openBlock(), vue.createElementBlock("view", {
                 class: vue.normalizeClass("tab-item " + ($data.currentTab === index ? "active" : "")),
-                onClick: _cache[9] || (_cache[9] = (...args) => $options.handleSwitchTabNavigation && $options.handleSwitchTabNavigation(...args)),
+                onClick: _cache[10] || (_cache[10] = (...args) => $options.handleSwitchTabNavigation && $options.handleSwitchTabNavigation(...args)),
                 "data-index": index,
                 key: index
               }, [
@@ -3280,7 +3324,7 @@ if (uni.restoreGlobal) {
       }, [
         vue.createElementVNode("view", {
           class: "modal-mask",
-          onClick: _cache[10] || (_cache[10] = (...args) => $options.handleMaskTap && $options.handleMaskTap(...args))
+          onClick: _cache[11] || (_cache[11] = (...args) => $options.handleMaskTap && $options.handleMaskTap(...args))
         }),
         vue.createElementVNode("view", {
           class: "modal-content",
@@ -3290,7 +3334,7 @@ if (uni.restoreGlobal) {
             "view",
             {
               style: vue.normalizeStyle("margin-top: " + $data.g_height_from_head + "px;"),
-              onClick: _cache[11] || (_cache[11] = (...args) => $options.handleMaskTap && $options.handleMaskTap(...args))
+              onClick: _cache[12] || (_cache[12] = (...args) => $options.handleMaskTap && $options.handleMaskTap(...args))
             },
             [
               vue.createElementVNode("image", {
@@ -3322,7 +3366,7 @@ if (uni.restoreGlobal) {
                           vue.createElementVNode("text", { class: "modal-body-outer-layer-of-card-layer-item-text" }, "蓝牙断开自动锁车"),
                           vue.createElementVNode("switch", {
                             checked: $data.parsedData.bleDisconnectLock,
-                            onChange: _cache[12] || (_cache[12] = (...args) => $options.handleToBreakOff && $options.handleToBreakOff(...args)),
+                            onChange: _cache[13] || (_cache[13] = (...args) => $options.handleToBreakOff && $options.handleToBreakOff(...args)),
                             color: "#07C160",
                             style: { "transform": "scale(0.7)" }
                           }, null, 40, ["checked"])
@@ -3334,7 +3378,7 @@ if (uni.restoreGlobal) {
                           vue.createElementVNode("text", { class: "modal-body-outer-layer-of-card-layer-item-text" }, "锁车自动升窗"),
                           vue.createElementVNode("switch", {
                             checked: $data.parsedData.lockWindowUp,
-                            onChange: _cache[13] || (_cache[13] = (...args) => $options.handleAutoCloseTheWindow && $options.handleAutoCloseTheWindow(...args)),
+                            onChange: _cache[14] || (_cache[14] = (...args) => $options.handleAutoCloseTheWindow && $options.handleAutoCloseTheWindow(...args)),
                             color: "#07C160",
                             style: { "transform": "scale(0.7)" }
                           }, null, 40, ["checked"])
@@ -3367,7 +3411,7 @@ if (uni.restoreGlobal) {
                               vue.createElementVNode("picker", {
                                 "data-item": item,
                                 "data-index": index,
-                                onChange: _cache[14] || (_cache[14] = (...args) => $options.handleOutputMethod && $options.handleOutputMethod(...args)),
+                                onChange: _cache[15] || (_cache[15] = (...args) => $options.handleOutputMethod && $options.handleOutputMethod(...args)),
                                 range: $data.key_out_put[index],
                                 "range-key": "name"
                               }, [
@@ -3420,7 +3464,7 @@ if (uni.restoreGlobal) {
                           ),
                           vue.createElementVNode("switch", {
                             checked: item.enabled,
-                            onChange: _cache[15] || (_cache[15] = (...args) => $options.handleToggleControl && $options.handleToggleControl(...args)),
+                            onChange: _cache[16] || (_cache[16] = (...args) => $options.handleToggleControl && $options.handleToggleControl(...args)),
                             "data-index": index,
                             color: "#07C160",
                             style: { "transform": "scale(0.7)" }
@@ -4034,7 +4078,7 @@ if (uni.restoreGlobal) {
       });
     });
   };
-  const _imports_0$3 = "/static/public/nav_left.png";
+  const _imports_0$2 = "/static/public/nav_left.png";
   const _imports_1$2 = "/static/public/home.png";
   const _sfc_main$8 = {
     name: "CustomHeader",
@@ -4135,7 +4179,7 @@ if (uni.restoreGlobal) {
           [
             vue.createElementVNode("view", { style: { "display": "flex", "align-items": "center", "gap": "30rpx" } }, [
               vue.createElementVNode("image", {
-                src: _imports_0$3,
+                src: _imports_0$2,
                 class: "action-icon back-icon",
                 onClick: _cache[0] || (_cache[0] = (...args) => $options.handleBack && $options.handleBack(...args))
               }),
@@ -4448,7 +4492,7 @@ if (uni.restoreGlobal) {
       return Object.prototype.hasOwnProperty.call(obj, prop);
     }
   })(typeof commonjsGlobal !== "undefined" ? commonjsGlobal : typeof window !== "undefined" ? window : commonjsGlobal);
-  const _imports_0$2 = "/static/public/car_01.png";
+  const _imports_0$1 = "/static/public/car_01.png";
   const _imports_1$1 = "/static/privateCar/right_1.png";
   const _sfc_main$6 = {
     components: {
@@ -4931,8 +4975,7 @@ if (uni.restoreGlobal) {
               key: 0,
               "scroll-y": "",
               onScrolltolower: _cache[3] || (_cache[3] = (...args) => $options.handleLower && $options.handleLower(...args)),
-              onRefresherrefresh: _cache[4] || (_cache[4] = (...args) => $options.handleRefresh && $options.handleRefresh(...args)),
-              "refresher-enabled": true,
+              "refresher-enabled": false,
               "refresher-triggered": $data.g_triggered
             }, [
               (vue.openBlock(true), vue.createElementBlock(
@@ -4946,7 +4989,7 @@ if (uni.restoreGlobal) {
                     vue.createElementVNode("view", { class: "content-item-head" }, [
                       vue.createElementVNode("view", { class: "head-left" }, [
                         vue.createElementVNode("view", { class: "left-category" }, [
-                          vue.createElementVNode("image", { src: _imports_0$2 }),
+                          vue.createElementVNode("image", { src: _imports_0$1 }),
                           vue.createElementVNode(
                             "text",
                             null,
@@ -5065,9 +5108,8 @@ if (uni.restoreGlobal) {
             $data.c_activeTab == 2 ? (vue.openBlock(), vue.createElementBlock("scroll-view", {
               key: 1,
               "scroll-y": "",
-              onScrolltolower: _cache[8] || (_cache[8] = (...args) => $options.handleLower && $options.handleLower(...args)),
-              onRefresherrefresh: _cache[9] || (_cache[9] = (...args) => $options.handleRefresh && $options.handleRefresh(...args)),
-              "refresher-enabled": true,
+              onScrolltolower: _cache[7] || (_cache[7] = (...args) => $options.handleLower && $options.handleLower(...args)),
+              "refresher-enabled": false,
               "refresher-triggered": $data.g_triggered
             }, [
               (vue.openBlock(true), vue.createElementBlock(
@@ -5122,7 +5164,7 @@ if (uni.restoreGlobal) {
                     }, [
                       vue.createElementVNode("view", null, [
                         vue.createElementVNode("text", {
-                          onClick: _cache[5] || (_cache[5] = (...args) => $options.handleEditKey && $options.handleEditKey(...args)),
+                          onClick: _cache[4] || (_cache[4] = (...args) => $options.handleEditKey && $options.handleEditKey(...args)),
                           "data-item": item,
                           style: { "float": "left" }
                         }, "修改", 8, ["data-item"])
@@ -5130,11 +5172,11 @@ if (uni.restoreGlobal) {
                       vue.createElementVNode("view", { style: { "display": "flex", "flex-direction": "row" } }, [
                         vue.createCommentVNode(' <button :data-item="item" open-type="share" @tap="handleForward">一键转发</button> '),
                         vue.createElementVNode("text", {
-                          onClick: _cache[6] || (_cache[6] = (...args) => $options.handleCopy && $options.handleCopy(...args)),
+                          onClick: _cache[5] || (_cache[5] = (...args) => $options.handleCopy && $options.handleCopy(...args)),
                           "data-item": item
                         }, vue.toDisplayString($data.copied ? "已复制" : "复制链接"), 9, ["data-item"]),
                         vue.createElementVNode("text", {
-                          onClick: _cache[7] || (_cache[7] = (...args) => $options.handleCance && $options.handleCance(...args)),
+                          onClick: _cache[6] || (_cache[6] = (...args) => $options.handleCance && $options.handleCance(...args)),
                           "data-item": item
                         }, "取消用车", 8, ["data-item"])
                       ])
@@ -5154,7 +5196,7 @@ if (uni.restoreGlobal) {
       $data.c_send_key_show_momal ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 0,
         class: "modal-mask",
-        onClick: _cache[10] || (_cache[10] = (...args) => $options.handleHideSengKeyModal && $options.handleHideSengKeyModal(...args))
+        onClick: _cache[8] || (_cache[8] = (...args) => $options.handleHideSengKeyModal && $options.handleHideSengKeyModal(...args))
       })) : vue.createCommentVNode("v-if", true),
       $data.c_send_key_show_momal ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 1,
@@ -5163,7 +5205,7 @@ if (uni.restoreGlobal) {
         vue.createElementVNode(
           "form",
           {
-            onSubmit: _cache[16] || (_cache[16] = (...args) => $options.handleFormSubmit && $options.handleFormSubmit(...args))
+            onSubmit: _cache[14] || (_cache[14] = (...args) => $options.handleFormSubmit && $options.handleFormSubmit(...args))
           },
           [
             vue.createElementVNode("view", { class: "modal-container" }, [
@@ -5171,7 +5213,7 @@ if (uni.restoreGlobal) {
                 vue.createElementVNode("text", null, "发送电子钥匙"),
                 vue.createElementVNode("image", {
                   src: _imports_1$1,
-                  onClick: _cache[11] || (_cache[11] = (...args) => $options.handleHideSengKeyModal && $options.handleHideSengKeyModal(...args))
+                  onClick: _cache[9] || (_cache[9] = (...args) => $options.handleHideSengKeyModal && $options.handleHideSengKeyModal(...args))
                 })
               ]),
               vue.createElementVNode("view", { class: "modal-container-middle" }, [
@@ -5213,7 +5255,7 @@ if (uni.restoreGlobal) {
                       {
                         mode: "date",
                         "data-index": "startDate",
-                        onChange: _cache[12] || (_cache[12] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                        onChange: _cache[10] || (_cache[10] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
                       },
                       [
                         vue.createElementVNode("view", { class: "form-item-text" }, [
@@ -5234,7 +5276,7 @@ if (uni.restoreGlobal) {
                       {
                         mode: "time",
                         "data-index": "startTime",
-                        onChange: _cache[13] || (_cache[13] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                        onChange: _cache[11] || (_cache[11] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
                       },
                       [
                         vue.createElementVNode("view", { class: "form-item-text" }, [
@@ -5260,7 +5302,7 @@ if (uni.restoreGlobal) {
                       {
                         mode: "date",
                         "data-index": "endDate",
-                        onChange: _cache[14] || (_cache[14] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                        onChange: _cache[12] || (_cache[12] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
                       },
                       [
                         vue.createElementVNode("view", { class: "form-item-text" }, [
@@ -5281,7 +5323,7 @@ if (uni.restoreGlobal) {
                       {
                         mode: "time",
                         "data-index": "endTime",
-                        onChange: _cache[15] || (_cache[15] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                        onChange: _cache[13] || (_cache[13] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
                       },
                       [
                         vue.createElementVNode("view", { class: "form-item-text" }, [
@@ -5323,7 +5365,7 @@ if (uni.restoreGlobal) {
       $data.c_edit_key_show_momal ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 2,
         class: "modal-mask",
-        onClick: _cache[17] || (_cache[17] = (...args) => $options.handleHideEditKeyModal && $options.handleHideEditKeyModal(...args))
+        onClick: _cache[15] || (_cache[15] = (...args) => $options.handleHideEditKeyModal && $options.handleHideEditKeyModal(...args))
       })) : vue.createCommentVNode("v-if", true),
       $data.c_edit_key_show_momal ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 3,
@@ -5332,7 +5374,7 @@ if (uni.restoreGlobal) {
         vue.createElementVNode(
           "form",
           {
-            onSubmit: _cache[23] || (_cache[23] = (...args) => $options.handleFormEdit && $options.handleFormEdit(...args))
+            onSubmit: _cache[21] || (_cache[21] = (...args) => $options.handleFormEdit && $options.handleFormEdit(...args))
           },
           [
             vue.createElementVNode("view", { class: "modal-container" }, [
@@ -5340,7 +5382,7 @@ if (uni.restoreGlobal) {
                 vue.createElementVNode("text", null, "修改"),
                 vue.createElementVNode("image", {
                   src: _imports_1$1,
-                  onClick: _cache[18] || (_cache[18] = (...args) => $options.handleHideEditKeyModal && $options.handleHideEditKeyModal(...args))
+                  onClick: _cache[16] || (_cache[16] = (...args) => $options.handleHideEditKeyModal && $options.handleHideEditKeyModal(...args))
                 })
               ]),
               vue.createElementVNode("view", { class: "modal-container-middle" }, [
@@ -5386,7 +5428,7 @@ if (uni.restoreGlobal) {
                       {
                         mode: "date",
                         "data-index": "startDate",
-                        onChange: _cache[19] || (_cache[19] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                        onChange: _cache[17] || (_cache[17] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
                       },
                       [
                         vue.createElementVNode("view", { class: "form-item-text" }, [
@@ -5407,7 +5449,7 @@ if (uni.restoreGlobal) {
                       {
                         mode: "time",
                         "data-index": "startTime",
-                        onChange: _cache[20] || (_cache[20] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                        onChange: _cache[18] || (_cache[18] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
                       },
                       [
                         vue.createElementVNode("view", { class: "form-item-text" }, [
@@ -5433,7 +5475,7 @@ if (uni.restoreGlobal) {
                       {
                         mode: "date",
                         "data-index": "endDate",
-                        onChange: _cache[21] || (_cache[21] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                        onChange: _cache[19] || (_cache[19] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
                       },
                       [
                         vue.createElementVNode("view", { class: "form-item-text" }, [
@@ -5454,7 +5496,7 @@ if (uni.restoreGlobal) {
                       {
                         mode: "time",
                         "data-index": "endTime",
-                        onChange: _cache[22] || (_cache[22] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
+                        onChange: _cache[20] || (_cache[20] = (...args) => $options.bindTimeChange && $options.bindTimeChange(...args))
                       },
                       [
                         vue.createElementVNode("view", { class: "form-item-text" }, [
@@ -5877,7 +5919,6 @@ if (uni.restoreGlobal) {
     ]);
   }
   const PagesZoneCenterIndex = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$4], ["__file", "C:/Users/PC/Documents/wslink/ZXTAPPS/pages/zoneCenter/index.vue"]]);
-  const _imports_0$1 = "/static/privateCar/car_icon.png";
   const _imports_1 = "/static/privateCar/_edit.png";
   const _imports_2 = "/static/privateCar/_delete.png";
   const _imports_3 = "/static/privateCar/ss.png";
@@ -6396,7 +6437,7 @@ if (uni.restoreGlobal) {
                     vue.createElementVNode("view", { class: "content-item-head" }, [
                       vue.createElementVNode("view", { class: "head-left" }, [
                         vue.createElementVNode("view", { class: "left-category" }, [
-                          vue.createElementVNode("image", { src: _imports_0$1 }),
+                          vue.createElementVNode("image", { src: _imports_0$3 }),
                           vue.createElementVNode(
                             "text",
                             null,

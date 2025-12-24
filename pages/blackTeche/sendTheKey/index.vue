@@ -15,8 +15,8 @@
 				</view>
 				<!-- 详情区域部分 -->
 				<block v-if="c_activeTab == 1">
-					<scroll-view scroll-y @scrolltolower="handleLower" @refresherrefresh="handleRefresh"
-						:refresher-enabled="true" :refresher-triggered="g_triggered">
+					<scroll-view scroll-y @scrolltolower="handleLower"
+						:refresher-enabled="false" :refresher-triggered="g_triggered">
 						<block v-for="(item, index) in g_items" :key="index">
 							<view class="content-item">
 								<view class="content-item-head">
@@ -66,8 +66,8 @@
 					</scroll-view>
 				</block>
 				<block v-if="c_activeTab == 2">
-					<scroll-view scroll-y @scrolltolower="handleLower" @refresherrefresh="handleRefresh"
-						:refresher-enabled="true" :refresher-triggered="g_triggered">
+					<scroll-view scroll-y @scrolltolower="handleLower" 
+						:refresher-enabled="false" :refresher-triggered="g_triggered">
 						<block v-for="(item, index) in y_items" :key="index">
 							<view class="content-card">
 								<view class="card-head">

@@ -77,99 +77,104 @@
 					<view style="display: flex;flex-direction: column;">
 						<text>感应开关锁</text>
 						<text style="font-size: 20rpx;color: #bbb;">
-							开启：自动感应智信通MCCK蓝牙，实现开门不罚站 关门不回头，无感自动开关锁。
-							关闭：需手动操作：掏出手机 → 打开智信通APPS → 在「我的手机汽车钥匙功能」区域→ 完成开关门操作。</text>
+							开启：实现开门不罚站 关门不回头，无感自动开关锁。
+							关闭：需手动操作： 在「我的手机汽车钥匙功能」区域-完成开关门操作。
+						</text>
 					</view>
 
 					<switch @change="handleToggleSensorMode" :checked="parsedData.inductionMode" color="#1B64B1"
 						style="transform: scale(0.8)" />
 				</view>
+				<view class="signal-card">
+					<view class="signal-info-group">
+						<view class="signal-info-item">我的位置 :{{parsedData.signalValue||40}}</view>
+						<view class="signal-info-item">开锁敏感值:{{parsedData.inductionUnlockSignal||50}}</view>
+						<view class="signal-info-item">关锁敏感值:{{parsedData.inductionLockSignal||60}}</view>
+					</view>
+					<view class="signal-desc-group">
+						<view class="signal-desc-item">【我的位置】: 手机与硬件设备的蓝牙信号值，数值越小信号越强</view>
+						<view class="signal-desc-item">【变化规则】: "我的位置",该数值随手机移动实时变动。</view>
+						<view class="signal-desc-item">【开锁敏感值】: 信号值低于此值，车辆感应开锁</view>
+						<view class="signal-desc-item">【关锁敏感值】: 信号值高于此值，车辆感应关锁</view>
+					</view>
+					<view style="font-size: 24rpx;color: #5B5959;margin-top: 10rpx;">温馨提示：默认设置若不合预期（开关锁位置/距离），请在个下方性化
+						DIY 处调整开关锁值</view>
+				</view>
 				<view class="middle-concrete-content">
+
 					<view class="middle-concrete-content-debugging">
-						<view class="middle-concrete-content-debugging-title">开锁信号敏感值DIY</view>
+						<view
+							style="display: flex;flex-direction: row;justify-content: space-between;border-bottom:1rpx solid #f1f1f1;padding: 15rpx 0rpx;">
+							<view style="font-size: 25rpx;font-weight: bold;">舒适进入个性化DIY</view>
+							<view @click="handleRestoreSettings"
+								style="font-size: 20rpx;border: 1rpx solid #bbb;background-color: #3b82f6;padding: 10rpx 10rpx;border-radius: 10rpx;color: #fff;">
+								恢复出厂设置</view>
+						</view>
+						<!-- 开锁 -->
+						<view class="middle-concrete-content-debugging-title"
+							style="display: flex;flex-direction: row;justify-content: space-between;">
+							<view>开锁DIY</view>
+						</view>
 						<view class="middle-concrete-content-debugging-slider-track tarck-unlock" id="unlockTrack">
 							<view class="middle-concrete-content-debugging-slider-fill fill-unlock"
 								:style="'width: ' + (unlockRange + '%')"></view>
 							<view class="middle-concrete-content-debugging-car-icon">
 								<view class="middle-concrete-content-debugging-info">
 									<image class="middle-concrete-content-debugging-info-image"
-										src="/static/assets/images/home/car_icon.png"></image>
-									<text class="middle-concrete-content-debugging-info-text">开锁范围:
-										{{ parsedData.inductionUnlockSignal || 50 }}</text>
+										src="/static/privateCar/car_icon.png"></image>
+									<text class="middle-concrete-content-debugging-info-text">敏感值:
+										{{parsedData.inductionUnlockSignal||50}}</text>
 								</view>
 							</view>
 							<view class="middle-concrete-content-debugging-slider-thumb" :style="unlockThumbStyle"
 								data-id="unlockTrack" @touchmove="onlockSlide">
 								<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/open@2x.png" />
 							</view>
-							<view class="middle-concrete-content-debugging-person-icon" :style="myPositionStyle">
-								<view class="middle-concrete-content-debugging-person-info">
-									<image class="middle-concrete-content-debugging-person-info-image"
-										src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/my_place.png" />
-									<text
-										class="middle-concrete-content-debugging-info-text">我的位置:{{ parsedData.signalValue || 40 }}</text>
-								</view>
-							</view>
 						</view>
-						<view class="middle-concrete-content-debugging-tip">初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “开锁” 图标位置，调整至满意状态后保存。
+						<view class="middle-concrete-content-debugging-tip">
+							如开锁距离过远，则滑动"锁"图标调小数值，如开锁距离过近，则滑动"锁"图标调大数值。
 						</view>
-					</view>
-					<view class="middle-concrete-content-debugging">
-						<view class="middle-concrete-content-debugging-title">关锁信号敏感值DIY</view>
+						<!-- 关锁 -->
+						<view style="font-weight: bold;font-size: 23rpx;color: #BA2B2B;">关锁DIY</view>
 						<view class="middle-concrete-content-debugging-slider-track tarck-lock" id="lockTrack">
 							<view class="middle-concrete-content-debugging-slider-fill fill-lock"
 								:style="'width: ' + (lockRange + '%')"></view>
 							<view class="middle-concrete-content-debugging-car-icon">
 								<view class="middle-concrete-content-debugging-info">
-									<image src="/static/assets/images/home/car_icon.png"
+									<image src="/static/privateCar/car_icon.png"
 										class="middle-concrete-content-debugging-info-image" />
-									<text class="middle-concrete-content-debugging-info-text">关锁范围:
-										{{ parsedData.inductionLockSignal || 60 }}</text>
+									<text class="middle-concrete-content-debugging-info-text">敏感值:
+										{{parsedData.inductionLockSignal||60}}</text>
 								</view>
 							</view>
 							<view class="middle-concrete-content-debugging-slider-thumb" :style="lockThumbStyle"
 								data-id="lockTrack" @touchmove="onlockSlide">
 								<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/shut@2x.png" />
 							</view>
-							<view class="middle-concrete-content-debugging-person-icon" :style="myPositionStyle">
-								<view class="middle-concrete-content-debugging-person-info">
-									<image class="middle-concrete-content-debugging-person-info-image"
-										src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/my_place.png" />
-									<text
-										class="middle-concrete-content-debugging-info-text">我的位置:{{ parsedData.signalValue || 50 }}</text>
-								</view>
-							</view>
 						</view>
-						<view class="middle-concrete-content-debugging-tip">初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “关锁” 图标位置，调整至满意状态后保存。
+						<view class="middle-concrete-content-debugging-tip">
+							如关锁距离过远，则滑动"锁"图标调小数值，如关锁距离过近，则滑动"锁"图标调大数值。
 						</view>
-					</view>
-					<view class="middle-concrete-content-debugging">
-						<view class="middle-concrete-content-debugging-title">特殊情况DIY</view>
+						<!-- 开车期间频繁开关锁调整DIY -->
+						<view style="font-weight: bold;font-size: 23rpx;color: #BA2B2B;">开车期间频繁开关锁调整DIY</view>
 						<view class="middle-concrete-content-debugging-slider-track tarck-special" id="unlockTrack">
 							<view class="middle-concrete-content-debugging-slider-fill fill-special"
 								:style="'width: ' + (lockRange + '%')"></view>
 							<view class="middle-concrete-content-debugging-car-icon">
 								<view class="middle-concrete-content-debugging-info">
-									<image src="/static/assets/images/home/car_icon.png"
+									<image src="/static/privateCar/car_icon.png"
 										class="middle-concrete-content-debugging-info-image"></image>
-									<text class="middle-concrete-content-debugging-info-text">关锁范围:
-										{{ parsedData.inductionLockSignal || 60 }}</text>
+									<text class="middle-concrete-content-debugging-info-text">敏感值:
+										{{parsedData.inductionLockSignal||60}}</text>
 								</view>
 							</view>
 							<view class="middle-concrete-content-debugging-slider-thumb" :style="lockThumbStyle"
 								data-id="lockTrack" @touchmove="onlockSlide">
 								<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/special@2x.png" />
 							</view>
-							<view class="middle-concrete-content-debugging-person-icon" :style="myPositionStyle">
-								<view class="middle-concrete-content-debugging-person-info">
-									<image class="middle-concrete-content-debugging-person-info-image"
-										src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/my_place.png"></image>
-									<text class="middle-concrete-content-debugging-info-text">我的位置:
-										{{ parsedData.signalValue || 50 }}</text>
-								</view>
-							</view>
 						</view>
-						<view class="middle-concrete-content-debugging-tip">初期使用或更换手机后，因不同品牌、年份手机的蓝牙敏感度差异较大，请掏出手机调试 “关锁” 图标位置，调整至满意状态后保存。
+						<view class="middle-concrete-content-debugging-tip">
+							如开车期间频繁开关锁，建议调大数值～调整后关锁数值会同步更新，关门敏感度会降低。
 						</view>
 					</view>
 				</view>
@@ -220,7 +225,7 @@
 			<view class="modal-mask" @tap="handleMaskTap"></view>
 			<view class="modal-content" style="background-color: #eef1f4">
 				<view :style="'margin-top: ' + g_height_from_head + 'px;'" @tap="handleMaskTap">
-					<image src="/static/assets/images/close.png" style="width: 50rpx; height: 50rpx" />
+					<image src="/static/privateCar/close.png" style="width: 50rpx; height: 50rpx" />
 				</view>
 				<view class="modal-body" :style="'margin-top: ' + g_height_from_head + 'px;'">
 					<block v-if="all_settings">
@@ -884,12 +889,12 @@
 
 			// 去绑定车辆
 			handleBindVechi() {
-				if (!isLogin()) {
-					uni.navigateTo({
-						url: '/pages/system/managerLoginView/loginView'
-					});
-					return;
-				}
+				// if (!isLogin()) {
+				// 	uni.navigateTo({
+				// 		url: '/pages/system/managerLoginView/loginView'
+				// 	});
+				// 	return;
+				// }
 				uni.redirectTo({
 					url: '/pages/listOfPrivateCars/list/index'
 				});
@@ -1410,6 +1415,7 @@
 
 			// 滑块拖动事件
 			async onlockSlide(e) {
+				console.log(e, 'wwwww')
 				const {
 					data: {
 						parsedData = {
@@ -1570,6 +1576,105 @@
 					const hexProgress = toTwoHex(validProgress);
 					this.btnCmdSend(17, cmdParam, hexProgress);
 				}
+			},
+			// DIY恢复出厂设置
+			initToTwoHex(num) {
+				return num.toString(16).padStart(2, '0').toUpperCase();
+			},
+			handleRestoreSettings() {
+				// 统一定义函数内的常量，避免重复声明
+				const CONST = {
+					// 敏感值配置
+					DEFAULT_UNLOCK_SENSITIVITY: 50, // 默认开锁敏感值
+					DEFAULT_LOCK_SENSITIVITY: 70, // 默认关锁敏感值
+					CMD_SET_SENSITIVITY: 0x11, // 设置敏感值指令码
+					// 状态与路径
+					LOGIN_PAGE: '/pages/system/managerLoginView/loginView',
+					CONNECTION_STATE_UNCONNECTED: '未连接',
+					PAIR_STATUS_UNPAIRED: '未配对',
+					// 提示文本
+					TOAST_BLUETOOTH_UNCONNECTED: '请等待蓝牙连接后重试',
+					TOAST_SET_SUCCESS: '设置成功',
+					MODAL_TITLE: '温馨提示',
+					MODAL_CONTENT: '关锁敏感值不得低于开锁敏感值，使用默认关锁值前，需先将开锁敏感值设为默认值。',
+					// 错误日志
+					ERROR_MSG_UNLOCK: '设置开锁敏感值默认值失败：',
+					ERROR_MSG_LOCK: '设置关锁敏感值默认值失败：'
+				};
+
+				// 1. 替换 wx.showModal 为 uni.showModal（Uniapp 跨端 API）
+				uni.showModal({
+					title: '确认重置',
+					content: '是否将开关锁敏感值恢复到出厂设置？',
+					confirmText: '确认',
+					success: (res) => {
+						if (res?.confirm) {
+							// 检查登录状态
+							const checkLogin = () => {
+								// 注意：若 isLogin 是组件内方法，需改为 this.isLogin()
+								// if (!isLogin()) {
+								// 	// 2. 替换 wx.navigateTo 为 uni.navigateTo
+								// 	uni.navigateTo({
+								// 		url: CONST.LOGIN_PAGE
+								// 	});
+								// 	return false;
+								// }
+								return true;
+							};
+
+							// 检查蓝牙连接状态
+							const checkBluetooth = () => {
+								// 3. Uniapp 中无需 this.data，直接访问 data 中的属性
+								if (this.connectionState === CONST.CONNECTION_STATE_UNCONNECTED) {
+									// 4. 替换 wx.showToast 为 uni.showToast
+									uni.showToast({
+										title: CONST.TOAST_BLUETOOTH_UNCONNECTED,
+										icon: 'none'
+									});
+									return false;
+								}
+								return true;
+							};
+
+							// 检查设备配对状态
+							const checkPair = (parsedData) => {
+								const {
+									inductionMode = false, pairStatus = CONST.PAIR_STATUS_UNPAIRED
+								} = parsedData || {};
+								if (!inductionMode && pairStatus === CONST.PAIR_STATUS_UNPAIRED) {
+									this.btnPair(); // 原有业务方法，保持不变
+									return false;
+								}
+								return true;
+							};
+
+							// 设置敏感值
+							const setSensitivity = (sensitivity, type, errorMsg) => {
+								try {
+									// 原有业务方法，保持不变
+									this.btnCmdSend(CONST.CMD_SET_SENSITIVITY, type, this.initToTwoHex(
+										sensitivity));
+									uni.showToast({
+										title: CONST.TOAST_SET_SUCCESS,
+										icon: 'none',
+										duration: 1500
+									});
+								} catch (e) {
+									console.error(errorMsg, e);
+								}
+							};
+
+							// 执行校验逻辑
+							if (!checkLogin() || !checkBluetooth()) return;
+							const parsedData = this.parsedData || {}; // 直接访问 data 中的 parsedData
+							if (!checkPair(parsedData)) return;
+
+							// 恢复默认敏感值
+							setSensitivity(CONST.DEFAULT_LOCK_SENSITIVITY, 0, CONST.ERROR_MSG_LOCK);
+							setSensitivity(CONST.DEFAULT_UNLOCK_SENSITIVITY, 1, CONST.ERROR_MSG_UNLOCK);
+						}
+					}
+				});
 			},
 
 			// 更多设置弹窗
@@ -2312,5 +2417,64 @@
 	.modal-body-outer-layer-of-card-layer-picker image {
 		width: 25rpx;
 		height: 25rpx;
+	}
+
+	/* 信号卡片容器：核心布局样式 + 质感优化 */
+	.signal-card {
+		display: flex;
+		flex-direction: column;
+		border: 1rpx solid #f1f1f1;
+		border-radius: 10rpx;
+		justify-content: space-between;
+		padding: 30rpx 15rpx;
+		/* 优化：横向内边距从5rpx增至15rpx，避免文字贴边 */
+		background-color: #ffffff;
+		/* 增加白色背景，提升卡片质感 */
+		box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.03);
+		/* 轻微阴影，增强层次感 */
+	}
+
+	/* 信号信息组：数据行布局 */
+	.signal-info-group {
+		display: flex;
+		justify-content: space-between;
+		font-size: 26rpx;
+		font-weight: bold;
+		padding: 10rpx 0;
+		/* 优化：去掉横向padding，避免与容器内边距重叠 */
+		margin-bottom: 20rpx;
+		/* 与描述区增加间距 */
+		border-bottom: 1rpx dashed #f5f5f5;
+		/* 虚线分隔，视觉更柔和 */
+		padding-bottom: 20rpx;
+		color: #333333;
+		/* 数据文字用深灰色，突出重点 */
+	}
+
+	/* 信号信息项：可选，用于响应式适配 */
+	.signal-info-item {
+		flex: 1;
+		text-align: center;
+		/* 优化：文字居中，布局更整齐 */
+	}
+
+	/* 信号描述组：说明文字样式 */
+	.signal-desc-group {
+		font-size: 26rpx;
+		line-height: 1.7;
+		/* 增加行高，提升阅读体验 */
+		color: #666666;
+		/* 描述文字用浅灰色，区分数据层级 */
+	}
+
+	/* 信号描述项：每行的间距控制 */
+	.signal-desc-item {
+		margin-bottom: 14rpx;
+		/* 行间距，避免文字拥挤 */
+	}
+
+	/* 最后一个描述项去掉下间距，避免多余空白 */
+	.signal-desc-item:last-child {
+		margin-bottom: 0;
 	}
 </style>

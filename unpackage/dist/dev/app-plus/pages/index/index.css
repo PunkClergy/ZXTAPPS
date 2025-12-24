@@ -508,3 +508,62 @@ body {
 		width: 0.78125rem;
 		height: 0.78125rem;
 }
+
+	/* 信号卡片容器：核心布局样式 + 质感优化 */
+.signal-card {
+		display: flex;
+		flex-direction: column;
+		border: 0.03125rem solid #f1f1f1;
+		border-radius: 0.3125rem;
+		justify-content: space-between;
+		padding: 0.9375rem 0.46875rem;
+		/* 优化：横向内边距从5rpx增至15rpx，避免文字贴边 */
+		background-color: #ffffff;
+		/* 增加白色背景，提升卡片质感 */
+		box-shadow: 0 0.0625rem 0.375rem rgba(0, 0, 0, 0.03);
+		/* 轻微阴影，增强层次感 */
+}
+
+	/* 信号信息组：数据行布局 */
+.signal-info-group {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.8125rem;
+		font-weight: bold;
+		padding: 0.3125rem 0;
+		/* 优化：去掉横向padding，避免与容器内边距重叠 */
+		margin-bottom: 0.625rem;
+		/* 与描述区增加间距 */
+		border-bottom: 0.03125rem dashed #f5f5f5;
+		/* 虚线分隔，视觉更柔和 */
+		padding-bottom: 0.625rem;
+		color: #333333;
+		/* 数据文字用深灰色，突出重点 */
+}
+
+	/* 信号信息项：可选，用于响应式适配 */
+.signal-info-item {
+		flex: 1;
+		text-align: center;
+		/* 优化：文字居中，布局更整齐 */
+}
+
+	/* 信号描述组：说明文字样式 */
+.signal-desc-group {
+		font-size: 0.8125rem;
+		line-height: 1.7;
+		/* 增加行高，提升阅读体验 */
+		color: #666666;
+		/* 描述文字用浅灰色，区分数据层级 */
+}
+
+	/* 信号描述项：每行的间距控制 */
+.signal-desc-item {
+		margin-bottom: 0.4375rem;
+		/* 行间距，避免文字拥挤 */
+}
+
+	/* 最后一个描述项去掉下间距，避免多余空白 */
+.signal-desc-item:last-child {
+		margin-bottom: 0;
+}
