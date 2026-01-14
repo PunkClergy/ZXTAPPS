@@ -520,6 +520,64 @@ if (uni.restoreGlobal) {
   const u_register = (data) => http.postFormData("/userapi/userReg", data);
   const u_sendRentKey = (data) => http.get("/rentKeyApi/sendRentKey", data);
   const u_updateRentKey = (data) => http.postFormData("/rentKeyApi/updateRentKey", data);
+  const enUS = {
+    privateVehicle: "private vehicle",
+    privateTitle: "mobile car connect key(MCCK)",
+    pleaseLogIn: "please login",
+    InstInstall: "Inst Install",
+    MoreSettings: "More Settings",
+    battery: "battery",
+    btStatus: "btStatus",
+    connected: "connected",
+    disConn: "disConn",
+    btPairing: "btPairing",
+    unpaired: "unpaired",
+    mcckDeviceBattery: "mcckDeviceBattery",
+    mcckBtConnManual: "mcckBtConnManual",
+    mcckBtPairingInductive: "mcckBtPairingInductive",
+    InductiveLock: "Inductive Lock",
+    On: "Auto lock/unlock without waiting or checking",
+    Off: "Manual operation required: Go to My Phone Car Key to lock/unlock",
+    MyLocation: "My Loc",
+    UnlockSensitivity: "Unlock Sens",
+    LockSensitivity: "Lock Sens",
+    Rule: "Rule",
+    MyLocationdes: "Bluetooth signal: Lower = stronger",
+    UnlockSensitivitydes: "Unlock when signal < this value",
+    LockSensitivitydes: "Lock when signal > this value",
+    Ruledes: '"My Loc": Value updates in real time as phone moves'
+  };
+  const zhCN = {
+    privateVehicle: "私家车",
+    privateTitle: "智信通手机汽车互联钥匙",
+    pleaseLogIn: "请登录",
+    InstInstall: "安装说明",
+    MoreSettings: "更多设置",
+    battery: "电量",
+    btStatus: "蓝牙状态",
+    connected: "已连接",
+    disConn: "未连接",
+    btPairing: "蓝牙配对",
+    unpaired: "未配对",
+    mcckDeviceBattery: "MCCK 设备当前电量",
+    mcckBtConnManual: "MCCK 蓝牙连接（支持手动）",
+    mcckBtPairingInductive: "MCCK 蓝牙配对（感应生效）",
+    InductiveLock: "感应开关锁",
+    On: "开启：实现开门不罚站 关门不回头，无感自动开关锁。",
+    Off: "关闭：需手动操作： 在「我的手机汽车钥匙功能」区域-完成开关门操作。",
+    MyLocation: "我的位置",
+    UnlockSensitivity: "开锁敏感值",
+    LockSensitivity: "关锁敏感值",
+    Rule: "变化规则",
+    MyLocationdes: "我的位置",
+    UnlockSensitivitydes: "开锁敏感值",
+    LockSensitivitydes: "关锁敏感值",
+    Ruledes: "变化规则"
+  };
+  const bilingualData = {
+    en_US: enUS,
+    zh_CN: zhCN
+  };
   const getSystemInfoComplete = (systemInfo, complete) => {
     uni.getSystemInfo({
       success: systemInfo,
@@ -1691,7 +1749,26 @@ if (uni.restoreGlobal) {
         // 控制按钮当前选中索引（用于标识当前操作的按钮位置）
         controlIndex: 0,
         // 点击滑动模块最后的时间
-        lastPairTime: Date.now()
+        lastPairTime: Date.now(),
+        // 当前语种
+        isDropdownOpen: false,
+        // 支持的语言列表（可根据需求扩展）
+        languageList: [
+          {
+            label: "中文",
+            value: "zh_CN"
+          },
+          {
+            label: "English",
+            value: "en_US"
+          }
+        ],
+        // 当前选中的语言（默认中文）
+        currentLanguage: {
+          label: "中文",
+          value: "zh_CN"
+        },
+        bilingualData
       };
     },
     onLoad: function(options) {
@@ -1704,6 +1781,7 @@ if (uni.restoreGlobal) {
     onShow: function() {
       this.handleStart();
       this.startConnectionStatusPolling();
+      this.initBilingual();
     },
     onHide: function() {
       const that = this;
@@ -1728,18 +1806,65 @@ if (uni.restoreGlobal) {
       this.initLoginStatus();
     },
     methods: {
+      // 获取当前设置语种
+      initbilingual() {
+        uni.getStorage({
+          key: "bilingual",
+          success: (res2) => {
+            this.bilingual = res2 == null ? void 0 : res2.data;
+          }
+        });
+      },
+      // 切换下拉菜单显示/隐藏
+      toggleDropdown() {
+        this.isDropdownOpen = !this.isDropdownOpen;
+      },
+      // 选择语言并切换
+      handleLanguageChange(lang) {
+        this.currentLanguage = lang;
+        this.isDropdownOpen = false;
+        formatAppLog("log", "at pages/index/index.vue:627", "切换到语言：", lang.value);
+        uni.setStorage({
+          key: "bilingual",
+          data: lang,
+          success: () => {
+            formatAppLog("log", "at pages/index/index.vue:632", "token缓存设置成功");
+          }
+        });
+      },
+      initBilingual() {
+        uni.getStorage({
+          key: "bilingual",
+          success: (res2) => {
+            formatAppLog("log", "at pages/index/index.vue:641", "获取到的token：", res2.data);
+          }
+        });
+      },
+      // 双语切换
+      handleBilingual() {
+        uni.setStorage({
+          key: "bilingual",
+          data: "2",
+          success: () => {
+            formatAppLog("log", "at pages/index/index.vue:651", "token缓存设置成功");
+          },
+          fail: (err) => {
+            formatAppLog("error", "at pages/index/index.vue:654", "缓存设置失败：", err);
+          }
+        });
+      },
       // 获取当前登录状态
       initLoginStatus() {
         uni.getStorage({
           key: "user_info",
           success: (res2) => {
             var _a, _b;
-            formatAppLog("log", "at pages/index/index.vue:549", res2);
+            formatAppLog("log", "at pages/index/index.vue:663", res2);
             this.account = ((_a = res2 == null ? void 0 : res2.data) == null ? void 0 : _a.companyName) || ((_b = res2 == null ? void 0 : res2.data) == null ? void 0 : _b.username);
             this.initCheckTimer();
           },
           fail(err) {
-            formatAppLog("error", "at pages/index/index.vue:556", "获取失败", err);
+            formatAppLog("error", "at pages/index/index.vue:670", "获取失败", err);
           }
         });
       },
@@ -1803,7 +1928,7 @@ if (uni.restoreGlobal) {
           return;
         }
         const targetPurePath = targetUrl.split("?")[0];
-        formatAppLog("log", "at pages/index/index.vue:623", currentPath, targetPurePath);
+        formatAppLog("log", "at pages/index/index.vue:737", currentPath, targetPurePath);
         if (currentPath !== targetPurePath) {
           if (targetPurePath == "pages/privateCar/index") {
             uni.redirectTo({
@@ -1924,14 +2049,14 @@ if (uni.restoreGlobal) {
               pixelRatio,
               statusBarHeight
             };
-            formatAppLog("log", "at pages/index/index.vue:749", "设备信息:", this.deviceInfo);
+            formatAppLog("log", "at pages/index/index.vue:863", "设备信息:", this.deviceInfo);
           },
           fail: console.error
         });
       },
       // 启动连接状态轮询
       startConnectionStatusPolling() {
-        formatAppLog("log", "at pages/index/index.vue:757", this.pageInterval);
+        formatAppLog("log", "at pages/index/index.vue:871", this.pageInterval);
         if (this.pageInterval) {
           return;
         }
@@ -1954,7 +2079,7 @@ if (uni.restoreGlobal) {
       // 初始化钥匙按钮内容
       initContro() {
         this.controlItemspanel = this.splitArray(dist.getControlItems(), 4);
-        formatAppLog("log", "at pages/index/index.vue:785", this.splitArray(dist.getControlItems(), 4));
+        formatAppLog("log", "at pages/index/index.vue:899", this.splitArray(dist.getControlItems(), 4));
       },
       initCheckTimer() {
         if (this.checkTimer) {
@@ -1979,7 +2104,7 @@ if (uni.restoreGlobal) {
           that.orgKey = that.handleTransformation(data == null ? void 0 : data.bluetoothKey);
           that.orgKeyOld = data == null ? void 0 : data.bluetoothKey;
           that.bluetoothData = data;
-          formatAppLog("log", "at pages/index/index.vue:815", that);
+          formatAppLog("log", "at pages/index/index.vue:929", that);
           setTimeout(() => {
             that.handleBule();
           }, 500);
@@ -1996,11 +2121,11 @@ if (uni.restoreGlobal) {
             that.code = code;
             handleData(response.data.content);
           }).catch((err) => {
-            formatAppLog("error", "at pages/index/index.vue:835", "获取蓝牙数据失败:", err);
+            formatAppLog("error", "at pages/index/index.vue:949", "获取蓝牙数据失败:", err);
           });
         };
         if (options == null ? void 0 : options.scene) {
-          formatAppLog("log", "at pages/index/index.vue:842", "处理URL参数:", options.scene);
+          formatAppLog("log", "at pages/index/index.vue:956", "处理URL参数:", options.scene);
           fetchBluetoothData(options.scene);
           uni.setStorage({
             key: "scene",
@@ -2087,9 +2212,9 @@ if (uni.restoreGlobal) {
       },
       // 处理蓝牙连接状态：检查设备是否已连接，决定执行连接或重连逻辑
       handleBule() {
-        formatAppLog("log", "at pages/index/index.vue:946", "idc", this.deviceIDC);
+        formatAppLog("log", "at pages/index/index.vue:1060", "idc", this.deviceIDC);
         bleKeyManager.isDeviceConnected(this.deviceIDC, (status, param) => {
-          formatAppLog("log", "at pages/index/index.vue:948", "222222222--2-2-2-22-2-", status);
+          formatAppLog("log", "at pages/index/index.vue:1062", "222222222--2-2-2-22-2-", status);
           if (status) {
             this.btnStartConnectConnected();
           } else {
@@ -2220,7 +2345,7 @@ if (uni.restoreGlobal) {
       },
       // 打包并发送数据（支持动态数据体长度）
       PackAndSend3a(type, dataLength, data, sign) {
-        formatAppLog("log", "at pages/index/index.vue:1109", type, dataLength, data, sign);
+        formatAppLog("log", "at pages/index/index.vue:1223", type, dataLength, data, sign);
         const header = [36];
         const end = [36];
         const paddedData = [...data].concat(new Array(dataLength - data.length).fill(0)).slice(
@@ -2239,7 +2364,7 @@ if (uni.restoreGlobal) {
       PackAndSend07: function(type, len, data) {
         const defaultData = [0, 0, 0, 0, 0, 0, 0];
         var packet = [36, type, len, data, ...defaultData, 36];
-        formatAppLog("log", "at pages/index/index.vue:1126", packet);
+        formatAppLog("log", "at pages/index/index.vue:1240", packet);
         bleKeyManager.dispatcherSend2(this.arrayToArrayBuffer(packet));
       },
       // 数组转ArrayBuffer
@@ -2295,9 +2420,9 @@ if (uni.restoreGlobal) {
       },
       //  数据解析按钮处理
       parseData: function(hexData) {
-        formatAppLog("log", "at pages/index/index.vue:1207", "hexData", hexData);
+        formatAppLog("log", "at pages/index/index.vue:1321", "hexData", hexData);
         const parsedResult = dist.getParseHexDataObject(hexData);
-        formatAppLog("log", "at pages/index/index.vue:1209", "parsedResult", parsedResult);
+        formatAppLog("log", "at pages/index/index.vue:1323", "parsedResult", parsedResult);
         if (parsedResult) {
           this.parsedData = parsedResult;
           this.updateMyPositionStyles();
@@ -2430,7 +2555,7 @@ if (uni.restoreGlobal) {
               }
             });
             const result = Array.from(uniqueMap.values());
-            formatAppLog("log", "at pages/index/index.vue:1360", "合并并优先保留 enabled=false 的结果：", result);
+            formatAppLog("log", "at pages/index/index.vue:1474", "合并并优先保留 enabled=false 的结果：", result);
             this.controlItems = result;
             setTimeout(() => {
               this.controlItemspanel = this.splitArray(result, 4);
@@ -2479,7 +2604,7 @@ if (uni.restoreGlobal) {
       // 滑块拖动事件
       async onlockSlide(e2) {
         var _a, _b;
-        formatAppLog("log", "at pages/index/index.vue:1418", e2, "wwwww");
+        formatAppLog("log", "at pages/index/index.vue:1532", e2, "wwwww");
         if (((_a = this.parsedData) == null ? void 0 : _a.pairStatus) == "未配对") {
           const now = Date.now();
           if (now - this.lastPairTime < 3e3)
@@ -2507,7 +2632,7 @@ if (uni.restoreGlobal) {
         }
         const touchX = touch.clientX;
         const relativeX = touchX - trackInfo.left;
-        formatAppLog("log", "at pages/index/index.vue:1455", `${trackId} - 判断滑动值`);
+        formatAppLog("log", "at pages/index/index.vue:1569", `${trackId} - 判断滑动值`);
         const trackConfig = {
           lockTrack: {
             maxProgress: 200,
@@ -2585,7 +2710,7 @@ if (uni.restoreGlobal) {
                 duration: 1500
               });
             } else {
-              formatAppLog("warn", "at pages/index/index.vue:1537", "[提示]", tipText);
+              formatAppLog("warn", "at pages/index/index.vue:1651", "[提示]", tipText);
             }
           }
         };
@@ -2610,7 +2735,7 @@ if (uni.restoreGlobal) {
               trackType
             );
           }
-          formatAppLog("log", "at pages/index/index.vue:1562", trackId, trackType);
+          formatAppLog("log", "at pages/index/index.vue:1676", trackId, trackType);
           if (trackType == "lock") {
             this.lockThumbStyle = `left: ${validProgress / 2}%;`;
             this.lockRange = validProgress / 2;
@@ -2687,7 +2812,7 @@ if (uni.restoreGlobal) {
                     duration: 1500
                   });
                 } catch (e2) {
-                  formatAppLog("error", "at pages/index/index.vue:1663", errorMsg, e2);
+                  formatAppLog("error", "at pages/index/index.vue:1777", errorMsg, e2);
                 }
               };
               if (!checkBluetooth())
@@ -2778,7 +2903,7 @@ if (uni.restoreGlobal) {
         };
         const instructionMap = dist.getInstructionMap(sendCommand);
         const idActions = instructionMap[id];
-        formatAppLog("log", "at pages/index/index.vue:1770", idActions);
+        formatAppLog("log", "at pages/index/index.vue:1884", idActions);
         if (!idActions) {
           return;
         }
@@ -2843,7 +2968,7 @@ if (uni.restoreGlobal) {
         });
       },
       handleOnExistingAccountTap() {
-        formatAppLog("log", "at pages/index/index.vue:1843", "占位：函数 handleOnExistingAccountTap 未声明");
+        formatAppLog("log", "at pages/index/index.vue:1957", "占位：函数 handleOnExistingAccountTap 未声明");
         uni.redirectTo({
           url: "/pages/login/index"
         });
@@ -2851,6 +2976,7 @@ if (uni.restoreGlobal) {
     }
   };
   function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P, _Q, _R, _S, _T, _U, _V, _W, _X, _Y, _Z, __, _$, _aa, _ba, _ca, _da, _ea, _fa, _ga, _ha, _ia, _ja, _ka, _la, _ma, _na, _oa, _pa, _qa, _ra, _sa, _ta, _ua, _va, _wa, _xa, _ya, _za, _Aa;
     return vue.openBlock(), vue.createElementBlock("view", null, [
       vue.createCommentVNode(" 自定义头部区域：使用custom-header样式 "),
       vue.createElementVNode(
@@ -2862,12 +2988,20 @@ if (uni.restoreGlobal) {
         [
           vue.createElementVNode("view", { class: "custom-header-outer-layer" }, [
             vue.createElementVNode("view", { class: "custom-header-outer-layer-title" }, [
-              vue.createElementVNode("view", { class: "custom-header-outer-layer-title" }, "私家车"),
-              vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx" } }, [
-                vue.createTextVNode("智信通手机汽车互联钥匙 "),
-                vue.createElementVNode("br"),
-                vue.createTextVNode("mobile car connect key(MCCK)")
-              ])
+              vue.createElementVNode(
+                "view",
+                { class: "custom-header-outer-layer-title" },
+                vue.toDisplayString((_c = (_b = $data.bilingualData) == null ? void 0 : _b[(_a = $data.currentLanguage) == null ? void 0 : _a.value]) == null ? void 0 : _c.privateVehicle),
+                1
+                /* TEXT */
+              ),
+              vue.createElementVNode(
+                "view",
+                { style: { "color": "#bbb", "font-size": "20rpx" } },
+                vue.toDisplayString((_f = (_e = $data.bilingualData) == null ? void 0 : _e[(_d = $data.currentLanguage) == null ? void 0 : _d.value]) == null ? void 0 : _f.privateTitle),
+                1
+                /* TEXT */
+              )
             ]),
             vue.createElementVNode("view", { class: "custom-header-outer-layer-user_name" }, [
               $data.account ? (vue.openBlock(), vue.createElementBlock(
@@ -2880,9 +3014,15 @@ if (uni.restoreGlobal) {
                 vue.Fragment,
                 { key: 1 },
                 [
-                  vue.createElementVNode("text", {
-                    onClick: _cache[0] || (_cache[0] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args))
-                  }, "请登录"),
+                  vue.createElementVNode(
+                    "text",
+                    {
+                      onClick: _cache[0] || (_cache[0] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args))
+                    },
+                    vue.toDisplayString((_i = (_h = $data.bilingualData) == null ? void 0 : _h[(_g = $data.currentLanguage) == null ? void 0 : _g.value]) == null ? void 0 : _i.pleaseLogIn),
+                    1
+                    /* TEXT */
+                  ),
                   vue.createElementVNode("image", {
                     onClick: _cache[1] || (_cache[1] = (...args) => $options.handleOnExistingAccountTap && $options.handleOnExistingAccountTap(...args)),
                     src: _imports_0$4
@@ -2891,6 +3031,43 @@ if (uni.restoreGlobal) {
                 64
                 /* STABLE_FRAGMENT */
               ))
+            ]),
+            vue.createElementVNode("view", { class: "language-selector" }, [
+              vue.createCommentVNode(" 下拉菜单触发按钮 "),
+              vue.createElementVNode(
+                "view",
+                {
+                  onClick: _cache[2] || (_cache[2] = (...args) => $options.toggleDropdown && $options.toggleDropdown(...args)),
+                  class: "selector-btn"
+                },
+                vue.toDisplayString($data.currentLanguage.label) + " ▼ ",
+                1
+                /* TEXT */
+              ),
+              vue.createCommentVNode(" 下拉菜单选项列表 "),
+              vue.withDirectives(vue.createElementVNode(
+                "view",
+                { class: "dropdown-list" },
+                [
+                  (vue.openBlock(true), vue.createElementBlock(
+                    vue.Fragment,
+                    null,
+                    vue.renderList($data.languageList, (lang, index) => {
+                      return vue.openBlock(), vue.createElementBlock("view", {
+                        key: index,
+                        onClick: ($event) => $options.handleLanguageChange(lang),
+                        class: vue.normalizeClass(["dropdown-item", { active: lang.value === $data.currentLanguage.value }])
+                      }, vue.toDisplayString(lang.label), 11, ["onClick"]);
+                    }),
+                    128
+                    /* KEYED_FRAGMENT */
+                  ))
+                ],
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vShow, $data.isDropdownOpen]
+              ])
             ])
           ])
         ],
@@ -2924,17 +3101,29 @@ if (uni.restoreGlobal) {
                         color: "#909090"
                       })
                     ]),
-                    vue.createElementVNode("view", {
-                      class: "top-fixed-basics-plate-btn-install-tip",
-                      onClick: _cache[2] || (_cache[2] = (...args) => $options.handleJumpSc && $options.handleJumpSc(...args))
-                    }, "安装说明")
+                    vue.createElementVNode(
+                      "view",
+                      {
+                        class: "top-fixed-basics-plate-btn-install-tip",
+                        onClick: _cache[3] || (_cache[3] = (...args) => $options.handleJumpSc && $options.handleJumpSc(...args))
+                      },
+                      vue.toDisplayString((_l = (_k = $data.bilingualData) == null ? void 0 : _k[(_j = $data.currentLanguage) == null ? void 0 : _j.value]) == null ? void 0 : _l.InstInstall),
+                      1
+                      /* TEXT */
+                    )
                   ]),
                   vue.createElementVNode("view", {
                     class: "top-fixed-basics-plate-btn-more",
                     "data-key": "all_settings",
-                    onClick: _cache[3] || (_cache[3] = (...args) => $options.handleMoreSettings && $options.handleMoreSettings(...args))
+                    onClick: _cache[4] || (_cache[4] = (...args) => $options.handleMoreSettings && $options.handleMoreSettings(...args))
                   }, [
-                    vue.createElementVNode("text", null, "更多设置")
+                    vue.createElementVNode(
+                      "text",
+                      null,
+                      vue.toDisplayString((_o = (_n = $data.bilingualData) == null ? void 0 : _n[(_m = $data.currentLanguage) == null ? void 0 : _m.value]) == null ? void 0 : _o.MoreSettings),
+                      1
+                      /* TEXT */
+                    )
                   ])
                 ])
               ]),
@@ -2945,7 +3134,13 @@ if (uni.restoreGlobal) {
                     style: { "width": "46rpx", "height": "25rpx" }
                   }),
                   vue.createElementVNode("view", { class: "top-fixed-signal-layar-info" }, [
-                    vue.createElementVNode("text", { class: "top-fixed-signal-layar-title" }, "电量："),
+                    vue.createElementVNode(
+                      "text",
+                      { class: "top-fixed-signal-layar-title" },
+                      vue.toDisplayString((_r = (_q = $data.bilingualData) == null ? void 0 : _q[(_p = $data.currentLanguage) == null ? void 0 : _p.value]) == null ? void 0 : _r.battery) + "：",
+                      1
+                      /* TEXT */
+                    ),
                     vue.createElementVNode(
                       "text",
                       { class: "top-fixed-signal-text" },
@@ -2954,7 +3149,13 @@ if (uni.restoreGlobal) {
                       /* TEXT */
                     )
                   ]),
-                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx", "text-align": "left" } }, "MCCK设备当前电量")
+                  vue.createElementVNode(
+                    "view",
+                    { style: { "color": "#bbb", "font-size": "20rpx", "text-align": "left" } },
+                    vue.toDisplayString((_u = (_t = $data.bilingualData) == null ? void 0 : _t[(_s = $data.currentLanguage) == null ? void 0 : _s.value]) == null ? void 0 : _u.mcckDeviceBattery),
+                    1
+                    /* TEXT */
+                  )
                 ]),
                 vue.createElementVNode("view", { class: "top-fixed-signal-layar" }, [
                   vue.createElementVNode("image", {
@@ -2962,16 +3163,28 @@ if (uni.restoreGlobal) {
                     style: { "width": "30rpx", "height": "33rpx" }
                   }),
                   vue.createElementVNode("view", { class: "top-fixed-signal-layar-info" }, [
-                    vue.createElementVNode("text", { class: "top-fixed-signal-layar-title" }, "蓝牙状态："),
+                    vue.createElementVNode(
+                      "text",
+                      { class: "top-fixed-signal-layar-title" },
+                      vue.toDisplayString((_x = (_w = $data.bilingualData) == null ? void 0 : _w[(_v = $data.currentLanguage) == null ? void 0 : _v.value]) == null ? void 0 : _x.btStatus) + "：",
+                      1
+                      /* TEXT */
+                    ),
                     vue.createElementVNode(
                       "text",
                       { class: "top-fixed-signal-text" },
-                      vue.toDisplayString($data.parsedData.electric ? "已连接" : "未连接"),
+                      vue.toDisplayString($data.parsedData.electric ? (_A = (_z = $data.bilingualData) == null ? void 0 : _z[(_y = $data.currentLanguage) == null ? void 0 : _y.value]) == null ? void 0 : _A.connected : (_D = (_C = $data.bilingualData) == null ? void 0 : _C[(_B = $data.currentLanguage) == null ? void 0 : _B.value]) == null ? void 0 : _D.disConn),
                       1
                       /* TEXT */
                     )
                   ]),
-                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx", "text-align": "left" } }, "MCCK蓝牙连接，支持手动")
+                  vue.createElementVNode(
+                    "view",
+                    { style: { "color": "#bbb", "font-size": "20rpx", "text-align": "left" } },
+                    vue.toDisplayString((_G = (_F = $data.bilingualData) == null ? void 0 : _F[(_E = $data.currentLanguage) == null ? void 0 : _E.value]) == null ? void 0 : _G.mcckBtConnManual),
+                    1
+                    /* TEXT */
+                  )
                 ]),
                 vue.createElementVNode("view", { class: "top-fixed-signal-layar" }, [
                   vue.createElementVNode("image", {
@@ -2979,7 +3192,13 @@ if (uni.restoreGlobal) {
                     style: { "width": "33rpx", "height": "23rpx" }
                   }),
                   vue.createElementVNode("view", { class: "top-fixed-signal-layar-info" }, [
-                    vue.createElementVNode("text", { class: "top-fixed-signal-layar-title" }, "蓝牙配对："),
+                    vue.createElementVNode(
+                      "text",
+                      { class: "top-fixed-signal-layar-title" },
+                      vue.toDisplayString((_J = (_I = $data.bilingualData) == null ? void 0 : _I[(_H = $data.currentLanguage) == null ? void 0 : _H.value]) == null ? void 0 : _J.btPairing) + "：",
+                      1
+                      /* TEXT */
+                    ),
                     vue.createElementVNode(
                       "text",
                       { class: "top-fixed-signal-text" },
@@ -2988,7 +3207,13 @@ if (uni.restoreGlobal) {
                       /* TEXT */
                     )
                   ]),
-                  vue.createElementVNode("view", { style: { "color": "#bbb", "font-size": "20rpx", "text-align": "left" } }, "MCCK蓝牙配对，感应生效")
+                  vue.createElementVNode(
+                    "view",
+                    { style: { "color": "#bbb", "font-size": "20rpx", "text-align": "left" } },
+                    vue.toDisplayString((_M = (_L = $data.bilingualData) == null ? void 0 : _L[(_K = $data.currentLanguage) == null ? void 0 : _K.value]) == null ? void 0 : _M.mcckBtPairingInductive),
+                    1
+                    /* TEXT */
+                  )
                 ])
               ])
             ])
@@ -2996,11 +3221,23 @@ if (uni.restoreGlobal) {
           vue.createElementVNode("view", { class: "middle-scroll" }, [
             vue.createElementVNode("view", { class: "middle-title" }, [
               vue.createElementVNode("view", { style: { "display": "flex", "flex-direction": "column" } }, [
-                vue.createElementVNode("text", null, "感应开关锁"),
-                vue.createElementVNode("text", { style: { "font-size": "20rpx", "color": "#bbb" } }, " 开启：实现开门不罚站 关门不回头，无感自动开关锁。 关闭：需手动操作： 在「我的手机汽车钥匙功能」区域-完成开关门操作。 ")
+                vue.createElementVNode(
+                  "text",
+                  null,
+                  vue.toDisplayString((_P = (_O = $data.bilingualData) == null ? void 0 : _O[(_N = $data.currentLanguage) == null ? void 0 : _N.value]) == null ? void 0 : _P.InductiveLock),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "text",
+                  { style: { "font-size": "20rpx", "color": "#bbb" } },
+                  vue.toDisplayString((_S = (_R = $data.bilingualData) == null ? void 0 : _R[(_Q = $data.currentLanguage) == null ? void 0 : _Q.value]) == null ? void 0 : _S.On) + " " + vue.toDisplayString((_V = (_U = $data.bilingualData) == null ? void 0 : _U[(_T = $data.currentLanguage) == null ? void 0 : _T.value]) == null ? void 0 : _V.Off),
+                  1
+                  /* TEXT */
+                )
               ]),
               vue.createElementVNode("switch", {
-                onChange: _cache[4] || (_cache[4] = (...args) => $options.handleToggleSensorMode && $options.handleToggleSensorMode(...args)),
+                onChange: _cache[5] || (_cache[5] = (...args) => $options.handleToggleSensorMode && $options.handleToggleSensorMode(...args)),
                 checked: $data.parsedData.inductionMode,
                 color: "#1B64B1",
                 style: { "transform": "scale(0.8)" }
@@ -3011,30 +3248,54 @@ if (uni.restoreGlobal) {
                 vue.createElementVNode(
                   "view",
                   { class: "signal-info-item" },
-                  "我的位置 :" + vue.toDisplayString($data.parsedData.signalValue || 40),
+                  vue.toDisplayString((_Y = (_X = $data.bilingualData) == null ? void 0 : _X[(_W = $data.currentLanguage) == null ? void 0 : _W.value]) == null ? void 0 : _Y.MyLocation) + " :" + vue.toDisplayString($data.parsedData.signalValue || 40),
                   1
                   /* TEXT */
                 ),
                 vue.createElementVNode(
                   "view",
                   { class: "signal-info-item" },
-                  "开锁敏感值:" + vue.toDisplayString($data.parsedData.inductionUnlockSignal || 50),
+                  vue.toDisplayString((_$ = (__ = $data.bilingualData) == null ? void 0 : __[(_Z = $data.currentLanguage) == null ? void 0 : _Z.value]) == null ? void 0 : _$.UnlockSensitivity) + ":" + vue.toDisplayString($data.parsedData.inductionUnlockSignal || 50),
                   1
                   /* TEXT */
                 ),
                 vue.createElementVNode(
                   "view",
                   { class: "signal-info-item" },
-                  "关锁敏感值:" + vue.toDisplayString($data.parsedData.inductionLockSignal || 60),
+                  vue.toDisplayString((_ca = (_ba = $data.bilingualData) == null ? void 0 : _ba[(_aa = $data.currentLanguage) == null ? void 0 : _aa.value]) == null ? void 0 : _ca.LockSensitivity) + ":" + vue.toDisplayString($data.parsedData.inductionLockSignal || 60),
                   1
                   /* TEXT */
                 )
               ]),
               vue.createElementVNode("view", { class: "signal-desc-group" }, [
-                vue.createElementVNode("view", { class: "signal-desc-item" }, "【我的位置】: 手机与硬件设备的蓝牙信号值，数值越小信号越强"),
-                vue.createElementVNode("view", { class: "signal-desc-item" }, '【变化规则】: "我的位置",该数值随手机移动实时变动。'),
-                vue.createElementVNode("view", { class: "signal-desc-item" }, "【开锁敏感值】: 信号值低于此值，车辆感应开锁"),
-                vue.createElementVNode("view", { class: "signal-desc-item" }, "【关锁敏感值】: 信号值高于此值，车辆感应关锁")
+                vue.createElementVNode(
+                  "view",
+                  { class: "signal-desc-item" },
+                  "【" + vue.toDisplayString((_fa = (_ea = $data.bilingualData) == null ? void 0 : _ea[(_da = $data.currentLanguage) == null ? void 0 : _da.value]) == null ? void 0 : _fa.MyLocation) + "】: " + vue.toDisplayString((_ia = (_ha = $data.bilingualData) == null ? void 0 : _ha[(_ga = $data.currentLanguage) == null ? void 0 : _ga.value]) == null ? void 0 : _ia.MyLocationdes),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "view",
+                  { class: "signal-desc-item" },
+                  "【" + vue.toDisplayString((_la = (_ka = $data.bilingualData) == null ? void 0 : _ka[(_ja = $data.currentLanguage) == null ? void 0 : _ja.value]) == null ? void 0 : _la.Rule) + "】: " + vue.toDisplayString((_oa = (_na = $data.bilingualData) == null ? void 0 : _na[(_ma = $data.currentLanguage) == null ? void 0 : _ma.value]) == null ? void 0 : _oa.Ruledes),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "view",
+                  { class: "signal-desc-item" },
+                  "【" + vue.toDisplayString((_ra = (_qa = $data.bilingualData) == null ? void 0 : _qa[(_pa = $data.currentLanguage) == null ? void 0 : _pa.value]) == null ? void 0 : _ra.UnlockSensitivity) + "】: " + vue.toDisplayString((_ua = (_ta = $data.bilingualData) == null ? void 0 : _ta[(_sa = $data.currentLanguage) == null ? void 0 : _sa.value]) == null ? void 0 : _ua.UnlockSensitivitydes),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "view",
+                  { class: "signal-desc-item" },
+                  "【" + vue.toDisplayString((_xa = (_wa = $data.bilingualData) == null ? void 0 : _wa[(_va = $data.currentLanguage) == null ? void 0 : _va.value]) == null ? void 0 : _xa.LockSensitivity) + "】: " + vue.toDisplayString((_Aa = (_za = $data.bilingualData) == null ? void 0 : _za[(_ya = $data.currentLanguage) == null ? void 0 : _ya.value]) == null ? void 0 : _Aa.LockSensitivitydes),
+                  1
+                  /* TEXT */
+                )
               ]),
               vue.createElementVNode("view", { style: { "font-size": "24rpx", "color": "#5B5959", "margin-top": "10rpx" } }, "温馨提示：默认设置若不合预期（开关锁位置/距离），请在个下方性化 DIY 处调整开关锁值")
             ]),
@@ -3043,7 +3304,7 @@ if (uni.restoreGlobal) {
                 vue.createElementVNode("view", { style: { "display": "flex", "flex-direction": "row", "justify-content": "space-between", "border-bottom": "1rpx solid #f1f1f1", "padding": "15rpx 0rpx" } }, [
                   vue.createElementVNode("view", { style: { "font-size": "25rpx", "font-weight": "bold" } }, "舒适进入个性化DIY"),
                   vue.createElementVNode("view", {
-                    onClick: _cache[5] || (_cache[5] = (...args) => $options.handleRestoreSettings && $options.handleRestoreSettings(...args)),
+                    onClick: _cache[6] || (_cache[6] = (...args) => $options.handleRestoreSettings && $options.handleRestoreSettings(...args)),
                     style: { "font-size": "20rpx", "border": "1rpx solid #bbb", "background-color": "#3b82f6", "padding": "10rpx 10rpx", "border-radius": "10rpx", "color": "#fff" }
                   }, " 恢复出厂设置")
                 ]),
@@ -3089,7 +3350,7 @@ if (uni.restoreGlobal) {
                       class: "middle-concrete-content-debugging-slider-thumb",
                       style: vue.normalizeStyle($data.unlockThumbStyle),
                       "data-id": "unlockTrack",
-                      onTouchmove: _cache[6] || (_cache[6] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
+                      onTouchmove: _cache[7] || (_cache[7] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
                     },
                     [
                       vue.createElementVNode("image", { src: "https://k1sw.wiselink.net.cn/img/app2.0/sjc/open@2x.png" })
@@ -3136,7 +3397,7 @@ if (uni.restoreGlobal) {
                       class: "middle-concrete-content-debugging-slider-thumb",
                       style: vue.normalizeStyle($data.lockThumbStyle),
                       "data-id": "lockTrack",
-                      onTouchmove: _cache[7] || (_cache[7] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
+                      onTouchmove: _cache[8] || (_cache[8] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
                     },
                     [
                       vue.createElementVNode("image", { src: "https://k1sw.wiselink.net.cn/img/app2.0/sjc/shut@2x.png" })
@@ -3183,7 +3444,7 @@ if (uni.restoreGlobal) {
                       class: "middle-concrete-content-debugging-slider-thumb",
                       style: vue.normalizeStyle($data.lockThumbStyle),
                       "data-id": "lockTrack",
-                      onTouchmove: _cache[8] || (_cache[8] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
+                      onTouchmove: _cache[9] || (_cache[9] = (...args) => $options.onlockSlide && $options.onlockSlide(...args))
                     },
                     [
                       vue.createElementVNode("image", { src: "https://k1sw.wiselink.net.cn/img/app2.0/sjc/special@2x.png" })
@@ -3208,7 +3469,7 @@ if (uni.restoreGlobal) {
                 vue.createElementVNode("text", {
                   class: "bottom-fixed-identification-more",
                   "data-key": "key_settings",
-                  onClick: _cache[9] || (_cache[9] = (...args) => $options.handleMoreSettings && $options.handleMoreSettings(...args))
+                  onClick: _cache[10] || (_cache[10] = (...args) => $options.handleMoreSettings && $options.handleMoreSettings(...args))
                 }, "更多钥匙功能 >")
               ]),
               vue.createElementVNode("swiper", {
@@ -3286,7 +3547,7 @@ if (uni.restoreGlobal) {
             vue.renderList($data.tabList, (item, index) => {
               return vue.openBlock(), vue.createElementBlock("view", {
                 class: vue.normalizeClass("tab-item " + ($data.currentTab === index ? "active" : "")),
-                onClick: _cache[10] || (_cache[10] = (...args) => $options.handleSwitchTabNavigation && $options.handleSwitchTabNavigation(...args)),
+                onClick: _cache[11] || (_cache[11] = (...args) => $options.handleSwitchTabNavigation && $options.handleSwitchTabNavigation(...args)),
                 "data-index": index,
                 key: index
               }, [
@@ -3324,7 +3585,7 @@ if (uni.restoreGlobal) {
       }, [
         vue.createElementVNode("view", {
           class: "modal-mask",
-          onClick: _cache[11] || (_cache[11] = (...args) => $options.handleMaskTap && $options.handleMaskTap(...args))
+          onClick: _cache[12] || (_cache[12] = (...args) => $options.handleMaskTap && $options.handleMaskTap(...args))
         }),
         vue.createElementVNode("view", {
           class: "modal-content",
@@ -3334,7 +3595,7 @@ if (uni.restoreGlobal) {
             "view",
             {
               style: vue.normalizeStyle("margin-top: " + $data.g_height_from_head + "px;"),
-              onClick: _cache[12] || (_cache[12] = (...args) => $options.handleMaskTap && $options.handleMaskTap(...args))
+              onClick: _cache[13] || (_cache[13] = (...args) => $options.handleMaskTap && $options.handleMaskTap(...args))
             },
             [
               vue.createElementVNode("image", {
@@ -3366,7 +3627,7 @@ if (uni.restoreGlobal) {
                           vue.createElementVNode("text", { class: "modal-body-outer-layer-of-card-layer-item-text" }, "蓝牙断开自动锁车"),
                           vue.createElementVNode("switch", {
                             checked: $data.parsedData.bleDisconnectLock,
-                            onChange: _cache[13] || (_cache[13] = (...args) => $options.handleToBreakOff && $options.handleToBreakOff(...args)),
+                            onChange: _cache[14] || (_cache[14] = (...args) => $options.handleToBreakOff && $options.handleToBreakOff(...args)),
                             color: "#07C160",
                             style: { "transform": "scale(0.7)" }
                           }, null, 40, ["checked"])
@@ -3378,7 +3639,7 @@ if (uni.restoreGlobal) {
                           vue.createElementVNode("text", { class: "modal-body-outer-layer-of-card-layer-item-text" }, "锁车自动升窗"),
                           vue.createElementVNode("switch", {
                             checked: $data.parsedData.lockWindowUp,
-                            onChange: _cache[14] || (_cache[14] = (...args) => $options.handleAutoCloseTheWindow && $options.handleAutoCloseTheWindow(...args)),
+                            onChange: _cache[15] || (_cache[15] = (...args) => $options.handleAutoCloseTheWindow && $options.handleAutoCloseTheWindow(...args)),
                             color: "#07C160",
                             style: { "transform": "scale(0.7)" }
                           }, null, 40, ["checked"])
@@ -3411,7 +3672,7 @@ if (uni.restoreGlobal) {
                               vue.createElementVNode("picker", {
                                 "data-item": item,
                                 "data-index": index,
-                                onChange: _cache[15] || (_cache[15] = (...args) => $options.handleOutputMethod && $options.handleOutputMethod(...args)),
+                                onChange: _cache[16] || (_cache[16] = (...args) => $options.handleOutputMethod && $options.handleOutputMethod(...args)),
                                 range: $data.key_out_put[index],
                                 "range-key": "name"
                               }, [
@@ -3464,7 +3725,7 @@ if (uni.restoreGlobal) {
                           ),
                           vue.createElementVNode("switch", {
                             checked: item.enabled,
-                            onChange: _cache[16] || (_cache[16] = (...args) => $options.handleToggleControl && $options.handleToggleControl(...args)),
+                            onChange: _cache[17] || (_cache[17] = (...args) => $options.handleToggleControl && $options.handleToggleControl(...args)),
                             "data-index": index,
                             color: "#07C160",
                             style: { "transform": "scale(0.7)" }

@@ -24,9 +24,10 @@ body {
 	/* 头部外层容器样式：flex布局，水平居中对齐，元素间间距10rpx */
 .custom-header-outer-layer {
 		display: flex;
-		justify-content: center;
+		justify-content: space-between;
 		align-items: center;
 		gap: 0.78125rem;
+		width: 100%;
 }
 
 	/* 头部外层容器图片样式：设置固定宽高 */
@@ -566,4 +567,37 @@ body {
 	/* 最后一个描述项去掉下间距，避免多余空白 */
 .signal-desc-item:last-child {
 		margin-bottom: 0;
+}
+.language-selector {
+		position: relative;
+		width: 120px;
+}
+.selector-btn {
+		padding: 8px 12px;
+		border-radius: 4px;
+		text-align: center;
+		cursor: pointer;
+}
+.dropdown-list {
+		position: absolute;
+		top: 40px;
+		left: 0;
+		width: 100%;
+		background-color: #fff;
+		border: 1px solid #eee;
+		border-radius: 4px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		z-index: 999;
+}
+.dropdown-item {
+		padding: 8px 12px;
+		text-align: center;
+		cursor: pointer;
+}
+.dropdown-item.active {
+		background-color: #e6f7ff;
+		color: #1890ff;
+}
+.dropdown-item:hover {
+		background-color: #f8f8f8;
 }

@@ -5,17 +5,36 @@
 			:style="'padding-top: ' + g_height_from_head + 'px;height: ' + g_head_height + 'px;'">
 			<view class="custom-header-outer-layer">
 				<view class="custom-header-outer-layer-title">
-					<view class="custom-header-outer-layer-title">私家车</view>
-					<view style="color: #bbb;font-size: 20rpx;">智信通手机汽车互联钥匙 <br />mobile car connect key(MCCK)</view>
+					<view class="custom-header-outer-layer-title">
+						{{bilingualData?.[currentLanguage?.value]?.privateVehicle}}
+					</view>
+					<view style="color: #bbb;font-size: 20rpx;">
+						{{bilingualData?.[currentLanguage?.value]?.privateTitle}}
+					</view>
 				</view>
 				<view class="custom-header-outer-layer-user_name">
 					<block v-if="account">
 						<text>{{ account }}</text>
 					</block>
 					<block v-else>
-						<text @tap="handleOnExistingAccountTap">请登录</text>
+						<text
+							@tap="handleOnExistingAccountTap">{{bilingualData?.[currentLanguage?.value]?.pleaseLogIn}}</text>
 						<image @tap="handleOnExistingAccountTap" src="/static/assets/images/home/right_1.png" />
 					</block>
+				</view>
+				<view class="language-selector">
+					<!-- 下拉菜单触发按钮 -->
+					<view @tap="toggleDropdown" class="selector-btn">
+						{{ currentLanguage.label }} ▼
+					</view>
+
+					<!-- 下拉菜单选项列表 -->
+					<view v-show="isDropdownOpen" class="dropdown-list">
+						<view v-for="(lang, index) in languageList" :key="index" @tap="handleLanguageChange(lang)"
+							class="dropdown-item" :class="{ active: lang.value === currentLanguage.value }">
+							{{ lang.label }}
+						</view>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -32,11 +51,15 @@
 								<view class="top-fixed-basics-plate-btn-install-iconfont">
 									<icon type="warn" size="14" color="#909090"></icon>
 								</view>
-								<view class="top-fixed-basics-plate-btn-install-tip" @tap="handleJumpSc">安装说明</view>
+								<view class="top-fixed-basics-plate-btn-install-tip" @tap="handleJumpSc">
+									{{bilingualData?.[currentLanguage?.value]?.InstInstall}}
+								</view>
 							</view>
 							<view class="top-fixed-basics-plate-btn-more" data-key="all_settings"
 								@tap="handleMoreSettings">
-								<text>更多设置</text>
+								<text>
+									{{bilingualData?.[currentLanguage?.value]?.MoreSettings}}
+								</text>
 							</view>
 						</view>
 					</view>
@@ -45,29 +68,39 @@
 							<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/battery-01.png"
 								style="width: 46rpx; height: 25rpx" />
 							<view class="top-fixed-signal-layar-info">
-								<text class="top-fixed-signal-layar-title">电量：</text>
+								<text
+									class="top-fixed-signal-layar-title">{{bilingualData?.[currentLanguage?.value]?.battery}}：</text>
 								<text class="top-fixed-signal-text">{{ parsedData.electric || 100 }}%</text>
 
 							</view>
-							<view style="color: #bbb;font-size: 20rpx;text-align: left;">MCCK设备当前电量</view>
+							<view style="color: #bbb;font-size: 20rpx;text-align: left;">
+								{{bilingualData?.[currentLanguage?.value]?.mcckDeviceBattery}}
+							</view>
 						</view>
 						<view class="top-fixed-signal-layar">
 							<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/bluetooth@2x.png"
 								style="width: 30rpx; height: 33rpx" />
 							<view class="top-fixed-signal-layar-info">
-								<text class="top-fixed-signal-layar-title">蓝牙状态：</text>
-								<text class="top-fixed-signal-text">{{ parsedData.electric?'已连接':'未连接' }}</text>
+								<text
+									class="top-fixed-signal-layar-title">{{bilingualData?.[currentLanguage?.value]?.btStatus}}：</text>
+								<text
+									class="top-fixed-signal-text">{{ parsedData.electric?bilingualData?.[currentLanguage?.value]?.connected:bilingualData?.[currentLanguage?.value]?.disConn}}</text>
 							</view>
-							<view style="color: #bbb;font-size: 20rpx;text-align: left;">MCCK蓝牙连接，支持手动</view>
+							<view style="color: #bbb;font-size: 20rpx;text-align: left;">
+								{{bilingualData?.[currentLanguage?.value]?.mcckBtConnManual}}
+							</view>
 						</view>
 						<view class="top-fixed-signal-layar">
 							<image src="https://k1sw.wiselink.net.cn/img/app2.0/sjc/pair@2x.png"
 								style="width: 33rpx; height: 23rpx" />
 							<view class="top-fixed-signal-layar-info">
-								<text class="top-fixed-signal-layar-title">蓝牙配对：</text>
+								<text
+									class="top-fixed-signal-layar-title">{{bilingualData?.[currentLanguage?.value]?.btPairing}}：</text>
 								<text class="top-fixed-signal-text">{{ parsedData.pairStatus || '未配对' }}</text>
 							</view>
-							<view style="color: #bbb;font-size: 20rpx;text-align: left;">MCCK蓝牙配对，感应生效</view>
+							<view style="color: #bbb;font-size: 20rpx;text-align: left;">
+								{{bilingualData?.[currentLanguage?.value]?.mcckBtPairingInductive}}
+							</view>
 						</view>
 					</view>
 				</view>
@@ -75,10 +108,11 @@
 			<view class="middle-scroll">
 				<view class="middle-title">
 					<view style="display: flex;flex-direction: column;">
-						<text>感应开关锁</text>
+						<text>{{bilingualData?.[currentLanguage?.value]?.InductiveLock}}</text>
 						<text style="font-size: 20rpx;color: #bbb;">
-							开启：实现开门不罚站 关门不回头，无感自动开关锁。
-							关闭：需手动操作： 在「我的手机汽车钥匙功能」区域-完成开关门操作。
+							{{bilingualData?.[currentLanguage?.value]?.On}}
+							{{bilingualData?.[currentLanguage?.value]?.Off}}
+
 						</text>
 					</view>
 
@@ -87,33 +121,49 @@
 				</view>
 				<view class="signal-card">
 					<view class="signal-info-group">
-						<view class="signal-info-item">我的位置 :{{parsedData.signalValue||40}}</view>
-						<view class="signal-info-item">开锁敏感值:{{parsedData.inductionUnlockSignal||50}}</view>
-						<view class="signal-info-item">关锁敏感值:{{parsedData.inductionLockSignal||60}}</view>
+						<view class="signal-info-item">{{bilingualData?.[currentLanguage?.value]?.MyLocation}}
+							:{{parsedData.signalValue||40}}</view>
+						<view class="signal-info-item">
+							{{bilingualData?.[currentLanguage?.value]?.UnlockSensitivity}}:{{parsedData.inductionUnlockSignal||50}}
+						</view>
+						<view class="signal-info-item">
+							{{bilingualData?.[currentLanguage?.value]?.LockSensitivity}}:{{parsedData.inductionLockSignal||60}}
+						</view>
 					</view>
 					<view class="signal-desc-group">
-						<view class="signal-desc-item">【我的位置】: 手机与硬件设备的蓝牙信号值，数值越小信号越强</view>
-						<view class="signal-desc-item">【变化规则】: "我的位置",该数值随手机移动实时变动。</view>
-						<view class="signal-desc-item">【开锁敏感值】: 信号值低于此值，车辆感应开锁</view>
-						<view class="signal-desc-item">【关锁敏感值】: 信号值高于此值，车辆感应关锁</view>
+						<view class="signal-desc-item">【{{bilingualData?.[currentLanguage?.value]?.MyLocation}}】:
+							{{bilingualData?.[currentLanguage?.value]?.MyLocationdes}}
+						</view>
+						<view class="signal-desc-item">【{{bilingualData?.[currentLanguage?.value]?.Rule}}】:
+							{{bilingualData?.[currentLanguage?.value]?.Ruledes}}
+						</view>
+						<view class="signal-desc-item">【{{bilingualData?.[currentLanguage?.value]?.UnlockSensitivity}}】:
+							{{bilingualData?.[currentLanguage?.value]?.UnlockSensitivitydes}}
+						</view>
+						<view class="signal-desc-item">【{{bilingualData?.[currentLanguage?.value]?.LockSensitivity}}】:
+							{{bilingualData?.[currentLanguage?.value]?.LockSensitivitydes}}
+						</view>
 					</view>
-					<view style="font-size: 24rpx;color: #5B5959;margin-top: 10rpx;">温馨提示：默认设置若不合预期（开关锁位置/距离），请在个下方性化
-						DIY 处调整开关锁值</view>
+					<view style="font-size: 24rpx;color: #5B5959;margin-top: 10rpx;">
+						{{bilingualData?.[currentLanguage?.value]?.Tip}}
+					</view>
 				</view>
 				<view class="middle-concrete-content">
 
 					<view class="middle-concrete-content-debugging">
 						<view
 							style="display: flex;flex-direction: row;justify-content: space-between;border-bottom:1rpx solid #f1f1f1;padding: 15rpx 0rpx;">
-							<view style="font-size: 25rpx;font-weight: bold;">舒适进入个性化DIY</view>
+							<view style="font-size: 25rpx;font-weight: bold;">
+								{{bilingualData?.[currentLanguage?.value]?.Custom}} DIY</view>
 							<view @click="handleRestoreSettings"
 								style="font-size: 20rpx;border: 1rpx solid #bbb;background-color: #3b82f6;padding: 10rpx 10rpx;border-radius: 10rpx;color: #fff;">
-								恢复出厂设置</view>
+								{{bilingualData?.[currentLanguage?.value]?.FactoryReset}}
+							</view>
 						</view>
 						<!-- 开锁 -->
 						<view class="middle-concrete-content-debugging-title"
 							style="display: flex;flex-direction: row;justify-content: space-between;">
-							<view>开锁DIY</view>
+							<view>{{bilingualData?.[currentLanguage?.value]?.Unlock}}DIY</view>
 						</view>
 						<view class="middle-concrete-content-debugging-slider-track tarck-unlock" id="unlockTrack">
 							<view class="middle-concrete-content-debugging-slider-fill fill-unlock"
@@ -122,7 +172,8 @@
 								<view class="middle-concrete-content-debugging-info">
 									<image class="middle-concrete-content-debugging-info-image"
 										src="/static/privateCar/car_icon.png"></image>
-									<text class="middle-concrete-content-debugging-info-text">敏感值:
+									<text
+										class="middle-concrete-content-debugging-info-text">{{bilingualData?.[currentLanguage?.value]?.SensVal}}:
 										{{parsedData.inductionUnlockSignal||50}}</text>
 								</view>
 							</view>
@@ -132,10 +183,11 @@
 							</view>
 						</view>
 						<view class="middle-concrete-content-debugging-tip">
-							如开锁距离过远，则滑动"锁"图标调小数值，如开锁距离过近，则滑动"锁"图标调大数值。
+							{{bilingualData?.[currentLanguage?.value]?.Diy1}}
 						</view>
 						<!-- 关锁 -->
-						<view style="font-weight: bold;font-size: 23rpx;color: #BA2B2B;">关锁DIY</view>
+						<view style="font-weight: bold;font-size: 23rpx;color: #BA2B2B;">
+							{{bilingualData?.[currentLanguage?.value]?.Lock}}DIY</view>
 						<view class="middle-concrete-content-debugging-slider-track tarck-lock" id="lockTrack">
 							<view class="middle-concrete-content-debugging-slider-fill fill-lock"
 								:style="'width: ' + (lockRange + '%')"></view>
@@ -143,7 +195,8 @@
 								<view class="middle-concrete-content-debugging-info">
 									<image src="/static/privateCar/car_icon.png"
 										class="middle-concrete-content-debugging-info-image" />
-									<text class="middle-concrete-content-debugging-info-text">敏感值:
+									<text
+										class="middle-concrete-content-debugging-info-text">{{bilingualData?.[currentLanguage?.value]?.SensVal}}:
 										{{parsedData.inductionLockSignal||60}}</text>
 								</view>
 							</view>
@@ -153,10 +206,11 @@
 							</view>
 						</view>
 						<view class="middle-concrete-content-debugging-tip">
-							如关锁距离过远，则滑动"锁"图标调小数值，如关锁距离过近，则滑动"锁"图标调大数值。
+							{{bilingualData?.[currentLanguage?.value]?.Diy2}}
 						</view>
 						<!-- 开车期间频繁开关锁调整DIY -->
-						<view style="font-weight: bold;font-size: 23rpx;color: #BA2B2B;">开车期间频繁开关锁调整DIY</view>
+						<view style="font-weight: bold;font-size: 23rpx;color: #BA2B2B;">
+							{{bilingualData?.[currentLanguage?.value]?.Driving}}DIY</view>
 						<view class="middle-concrete-content-debugging-slider-track tarck-special" id="unlockTrack">
 							<view class="middle-concrete-content-debugging-slider-fill fill-special"
 								:style="'width: ' + (lockRange + '%')"></view>
@@ -164,7 +218,8 @@
 								<view class="middle-concrete-content-debugging-info">
 									<image src="/static/privateCar/car_icon.png"
 										class="middle-concrete-content-debugging-info-image"></image>
-									<text class="middle-concrete-content-debugging-info-text">敏感值:
+									<text
+										class="middle-concrete-content-debugging-info-text">{{bilingualData?.[currentLanguage?.value]?.SensVal}}:
 										{{parsedData.inductionLockSignal||60}}</text>
 								</view>
 							</view>
@@ -174,16 +229,17 @@
 							</view>
 						</view>
 						<view class="middle-concrete-content-debugging-tip">
-							如开车期间频繁开关锁，建议调大数值～调整后关锁数值会同步更新，关门敏感度会降低。
+							{{bilingualData?.[currentLanguage?.value]?.Diy3}}
 						</view>
 					</view>
 				</view>
 			</view>
 			<view class="bottom-fixed" :style="'height: ' + bottomHeight + 'px;'">
 				<view class="bottom-fixed-identification">
-					<text class="bottom-fixed-identification-title">我的手机汽车钥匙功能</text>
+					<text
+						class="bottom-fixed-identification-title">{{bilingualData?.[currentLanguage?.value]?.MyCarKey}}</text>
 					<text class="bottom-fixed-identification-more" data-key="key_settings"
-						@tap="handleMoreSettings">更多钥匙功能 ></text>
+						@tap="handleMoreSettings">{{bilingualData?.[currentLanguage?.value]?.MoreKeys}} ></text>
 				</view>
 				<swiper class="bottom-fixed-swiper" :indicator-dots="true">
 					<swiper-item class="bottom-fixed-swiper-item" v-for="(item, index) in controlItemspanel"
@@ -315,7 +371,9 @@
 		u_sendInfo,
 		u_uploadLog
 	} from '@/api'
-
+	import {
+		bilingualData
+	} from '@/utils/bilingual/index.js'
 	import bleKeyManager from '@/utils/BleKeyFun-utils-single.js'
 	// const appUtil = require('../../utils/app-util.js'); // 应用工具
 	// const { u_getCarBluetoothKeyByCode } = require('../../utils/request/order');
@@ -496,7 +554,25 @@
 				// 控制按钮当前选中索引（用于标识当前操作的按钮位置）
 				controlIndex: 0,
 				// 点击滑动模块最后的时间
-				lastPairTime: Date.now()
+				lastPairTime: Date.now(),
+				// 当前语种
+				isDropdownOpen: false,
+				// 支持的语言列表（可根据需求扩展）
+				languageList: [{
+						label: '中文',
+						value: 'zh_CN'
+					},
+					{
+						label: 'English',
+						value: 'en_US'
+					}
+				],
+				// 当前选中的语言（默认中文）
+				currentLanguage: {
+					label: '中文',
+					value: 'zh_CN'
+				},
+				bilingualData: bilingualData
 			};
 		},
 		onLoad: function(options) {
@@ -515,6 +591,7 @@
 		onShow: function() {
 			this.handleStart(); //开始执行链接蓝牙
 			this.startConnectionStatusPolling(); //启动连接状态轮询
+			this.initBilingual()
 		},
 		onHide: function() {
 			const that = this;
@@ -541,6 +618,56 @@
 			this.initLoginStatus();
 		},
 		methods: {
+			// 获取当前设置语种
+			initbilingual() {
+				uni.getStorage({
+					key: 'bilingual',
+					success: (res) => {
+						this.bilingual = res?.data
+					}
+				});
+			},
+			// 切换下拉菜单显示/隐藏
+			toggleDropdown() {
+				this.isDropdownOpen = !this.isDropdownOpen;
+			},
+
+			// 选择语言并切换
+			handleLanguageChange(lang) {
+				// 更新当前选中的语言
+				this.currentLanguage = lang;
+				this.isDropdownOpen = false;
+				console.log('切换到语言：', lang.value);
+				uni.setStorage({
+					key: 'bilingual',
+					data: lang,
+					success: () => {
+						console.log('token缓存设置成功');
+					}
+				});
+			},
+
+			initBilingual() {
+				uni.getStorage({
+					key: 'bilingual',
+					success: (res) => {
+						console.log('获取到的token：', res.data);
+					}
+				});
+			},
+			// 双语切换
+			handleBilingual() {
+				uni.setStorage({
+					key: 'bilingual',
+					data: '2',
+					success: () => {
+						console.log('token缓存设置成功');
+					},
+					fail: (err) => {
+						console.error('缓存设置失败：', err);
+					}
+				});
+			},
 			// 获取当前登录状态
 			initLoginStatus() {
 				uni.getStorage({
@@ -1874,9 +2001,10 @@
 	/* 头部外层容器样式：flex布局，水平居中对齐，元素间间距10rpx */
 	.custom-header-outer-layer {
 		display: flex;
-		justify-content: center;
+		justify-content: space-between;
 		align-items: center;
 		gap: 25rpx;
+		width: 100%;
 	}
 
 	/* 头部外层容器图片样式：设置固定宽高 */
@@ -2476,5 +2604,44 @@
 	/* 最后一个描述项去掉下间距，避免多余空白 */
 	.signal-desc-item:last-child {
 		margin-bottom: 0;
+	}
+
+	.language-selector {
+		position: relative;
+		width: 120px;
+	}
+
+	.selector-btn {
+		padding: 8px 12px;
+		border-radius: 4px;
+		text-align: center;
+		cursor: pointer;
+	}
+
+	.dropdown-list {
+		position: absolute;
+		top: 40px;
+		left: 0;
+		width: 100%;
+		background-color: #fff;
+		border: 1px solid #eee;
+		border-radius: 4px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		z-index: 999;
+	}
+
+	.dropdown-item {
+		padding: 8px 12px;
+		text-align: center;
+		cursor: pointer;
+	}
+
+	.dropdown-item.active {
+		background-color: #e6f7ff;
+		color: #1890ff;
+	}
+
+	.dropdown-item:hover {
+		background-color: #f8f8f8;
 	}
 </style>
